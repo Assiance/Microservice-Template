@@ -11,6 +11,7 @@ namespace EfMicroservice.Api.Configurations
             ApiDependencyRegistration.RegisterDependencies(builder);
             DomainDependencyRegistration.RegisterDependencies(builder);
             DataDependencyRegistration.RegisterDependencies(builder);
+            CoreDependencyRegistration.RegisterDependencies(builder);
         }
     }
 }

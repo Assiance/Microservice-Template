@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Domain", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Data", "src\EfMicroservice.Data\EfMicroservice.Data.csproj", "{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Core", "src\EfMicroservice.Core\EfMicroservice.Core.csproj", "{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Release|x64.Build.0 = Release|Any CPU
 		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Release|x86.ActiveCfg = Release|Any CPU
 		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Release|x86.Build.0 = Release|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Debug|x64.Build.0 = Debug|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Debug|x86.Build.0 = Debug|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Release|x64.ActiveCfg = Release|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Release|x64.Build.0 = Release|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Release|x86.ActiveCfg = Release|Any CPU
+		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
