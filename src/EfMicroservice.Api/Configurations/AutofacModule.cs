@@ -1,6 +1,7 @@
 using Autofac;
 using EfMicroservice.Domain;
 using EfMicroservice.Data;
+using EfMicroservice.Core;
 
 namespace EfMicroservice.Api.Configurations
 {

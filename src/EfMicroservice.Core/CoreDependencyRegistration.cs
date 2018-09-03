@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using Autofac;
 
 namespace EfMicroservice.Core
 {

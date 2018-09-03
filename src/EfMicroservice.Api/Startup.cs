@@ -53,6 +53,7 @@ namespace EfMicroservice.Api
             app.UseSwagger();
             app.UseSwaggerUIDocs(provider);
 
+            app.UseLoggingMiddleware();
             app.UseHttpsRedirection();
             app.UseMvc();
         }
