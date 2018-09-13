@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using EfMicroservice.Core.ExceptionHandling.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -22,6 +25,9 @@ namespace EfMicroservice.Api.V1.Controllers
         public ActionResult<IEnumerable<string>> Get()
         {
             _logger.LogError("Logging Things!!!");
+
+            throw new BadRequestException("WRONG");
+
             return new [] { "value1", "value2" };
         }
 

@@ -54,6 +54,7 @@ namespace EfMicroservice.Api
             app.UseSwaggerUIDocs(provider);
 
             app.UseLoggingMiddleware();
+            app.UseExceptionHandlingMiddleware();
             app.UseHttpsRedirection();
             app.UseMvc();
         }

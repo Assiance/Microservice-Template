@@ -55,6 +55,7 @@ namespace EfMicroservice.Api
                 .ConfigureServices(services => services.AddAutofac())
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
+                .UseSerilog()
                 .CaptureStartupErrors(true)
                 .ConfigureLogging((hostingContext, logging) =>
                 {
