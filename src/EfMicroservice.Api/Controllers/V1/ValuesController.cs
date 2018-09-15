@@ -5,7 +5,7 @@ using EfMicroservice.Core.ExceptionHandling.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace EfMicroservice.Api.V1.Controllers
+namespace EfMicroservice.Api.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -28,7 +28,7 @@ namespace EfMicroservice.Api.V1.Controllers
 
             throw new BadRequestException("WRONG");
 
-            return new [] { "value1", "value2" };
+            return Ok(new [] { "value1", "value2" });
         }
 
         [HttpGet("{id}", Name = "GetValueById")]
@@ -36,7 +36,7 @@ namespace EfMicroservice.Api.V1.Controllers
         [ProducesResponseType(404)]
         public ActionResult<string> Get(int id)
         {
-            return "value";
+            return Ok("value");
         }
 
         [HttpPost]
