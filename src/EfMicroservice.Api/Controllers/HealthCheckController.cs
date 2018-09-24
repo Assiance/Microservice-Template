@@ -6,7 +6,7 @@ namespace EfMicroservice.Api.Controllers
 {
     [AllowAnonymous]
     [ApiVersionNeutral]
-    [Route("[controller]")]
+    [Route("hc")]
     [ApiController]
     public class HealthCheckController : ControllerBase
     {
