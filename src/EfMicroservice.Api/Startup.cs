@@ -1,10 +1,12 @@
 ﻿using Autofac;
 using AutoMapper;
 using EfMicroservice.Api.Configurations;
+using EfMicroservice.Data.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,6 +31,10 @@ namespace EfMicroservice.Api
                 o.SubstituteApiVersionInUrl = true;
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddDbContext<ApplicationDbContext>
+                (options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddApiVersioning();
             services.AddSwagger();
         }
