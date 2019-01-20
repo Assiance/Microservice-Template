@@ -24,11 +24,11 @@ namespace EfMicroservice.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper();
-            services.AddMvcCore().AddVersionedApiExplorer(o => { 
+            services.AddVersionedApiExplorer(o => { 
                 o.GroupNameFormat = "'v'VVV";
                 o.SubstituteApiVersionInUrl = true;
             });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddApiVersioning();
             services.AddSwagger();
         }
