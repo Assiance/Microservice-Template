@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EfMicroservice.Data.EntityConfigurations
+namespace EfMicroservice.Data.EntityTypeConfigurations
 {
-    public class ValueConfiguration : IEntityTypeConfiguration<ValueEntity>
+    public class ValueEntityTypeConfiguration : IEntityTypeConfiguration<ValueEntity>
     {
         public void Configure(EntityTypeBuilder<ValueEntity> builder)
         {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EfMicroservice.Core.Data;
+using EfMicroservice.Core.Data.Extensions;
 using EfMicroservice.Core.ExceptionHandling.Exceptions;
 using EfMicroservice.Data.Contexts;
 using EfMicroservice.Data.Models;
@@ -62,13 +64,13 @@ namespace EfMicroservice.Api.Controllers.V1
             var createdValue = await _dbContext.Values.AddAsync(newValue);
             await _dbContext.SaveChangesAsync();
 
-            return CreatedAtRoute( "GetValueById", new { id = createdValue.Entity.Id }, createdValue.Entity );
+            return CreatedAtRoute("GetValueById", new {id = createdValue.Entity.Id}, createdValue.Entity);
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Put(Guid id, [FromBody] string value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] ValueEntity value)
         {
             var retrievedValue = await _dbContext.Values.FindAsync(id);
 
@@ -77,8 +79,9 @@ namespace EfMicroservice.Api.Controllers.V1
                 return NotFound();
             }
 
-            retrievedValue.Name = value;
+            retrievedValue.Name = value.Name;
 
+            _dbContext.UpdateRowVersion(retrievedValue, value.RowVersion);
             _dbContext.Values.Update(retrievedValue);
             await _dbContext.SaveChangesAsync();
 
