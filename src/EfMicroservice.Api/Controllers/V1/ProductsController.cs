@@ -15,15 +15,15 @@ namespace EfMicroservice.Api.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly ILogger _logger;
 
-        public ValuesController(ApplicationDbContext dbContext, ILoggerFactory loggerFactory)
+        public ProductsController(ApplicationDbContext dbContext, ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext;
-            _logger = loggerFactory.CreateLogger(nameof(ValuesController));
+            _logger = loggerFactory.CreateLogger(nameof(ProductsController));
         }
 
         [HttpGet]
@@ -34,7 +34,7 @@ namespace EfMicroservice.Api.Controllers.V1
 
             throw new BadRequestException("WRONG");
 
-            return Ok(await _dbContext.Values.AsNoTracking().ToListAsync());
+            return Ok(await _dbContext.Products.AsNoTracking().ToListAsync());
         }
 
         [HttpGet("{id}", Name = "GetValueById")]
@@ -42,47 +42,51 @@ namespace EfMicroservice.Api.Controllers.V1
         [ProducesResponseType(404)]
         public async Task<ActionResult<string>> Get(Guid id)
         {
-            var value = await _dbContext.Values.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+            var product = await _dbContext.Products.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
 
-            if (value == null)
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return Ok(value);
+            return Ok(product);
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(string), 201)]
-        public async Task<IActionResult> Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] ProductEntity product)
         {
-            var newValue = new ValueEntity()
+            var newProduct = new ProductEntity()
             {
-                Name = value
+                Name = product.Name,
+                Price = product.Price,
+                Quantity = product.Quantity
             };
 
-            var createdValue = await _dbContext.Values.AddAsync(newValue);
+            var createdProduct = await _dbContext.Products.AddAsync(newProduct);
             await _dbContext.SaveChangesAsync();
 
-            return CreatedAtRoute("GetValueById", new {id = createdValue.Entity.Id}, createdValue.Entity);
+            return CreatedAtRoute("GetValueById", new {id = createdProduct.Entity.Id}, createdProduct.Entity);
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Put(Guid id, [FromBody] ValueEntity value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] ProductEntity updatedProduct)
         {
-            var retrievedValue = await _dbContext.Values.FindAsync(id);
+            var retrievedProduct = await _dbContext.Products.FindAsync(id);
 
-            if (retrievedValue == null)
+            if (retrievedProduct == null)
             {
                 return NotFound();
             }
 
-            retrievedValue.Name = value.Name;
+            retrievedProduct.Name = updatedProduct.Name;
+            retrievedProduct.Price = updatedProduct.Price;
+            retrievedProduct.Quantity = updatedProduct.Quantity;
 
-            _dbContext.UpdateRowVersion(retrievedValue, value.RowVersion);
-            _dbContext.Values.Update(retrievedValue);
+            _dbContext.UpdateRowVersion(retrievedProduct, updatedProduct.RowVersion);
+            _dbContext.Products.Update(retrievedProduct);
             await _dbContext.SaveChangesAsync();
 
             return Ok();
@@ -93,14 +97,14 @@ namespace EfMicroservice.Api.Controllers.V1
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var retrievedValue = await _dbContext.Values.FindAsync(id);
+            var retrievedProduct = await _dbContext.Products.FindAsync(id);
 
-            if (retrievedValue == null)
+            if (retrievedProduct == null)
             {
                 return NotFound();
             }
 
-            _dbContext.Values.Remove(retrievedValue);
+            _dbContext.Products.Remove(retrievedProduct);
             await _dbContext.SaveChangesAsync();
 
             return Ok();
