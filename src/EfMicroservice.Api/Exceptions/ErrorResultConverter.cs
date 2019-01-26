@@ -8,7 +8,7 @@ namespace EfMicroservice.Api.Exceptions
 {
     public class ErrorResultConverter : IErrorResultConverter
     {
-        private const string DefaultInstance = "EfMicroservice"; // EF-Change
+        private const string DefaultInstance = "EfMicroservice"; //Todo: EF-Change
         private const string DefaultErrorMessage = "Internal Server Error";
 
         public ErrorResult GetError(BaseException exception)
