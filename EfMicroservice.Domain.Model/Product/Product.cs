@@ -1,10 +1,11 @@
 ﻿using System;
-using EfMicroservice.Core.Data;
 
-namespace EfMicroservice.Data.Models
+namespace EfMicroservice.Domain.Model.Product
 {
-    public class ProductEntity : BaseEntity<Guid>, IVersionInfo
+    public class Product
     {
+        public Guid Id { get; set; }
+
         public string Name { get; set; }
 
         public decimal Price { get; set; }

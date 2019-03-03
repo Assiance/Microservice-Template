@@ -2,7 +2,7 @@
 {
     public class BadRequestException : BaseException
     {
-        public BadRequestException() : this(null)
+        public BadRequestException() : base(ErrorCode.BadRequest)
         {
         }
 

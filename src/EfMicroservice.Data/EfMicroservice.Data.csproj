@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\EfMicroservice.Domain.Model\EfMicroservice.Domain.Model.csproj" />
     <ProjectReference Include="..\EfMicroservice.Core\EfMicroservice.Core.csproj" />
   </ItemGroup>
 

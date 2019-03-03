@@ -1,9 +1,6 @@
-﻿using System;
-using EfMicroservice.Core.Data;
-
-namespace EfMicroservice.Data.Models
+﻿namespace EfMicroservice.Api.Models.Products
 {
-    public class ProductEntity : BaseEntity<Guid>, IVersionInfo
+    public abstract class BaseProductRequest
     {
         public string Name { get; set; }
 

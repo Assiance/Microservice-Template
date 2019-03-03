@@ -6,6 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\EfMicroservice.Domain.Model\EfMicroservice.Domain.Model.csproj" />
     <ProjectReference Include="..\EfMicroservice.Core\EfMicroservice.Core.csproj" />
     <ProjectReference Include="..\EfMicroservice.Data\EfMicroservice.Data.csproj" />
   </ItemGroup>
