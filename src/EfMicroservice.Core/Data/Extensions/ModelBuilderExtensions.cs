@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EfMicroservice.Core.Data.Extensions
 {
@@ -12,11 +12,20 @@ namespace EfMicroservice.Core.Data.Extensions
     {
         public static void ApplyVersionInfoConfiguration(this ModelBuilder modelBuilder)
         {;
+            var converter = new ValueConverter<byte[], long>(
+                v => BitConverter.ToInt64(v, 0),
+                v => BitConverter.GetBytes(v));
+
             var versionInfoTypes = GetTypesAssignableFrom(typeof(IVersionInfo));
 
             foreach (var versionInfoType in versionInfoTypes)
             {
-                modelBuilder.Entity(versionInfoType).Property("RowVersion").IsRowVersion();
+                modelBuilder.Entity(versionInfoType)
+                    .Property("RowVersion")
+                    .HasColumnName("xmin")
+                    .HasColumnType("xid")
+                    .HasConversion(converter)
+                    .IsRowVersion();
             }
         }
 

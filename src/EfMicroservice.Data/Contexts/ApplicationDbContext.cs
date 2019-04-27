@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
-using EfMicroservice.Core.Data;
+﻿using System.Reflection;
 using EfMicroservice.Core.Data.Extensions;
 using EfMicroservice.Data.Models;
 using Microsoft.EntityFrameworkCore;

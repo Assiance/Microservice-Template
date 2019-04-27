@@ -32,10 +32,12 @@ namespace EfMicroservice.Api
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<ApplicationDbContext>(options => options
-                .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                .UseLoggerFactory(services.BuildServiceProvider()
-                    .GetService<ILoggerFactory>()));
+            services.AddEntityFrameworkNpgsql()
+                .AddDbContext<ApplicationDbContext>(options => options
+                    .UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
+                    .UseLoggerFactory(services.BuildServiceProvider()
+                        .GetService<ILoggerFactory>()))
+                .BuildServiceProvider();
 
             services.AddApiVersioning();
             services.AddSwagger();
