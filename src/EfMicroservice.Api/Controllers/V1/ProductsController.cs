@@ -86,13 +86,13 @@ namespace EfMicroservice.Api.Controllers.V1
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _productService.DeleteProductAsync(id);
 
-            return Ok();
+            return NoContent();
         }
     }
 }
