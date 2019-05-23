@@ -5,6 +5,7 @@ using EfMicroservice.Data.Repositories.Interfaces;
 using EfMicroservice.Domain.Mappings.Interfaces;
 using EfMicroservice.Domain.Model.Product;
 using EfMicroservice.Domain.Services.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -37,6 +38,10 @@ namespace EfMicroservice.Domain.Services
 
         public async Task<Product> CreateProductAsync(Product product)
         {
+            var validator = new ProductValidator();
+
+            validator.ValidateAndThrow(product);
+
             var productEntity = _productMapper.Map(product);
             var createdProduct = await _unitOfWork.Products.AddAsync(productEntity);
 

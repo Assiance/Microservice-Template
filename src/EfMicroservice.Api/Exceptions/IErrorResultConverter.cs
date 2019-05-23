@@ -10,6 +10,8 @@ namespace EfMicroservice.Api.Exceptions
 
         ErrorResult GetError(ValidationException exception);
 
+        ErrorResult GetError(FluentValidation.ValidationException exception);
+
         ErrorResult GetError(HttpCallException exception);
 
         ErrorResult GetError(Exception exception);

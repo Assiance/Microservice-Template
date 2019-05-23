@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using EfMicroservice.Core.ExceptionHandling;
 using EfMicroservice.Core.ExceptionHandling.Exceptions;
 using Newtonsoft.Json.Linq;
@@ -36,6 +38,29 @@ namespace EfMicroservice.Api.Exceptions
             };
 
             var error = new Error(DefaultInstance, ErrorCode.System.ToString(), exception.Message, details);
+            return new ErrorResult(error);
+        }
+
+        public ErrorResult GetError(FluentValidation.ValidationException exception)
+        {
+            var errors = new List<ValidationExceptionDetailProperty>();
+            if (exception.Errors.Any())
+            {
+                errors.AddRange(exception.Errors.Select(item => new ValidationExceptionDetailProperty
+                {
+                    ErrorMessage = item.ErrorMessage,
+                    PropertyValue = item.AttemptedValue,
+                    PropertyName = item.PropertyName
+                }));
+            }
+
+            dynamic details = new
+            {
+                Errors = errors,
+                StackTrace = exception.StackTrace
+            };
+
+            var error = new Error(DefaultInstance, ErrorCode.System.ToString(), "Request Model Validation Failed", details);
             return new ErrorResult(error);
         }
 

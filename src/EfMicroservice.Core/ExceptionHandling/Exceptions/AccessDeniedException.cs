@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EfMicroservice.Core.ExceptionHandling.Exceptions
+﻿namespace EfMicroservice.Core.ExceptionHandling.Exceptions
 {
     public class AccessDeniedException : BaseException
     {

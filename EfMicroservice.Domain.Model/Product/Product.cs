@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation;
 
 namespace EfMicroservice.Domain.Model.Product
 {
@@ -13,5 +14,16 @@ namespace EfMicroservice.Domain.Model.Product
         public int Quantity { get; set; }
 
         public byte[] RowVersion { get; set; }
+    }
+
+    public class ProductValidator : AbstractValidator<Product>
+    {
+        public ProductValidator()
+        {
+            RuleFor(x => x.Name)
+                .NotNull()
+                .NotEmpty()
+                .MaximumLength(100);
+        }
     }
 }

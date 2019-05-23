@@ -1,4 +1,7 @@
-﻿namespace EfMicroservice.Core.ExceptionHandling.Exceptions
+﻿using System.Collections.Generic;
+using FluentValidation.Results;
+
+namespace EfMicroservice.Core.ExceptionHandling.Exceptions
 {
     public class BadRequestException : BaseException
     {

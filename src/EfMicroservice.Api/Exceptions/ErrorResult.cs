@@ -7,11 +7,11 @@ namespace EfMicroservice.Api.Exceptions
 {
     public class ErrorResult
     {
-        public ErrorResult(params Error[] errors)
+        public ErrorResult(Error error)
         {
-            Errors = errors;
+            Error = error;
         }
 
-        public IEnumerable<Error> Errors { get; }
+        public Error Error { get; }
     }
 }

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using EfMicroservice.Core.ExceptionHandling.Exceptions;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -46,6 +43,11 @@ namespace EfMicroservice.Api.Exceptions
             {
                 var errorResult = _errorResultConverter.GetError(ex);
                 await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.BadRequest, errorResult);
+            }
+            catch (FluentValidation.ValidationException ex)
+            {
+                var errorResult = _errorResultConverter.GetError(ex);
+                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.InternalServerError, errorResult);
             }
             catch (HttpCallException exception)
             {
