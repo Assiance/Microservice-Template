@@ -28,7 +28,7 @@ namespace EfMicroservice.Api.Configurations
             app.UseSwaggerUI(
                 options =>
                 {
-                    options.RoutePrefix = string.Empty;
+                    options.RoutePrefix = "docs";
                     foreach ( var description in provider.ApiVersionDescriptions )
                     {
                         options.SwaggerEndpoint( $"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant() );
