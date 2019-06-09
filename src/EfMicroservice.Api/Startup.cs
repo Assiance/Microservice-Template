@@ -1,6 +1,9 @@
-﻿using Autofac;
-using EfMicroservice.Api.Configurations;
+﻿using EfMicroservice.Api.Configurations;
+using EfMicroservice.Api.Exceptions;
+using EfMicroservice.Core;
+using EfMicroservice.Data;
 using EfMicroservice.Data.Contexts;
+using EfMicroservice.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -37,13 +40,15 @@ namespace EfMicroservice.Api
                         .GetService<ILoggerFactory>()))
                 .BuildServiceProvider();
 
+            services.RegisterApiDependencies();
+            services.RegisterDomainDependencies();
+            services.RegisterDataDependencies();
+            services.RegisterCoreDependencies();
+
+            services.AddSingleton<IErrorResultConverter, ErrorResultConverter>();
+
             services.AddApiVersioning();
             services.AddSwagger();
-        }
-
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.RegisterModule(new AutofacModule());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

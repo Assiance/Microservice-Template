@@ -1,17 +1,14 @@
 using System.Reflection;
-using Autofac;
+using EfMicroservice.Core.DI;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EfMicroservice.Data
 {
     public static class DataDependencyRegistration
     {
-        public static void RegisterDependencies(ContainerBuilder builder)
+        public static IServiceCollection RegisterDataDependencies(this IServiceCollection services)
         {
-            var types = Assembly.GetExecutingAssembly();
-
-            builder.RegisterAssemblyTypes(types)
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+            return services.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly());
         }
     }
 }

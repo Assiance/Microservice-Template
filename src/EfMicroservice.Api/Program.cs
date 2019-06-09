@@ -3,7 +3,6 @@ using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Autofac.Extensions.DependencyInjection;
 using EfMicroservice.Core.Logging;
 using Serilog;
 
@@ -52,7 +51,6 @@ namespace EfMicroservice.Api
                 {
                     options.AddServerHeader = false;
                 })
-                .ConfigureServices(services => services.AddAutofac())
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseSerilog()

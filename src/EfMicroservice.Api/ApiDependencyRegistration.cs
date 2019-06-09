@@ -1,17 +1,14 @@
 using System.Reflection;
-using Autofac;
+using EfMicroservice.Core.DI;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EfMicroservice.Api
 {
     public static class ApiDependencyRegistration
     {
-        public static void RegisterDependencies(ContainerBuilder builder)
+        public static IServiceCollection RegisterApiDependencies(this IServiceCollection services)
         {
-            var types = Assembly.GetExecutingAssembly();
-
-            builder.RegisterAssemblyTypes(types)
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+            return services.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly());
         }
     }
 }
