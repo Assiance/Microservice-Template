@@ -1,18 +1,15 @@
-﻿using System;
-using System.Reflection;
-using Autofac;
+﻿using System.Reflection;
+using EfMicroservice.Core.DI;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace EfMicroservice.Core
 {
-    public class CoreDependencyRegistration
+    public static class CoreDependencyRegistration
     {
-        public static void RegisterDependencies(ContainerBuilder builder)
+        public static IServiceCollection RegisterCoreDependencies(this IServiceCollection services)
         {
-            var types = Assembly.GetExecutingAssembly();
-
-            builder.RegisterAssemblyTypes(types)
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+            return services.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly());
         }
     }
 }
