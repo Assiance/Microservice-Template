@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Api", "src\EfMicroservice.Api\EfMicroservice.Api.csproj", "{0E36DBEF-5E32-4E93-A94E-22D1BAFD3BC9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Domain", "src\EfMicroservice.Domain\EfMicroservice.Domain.csproj", "{073575B9-30B5-4765-A6FD-77211913484B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Data", "src\EfMicroservice.Data\EfMicroservice.Data.csproj", "{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Core", "src\EfMicroservice.Core\EfMicroservice.Core.csproj", "{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfMicroservice.Domain.Model", "EfMicroservice.Domain.Model\EfMicroservice.Domain.Model.csproj", "{C2A83CAC-A831-4FC1-B116-2479A1A2906F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Domain.Model", "EfMicroservice.Domain.Model\EfMicroservice.Domain.Model.csproj", "{C2A83CAC-A831-4FC1-B116-2479A1A2906F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Data", "src\EfMicroservice.Data\EfMicroservice.Data.csproj", "{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,18 +47,6 @@ Global
 		{073575B9-30B5-4765-A6FD-77211913484B}.Release|x64.Build.0 = Release|Any CPU
 		{073575B9-30B5-4765-A6FD-77211913484B}.Release|x86.ActiveCfg = Release|Any CPU
 		{073575B9-30B5-4765-A6FD-77211913484B}.Release|x86.Build.0 = Release|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Debug|x64.Build.0 = Debug|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Debug|x86.Build.0 = Debug|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Release|x64.ActiveCfg = Release|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Release|x64.Build.0 = Release|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Release|x86.ActiveCfg = Release|Any CPU
-		{B979EA2E-D8BE-48D8-8DBC-C09F03611C52}.Release|x86.Build.0 = Release|Any CPU
 		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEB60EEB-FE7D-483A-AFB3-F1FF3FF98B2D}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -83,6 +71,18 @@ Global
 		{C2A83CAC-A831-4FC1-B116-2479A1A2906F}.Release|x64.Build.0 = Release|Any CPU
 		{C2A83CAC-A831-4FC1-B116-2479A1A2906F}.Release|x86.ActiveCfg = Release|Any CPU
 		{C2A83CAC-A831-4FC1-B116-2479A1A2906F}.Release|x86.Build.0 = Release|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Debug|x64.Build.0 = Debug|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Debug|x86.Build.0 = Debug|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Release|x64.ActiveCfg = Release|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Release|x64.Build.0 = Release|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Release|x86.ActiveCfg = Release|Any CPU
+		{F1EF59B7-E1F7-4529-A8FF-A1E7C798F67F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
