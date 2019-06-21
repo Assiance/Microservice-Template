@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using EfMicroservice.Api.Models.Products;
 using EfMicroservice.Core.ExceptionHandling.Exceptions;
+using EfMicroservice.Data.Clients.Interfaces;
 using EfMicroservice.Domain.Model.Product;
 using EfMicroservice.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,13 @@ namespace EfMicroservice.Api.Controllers.V1
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IGitHaubService _haubService;
         private readonly ILogger _logger;
 
-        public ProductsController(IProductService productService, ILoggerFactory loggerFactory)
+        public ProductsController(IProductService productService, ILoggerFactory loggerFactory, IGitHaubService haubService)
         {
             _productService = productService;
+            _haubService = haubService;
             _logger = loggerFactory.CreateLogger<ProductsController>();
         }
 
@@ -28,6 +31,7 @@ namespace EfMicroservice.Api.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
+            var downstreamRequest = await _haubService.Get();
             _logger.LogError("Logging Things!!!");
 
             // throw new BadRequestException("WRONG");
