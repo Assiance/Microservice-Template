@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EfMicroservice.Api.Configurations;
 using EfMicroservice.Api.Exceptions;
@@ -43,6 +43,7 @@ namespace EfMicroservice.Api
                 o.GroupNameFormat = "'v'VVV";
                 o.SubstituteApiVersionInUrl = true;
             });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddEntityFrameworkNpgsql()
@@ -86,6 +87,8 @@ namespace EfMicroservice.Api
                 app.UseHsts();
             }
 
+            ConfigureCors(app);
+
             app.UseSwagger();
             app.UseSwaggerUIDocs(provider);
 
@@ -93,6 +96,15 @@ namespace EfMicroservice.Api
             app.UseExceptionHandlingMiddleware();
             app.UseHttpsRedirection();
             app.UseMvc();
+        }
+
+        private void ConfigureCors(IApplicationBuilder app)
+        {
+            var allowedOrigins = new List<string>();
+            Configuration.GetSection("AllowedHosts").Bind(allowedOrigins);
+            app.UseCors(builder => builder.WithOrigins(allowedOrigins.ToArray())
+                .AllowAnyMethod()
+                .AllowAnyHeader());
         }
     }
 }
