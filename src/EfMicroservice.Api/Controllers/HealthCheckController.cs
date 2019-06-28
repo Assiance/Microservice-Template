@@ -30,5 +30,21 @@ namespace EfMicroservice.Api.Controllers
 
             return Ok(health);
         }
+
+        [Authorize("read:messages")]
+        [HttpGet("private", Name = "privateTest")]
+        [ProducesResponseType(200)]
+
+        public IActionResult GetPrivate()
+        {
+            var health = new
+            {
+                Status = "alive",
+                ApplicationName = _environment.ApplicationName,
+                Environment = _environment.EnvironmentName
+            };
+
+            return Ok(health);
+        }
     }
 }

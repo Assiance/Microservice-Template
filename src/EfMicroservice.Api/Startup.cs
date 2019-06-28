@@ -17,6 +17,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using EfMicroservice.Api.Authorization;
 
 namespace EfMicroservice.Api
 {
@@ -44,7 +48,31 @@ namespace EfMicroservice.Api
                 o.SubstituteApiVersionInUrl = true;
             });
 
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            // 1. Add Authentication Services
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options =>
+            {
+                var test = Configuration["Auth0:ValidIssuer"];
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = Configuration["Auth0:ValidIssuer"],
+                    ValidAudience = Configuration["Auth0:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth0:IssuerSigningKey"]))
+                };
+            });
+            // Todo: EF - Change
+           services.AddAuthorization(options =>
+           {
+               options.AddPolicy("read:messages", policy => policy.Requirements.Add(new HasScopeRequirement("read:messages", "https://thecompositex.auth0.com/")));
+           });
 
             services.AddEntityFrameworkNpgsql()
                 .AddDbContext<ApplicationDbContext>(options => options
@@ -91,7 +119,7 @@ namespace EfMicroservice.Api
 
             app.UseSwagger();
             app.UseSwaggerUIDocs(provider);
-
+            app.UseAuthentication();
             app.UseLoggingMiddleware();
             app.UseExceptionHandlingMiddleware();
             app.UseHttpsRedirection();
