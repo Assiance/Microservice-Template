@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using EfMicroservice.Api.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ namespace EfMicroservice.Api.Controllers
             return Ok(health);
         }
 
-        [Authorize("read:messages")]
+        [Authorize(Permissions.ReadMessages)]
         [HttpGet("private", Name = "privateTest")]
         [ProducesResponseType(200)]
 
