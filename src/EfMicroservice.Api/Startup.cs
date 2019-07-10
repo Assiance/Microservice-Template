@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using EfMicroservice.Core.Api.Configuration.Authentication;
 
 namespace EfMicroservice.Api
 {
@@ -46,6 +47,10 @@ namespace EfMicroservice.Api
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            var authConfig = Configuration.GetSection("Authentication").Get<JwtConfiguration>();
+            services.AddJwtAuthentication(authConfig);
+            services.AddAuthorizationPolicies(authConfig);
+
             services.AddEntityFrameworkNpgsql()
                 .AddDbContext<ApplicationDbContext>(options => options
                     .UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
@@ -66,9 +71,7 @@ namespace EfMicroservice.Api
             var httpClientPoliciesSection = Configuration.GetSection("HttpClientPolicies");
             services.Configure<List<HttpClientPolicy>>(httpClientPoliciesSection);
 
-            var policies = new List<HttpClientPolicy>();
-            httpClientPoliciesSection.Bind(policies);
-
+            var policies = httpClientPoliciesSection.Get<List<HttpClientPolicy>>();
             services.RegisterClients(policies, _clients);
 
             services.AddApiVersioning();
@@ -91,7 +94,7 @@ namespace EfMicroservice.Api
 
             app.UseSwagger();
             app.UseSwaggerUIDocs(provider);
-
+            app.UseAuthentication();
             app.UseLoggingMiddleware();
             app.UseExceptionHandlingMiddleware();
             app.UseHttpsRedirection();
