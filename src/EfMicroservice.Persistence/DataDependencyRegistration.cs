@@ -2,11 +2,11 @@ using System.Reflection;
 using EfMicroservice.Common.DI;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EfMicroservice.Api
+namespace EfMicroservice.Persistence
 {
-    public static class ApiDependencyRegistration
+    public static class DataDependencyRegistration
     {
-        public static IServiceCollection RegisterApiDependencies(this IServiceCollection services)
+        public static IServiceCollection RegisterDataDependencies(this IServiceCollection services)
         {
             return services.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly());
         }

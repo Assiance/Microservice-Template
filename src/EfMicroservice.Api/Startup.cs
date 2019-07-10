@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
-using EfMicroservice.Api.Configurations;
-using EfMicroservice.Api.Exceptions;
-using EfMicroservice.Core;
-using EfMicroservice.Data;
-using EfMicroservice.Core.Api.Configuration.HttpClient;
-using EfMicroservice.Data.Clients;
-using EfMicroservice.Data.Clients.Interfaces;
-using EfMicroservice.Data.Contexts;
-using EfMicroservice.Domain;
+using EfMicroservice.Api.Infrastructure;
+using EfMicroservice.Api.Infrastructure.Configurations;
+using EfMicroservice.Api.Infrastructure.Exceptions;
+using EfMicroservice.Application;
+using EfMicroservice.Common;
+using EfMicroservice.Common.Api.Configuration.Authentication;
+using EfMicroservice.Common.Api.Configuration.HttpClient;
+using EfMicroservice.Persistence;
+using EfMicroservice.Persistence.Clients;
+using EfMicroservice.Persistence.Clients.Interfaces;
+using EfMicroservice.Persistence.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +19,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using EfMicroservice.Core.Api.Configuration.Authentication;
 
 namespace EfMicroservice.Api
 {

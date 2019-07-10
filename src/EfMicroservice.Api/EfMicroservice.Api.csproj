@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Shared\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -25,8 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EfMicroservice.Core\EfMicroservice.Core.csproj" />
-    <ProjectReference Include="..\EfMicroservice.Domain\EfMicroservice.Domain.csproj" />
+    <ProjectReference Include="..\EfMicroservice.Application\EfMicroservice.Application.csproj" />
+    <ProjectReference Include="..\EfMicroservice.Common\EfMicroservice.Common.csproj" />
+    <ProjectReference Include="..\EfMicroservice.Persistence\EfMicroservice.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>
