@@ -97,6 +97,7 @@ namespace EfMicroservice.Api
             app.UseSwaggerUIDocs(provider);
             app.UseAuthentication();
             app.UseLoggingMiddleware();
+            app.UseCorrelationIdInHeaderMiddleware();
             app.UseExceptionHandlingMiddleware();
             app.UseHttpsRedirection();
             app.UseMvc();
