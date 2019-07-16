@@ -6,6 +6,7 @@ using EfMicroservice.Common.Persistence.Extensions;
 using EfMicroservice.Common.Persistence.Repositories;
 using EfMicroservice.Domain.Products;
 using EfMicroservice.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace EfMicroservice.Persistence.Products

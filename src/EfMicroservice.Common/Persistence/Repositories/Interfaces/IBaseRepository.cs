@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace EfMicroservice.Common.Persistence.Repositories.Interfaces
 {
@@ -9,8 +13,10 @@ namespace EfMicroservice.Common.Persistence.Repositories.Interfaces
     {
         IQueryable<TEntity> Queryable { get; }
 
-        Task<TEntity> AddAsync(TEntity entity);
-        TEntity Add(TEntity entity);
+        IIncludableQueryable<TEntity, TProperty> Include<TProperty>(
+            Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty : class;
+        Task<EntityEntry<TEntity>> AddAsync(TEntity entity);
+        EntityEntry<TEntity> Add(TEntity entity);
         Task<TEntity> FindAsync(TKey id);
         TEntity Find(TKey id);
         Task UpdateAsync(TEntity entity);

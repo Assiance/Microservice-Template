@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using EfMicroservice.Common.Persistence.Extensions;
+using EfMicroservice.Domain.Orders;
 using EfMicroservice.Domain.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -23,6 +24,11 @@ namespace EfMicroservice.Persistence.Products
 
             builder.Property(x => x.Quantity)
                 .IsRequired();
+
+            builder.HasMany(x => x.Orders)
+                .WithOne(x => x.Product)
+                .IsRequired()
+                .HasForeignKey(x => x.ProductId);
 
             builder.HasRowVersion();
         }

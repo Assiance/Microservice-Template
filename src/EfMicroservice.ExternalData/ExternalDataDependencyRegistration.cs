@@ -2,11 +2,11 @@
 using EfMicroservice.Common.DI;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EfMicroservice.Common
+namespace EfMicroservice.ExternalData
 {
-    public static class CoreDependencyRegistration
+    public static class ExternalDataDependencyRegistration
     {
-        public static IServiceCollection RegisterCoreDependencies(this IServiceCollection services)
+        public static IServiceCollection RegisterExternalDataDependencies(this IServiceCollection services)
         {
             return services.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly());
         }

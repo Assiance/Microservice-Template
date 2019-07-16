@@ -20,7 +20,7 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
     {
         public static void RegisterClients(this IServiceCollection services, List<HttpClientPolicy> policies, Dictionary<Type, Func<IServiceCollection, IHttpClientBuilder>> clientDict)
         {
-            var dataAssembly = Assembly.Load("EfMicroservice.Persistence"); //Todo: EF
+            var dataAssembly = Assembly.Load("EfMicroservice.ExternalData"); //Todo: EF
 
             foreach (var policy in policies)
             {

@@ -1,9 +1,8 @@
 ﻿using EfMicroservice.Api.Infrastructure.Exceptions;
 using EfMicroservice.Api.Infrastructure.Logging;
-using EfMicroservice.Api.Infrastructure.MiddleWare;
 using Microsoft.AspNetCore.Builder;
 
-namespace EfMicroservice.Api.Infrastructure
+namespace EfMicroservice.Api.Infrastructure.Extensions
 {
     public static class MiddlewareExtensions
     {
@@ -17,7 +16,7 @@ namespace EfMicroservice.Api.Infrastructure
             return builder.UseMiddleware<ExceptionHandlingMiddleware>();
         }
 
-        public static IApplicationBuilder UseCorrelationIdInHeaderMiddleware(this IApplicationBuilder builer)
+        public static IApplicationBuilder UseAddCorrelationIdToHeaderMiddleware(this IApplicationBuilder builer)
         {
             return builer.UseMiddleware<AddCorrelationIdToHeaderMiddleware>();
         }

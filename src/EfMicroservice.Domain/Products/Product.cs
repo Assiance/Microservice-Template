@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using EfMicroservice.Common.Persistence;
+using EfMicroservice.Domain.Orders;
 
 namespace EfMicroservice.Domain.Products
 {
@@ -10,6 +12,8 @@ namespace EfMicroservice.Domain.Products
         public decimal Price { get; set; }
 
         public int Quantity { get; set; }
+
+        public IEnumerable<Order> Orders { get; set; }
 
         public byte[] RowVersion { get; set; }
     }

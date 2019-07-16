@@ -1,8 +1,8 @@
-using System.Reflection;
+﻿using System.Reflection;
 using EfMicroservice.Common.DI;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EfMicroservice.Application
+namespace EfMicroservice.Domain
 {
     public static class DomainDependencyRegistration
     {

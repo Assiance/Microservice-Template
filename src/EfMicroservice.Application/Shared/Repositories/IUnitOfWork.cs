@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using EfMicroservice.Application.Orders.Repositories;
 using EfMicroservice.Application.Products.Repositories;
 using EfMicroservice.Common.Persistence;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -8,6 +9,8 @@ namespace EfMicroservice.Application.Shared.Repositories
     public interface IUnitOfWork
     {
         IProductRepository Products { get; }
+
+        IOrderRepository Orders { get; }
 
         Task SaveAsync();
 

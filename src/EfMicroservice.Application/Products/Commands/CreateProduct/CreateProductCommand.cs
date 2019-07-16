@@ -27,11 +27,11 @@ namespace EfMicroservice.Application.Products.Commands.CreateProduct
             var validator = new ProductValidator();
 
             validator.ValidateAndThrow(product);
-            var createdProduct = await _unitOfWork.Products.AddAsync(product);
+            var createdProductEntry = await _unitOfWork.Products.AddAsync(product);
 
             await _unitOfWork.SaveAsync();
 
-            return _productMapper.Map(createdProduct);
+            return _productMapper.Map(createdProductEntry.Entity);
         }
     }
 }

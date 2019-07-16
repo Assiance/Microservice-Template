@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using EfMicroservice.Common.Api.Configuration.HttpClient;
-using EfMicroservice.Persistence.Clients.Interfaces;
+using EfMicroservice.Common.Http;
+using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.Extensions.Options;
 
-namespace EfMicroservice.Persistence.Clients
+namespace EfMicroservice.ExternalData.Clients
 {
-    public class GitHaubService : IGitHaubService
+    public class GitHaubClient : BaseHttpClient, IGitHaubClient
     {
-        private readonly HttpClient _httpClient;
-
-        public GitHaubService(HttpClient httpClient, IOptions<List<HttpClientPolicy>> clientPolicies)
+        public GitHaubClient(HttpClient httpClient, IOptions<List<HttpClientPolicy>> clientPolicies)
+            : base(typeof(GitHaubClient), httpClient, clientPolicies)
         {
-            var client = clientPolicies.Value.GetClient(typeof(GitHaubService));
-            httpClient.BaseAddress = new Uri(client.Url);
-
-            _httpClient = httpClient;
         }
 
         public async Task<object> Get()

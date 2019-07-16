@@ -8,7 +8,7 @@ using EfMicroservice.Application.Products.Commands.UpdateProduct;
 using EfMicroservice.Application.Products.Queries.GetProductById;
 using EfMicroservice.Application.Products.Queries.GetProducts;
 using EfMicroservice.Common.ExceptionHandling.Exceptions;
-using EfMicroservice.Persistence.Clients.Interfaces;
+using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -24,10 +24,10 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         private readonly ICreateProductCommand _createProductCommand;
         private readonly IUpdateProductCommand _updateProductCommand;
         private readonly IDeleteProductCommand _deleteProductCommand;
-        private readonly IGitHaubService _haubService;
+        private readonly IGitHaubClient _haubService;
         private readonly ILogger _logger;
 
-        public ProductsController(IGetProductsQuery getProductsQuery, IGetProductByIdQuery getProductByIdQuery, ICreateProductCommand createProductCommand, IUpdateProductCommand updateProductCommand, IDeleteProductCommand deleteProductCommand, ILoggerFactory loggerFactory, IGitHaubService haubService)
+        public ProductsController(IGetProductsQuery getProductsQuery, IGetProductByIdQuery getProductByIdQuery, ICreateProductCommand createProductCommand, IUpdateProductCommand updateProductCommand, IDeleteProductCommand deleteProductCommand, ILoggerFactory loggerFactory, IGitHaubClient haubService)
         {
             _getProductsQuery = getProductsQuery;
             _getProductByIdQuery = getProductByIdQuery;
@@ -42,7 +42,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
-            //var downstreamRequest = await _haubService.Get();
+            var downstreamRequest = await _haubService.Get();
             _logger.LogError("Logging Things!!!");
 
             // throw new BadRequestException("WRONG");
@@ -55,7 +55,6 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [ProducesResponseType(404)]
         public async Task<ActionResult<string>> Get(Guid id)
         {
-            throw new Exception();
             var product = await _getProductByIdQuery.ExecuteAsync(id);
 
             if (product == null)

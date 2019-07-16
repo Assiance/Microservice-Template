@@ -1,8 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using EfMicroservice.Common.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace EfMicroservice.Common.Persistence.Repositories
 {
@@ -29,16 +33,16 @@ namespace EfMicroservice.Common.Persistence.Repositories
             return _dbContext.Set<TEntity>().Find(id);
         }
 
-        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        public virtual async Task<EntityEntry<TEntity>> AddAsync(TEntity entity)
         {
             var entityEntry = await _dbContext.Set<TEntity>().AddAsync(entity);
-            return entityEntry.Entity;
+            return entityEntry;
         }
 
-        public virtual TEntity Add(TEntity entity)
+        public virtual EntityEntry<TEntity> Add(TEntity entity)
         {
             var entityEntry = _dbContext.Set<TEntity>().Add(entity);
-            return entityEntry.Entity;
+            return entityEntry;
         }
 
         public virtual Task UpdateAsync(TEntity entity)
@@ -72,6 +76,11 @@ namespace EfMicroservice.Common.Persistence.Repositories
             }
 
             _dbContext.Set<TEntity>().Remove(retrievedProduct);
+        }
+
+        public IIncludableQueryable<TEntity, TProperty> Include<TProperty>(Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty: class
+        {
+            return _dbContext.Set<TEntity>().Include(navigationPropertyPath);
         }
     }
 }

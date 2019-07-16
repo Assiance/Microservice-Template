@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EfMicroservice.Persistence
 {
-    public static class DataDependencyRegistration
+    public static class PersistenceDependencyRegistration
     {
-        public static IServiceCollection RegisterDataDependencies(this IServiceCollection services)
+        public static IServiceCollection RegisterPersistenceDependencies(this IServiceCollection services)
         {
             return services.RegisterAssemblyPublicNonGenericClasses(Assembly.GetExecutingAssembly());
         }

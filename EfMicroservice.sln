@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Persistence"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Common", "src\EfMicroservice.Common\EfMicroservice.Common.csproj", "{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfMicroservice.ExternalData", "src\EfMicroservice.ExternalData\EfMicroservice.ExternalData.csproj", "{C6F82A14-52FA-45B8-B458-DAB87396ED9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Release|x64.Build.0 = Release|Any CPU
 		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Release|x86.ActiveCfg = Release|Any CPU
 		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Release|x86.Build.0 = Release|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Debug|x64.Build.0 = Debug|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Debug|x86.Build.0 = Debug|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Release|x64.ActiveCfg = Release|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Release|x64.Build.0 = Release|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
