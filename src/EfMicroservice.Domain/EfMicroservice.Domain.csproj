@@ -1,13 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\EfMicroservice.Domain.Model\EfMicroservice.Domain.Model.csproj" />
-    <ProjectReference Include="..\EfMicroservice.Core\EfMicroservice.Core.csproj" />
-    <ProjectReference Include="..\EfMicroservice.Data\EfMicroservice.Data.csproj" />
-  </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="8.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Shared\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EfMicroservice.Common\EfMicroservice.Common.csproj" />
+  </ItemGroup>
 
 </Project>
