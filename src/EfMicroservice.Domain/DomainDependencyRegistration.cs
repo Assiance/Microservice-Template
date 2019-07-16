@@ -1,5 +1,5 @@
-using System.Reflection;
-using EfMicroservice.Core.DI;
+﻿using System.Reflection;
+using EfMicroservice.Common.DI;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EfMicroservice.Domain

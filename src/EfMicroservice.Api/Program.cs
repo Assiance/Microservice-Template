@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using EfMicroservice.Common.Logging;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using EfMicroservice.Core.Logging;
 using Serilog;
 
 namespace EfMicroservice.Api

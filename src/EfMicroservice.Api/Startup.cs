@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
-using EfMicroservice.Api.Configurations;
-using EfMicroservice.Api.Exceptions;
-using EfMicroservice.Core;
-using EfMicroservice.Data;
-using EfMicroservice.Core.Api.Configuration.HttpClient;
-using EfMicroservice.Data.Clients;
-using EfMicroservice.Data.Clients.Interfaces;
-using EfMicroservice.Data.Contexts;
+using EfMicroservice.Api.Infrastructure.Configurations;
+using EfMicroservice.Api.Infrastructure.Exceptions;
+using EfMicroservice.Api.Infrastructure.Extensions;
+using EfMicroservice.Application;
+using EfMicroservice.Common;
+using EfMicroservice.Common.Api.Configuration.Authentication;
+using EfMicroservice.Common.Api.Configuration.HttpClient;
 using EfMicroservice.Domain;
+using EfMicroservice.ExternalData;
+using EfMicroservice.ExternalData.Clients;
+using EfMicroservice.ExternalData.Clients.Interfaces;
+using EfMicroservice.Persistence;
+using EfMicroservice.Persistence.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +21,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using EfMicroservice.Core.Api.Configuration.Authentication;
 
 namespace EfMicroservice.Api
 {
@@ -31,7 +34,7 @@ namespace EfMicroservice.Api
 
             _clients = new Dictionary<Type, Func<IServiceCollection, IHttpClientBuilder>>
             {
-                { typeof(GitHaubService), services => services.AddHttpClient<IGitHaubService, GitHaubService>() }
+                { typeof(GitHaubClient), services => services.AddHttpClient<IGitHaubClient, GitHaubClient>() }
             };
             //test
         }
@@ -60,10 +63,12 @@ namespace EfMicroservice.Api
                 .BuildServiceProvider();
 
             // Register Scoped Dependencies
+            services.RegisterCommonDependencies();
             services.RegisterApiDependencies();
+            services.RegisterApplicationDependencies();
             services.RegisterDomainDependencies();
-            services.RegisterDataDependencies();
-            services.RegisterCoreDependencies();
+            services.RegisterPersistenceDependencies();
+            services.RegisterExternalDataDependencies();
 
             // Register Transient Dependencies
             // Register Singleton Dependencies
@@ -97,6 +102,7 @@ namespace EfMicroservice.Api
             app.UseSwaggerUIDocs(provider);
             app.UseAuthentication();
             app.UseLoggingMiddleware();
+            app.UseAddCorrelationIdToHeaderMiddleware();
             app.UseExceptionHandlingMiddleware();
             app.UseHttpsRedirection();
             app.UseMvc();
