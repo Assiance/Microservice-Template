@@ -11,7 +11,7 @@ namespace EfMicroservice.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
-                CREATE EXTENSION IF NOT EXISTS \""uuid-ossp\"";
+                CREATE EXTENSION IF NOT EXISTS ""uuid-ossp"";
 
                 CREATE TABLE IF NOT EXISTS products (
                     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
