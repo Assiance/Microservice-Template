@@ -1,32 +1,42 @@
-﻿using System;
+﻿using EfMicroservice.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EfMicroservice.Persistence.Migrations
 {
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20190427041334_Initial")]
     public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(maxLength: 100, nullable: false),
-                    Price = table.Column<decimal>(nullable: false),
-                    Quantity = table.Column<int>(nullable: false),
-                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
-                });
+            migrationBuilder.Sql(@"
+                CREATE EXTENSION IF NOT EXISTS \""uuid-ossp\"";
+
+                CREATE TABLE IF NOT EXISTS products (
+                    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+                    name varchar(256) NOT NULL,
+                    price NUMERIC NOT NULL,
+                    quantity integer NOT NULL
+                ); 
+			    
+			    CREATE TABLE IF NOT EXISTS orders (
+                    id serial PRIMARY KEY,
+                    product_id uuid references products(id),
+                    quantity integer NOT NULL
+                );
+			    
+			    CREATE INDEX IF NOT EXISTS idx_orders_product_id
+                    ON orders(product_id);
+            ");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Products");
+            migrationBuilder.Sql(@"
+                DROP TABLE orders;
+				DROP TABLE products;
+            ");
         }
     }
 }

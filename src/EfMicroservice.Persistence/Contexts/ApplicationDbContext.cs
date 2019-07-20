@@ -1,8 +1,8 @@
-﻿using System.Reflection;
-using EfMicroservice.Common.Persistence.Extensions;
+﻿using EfMicroservice.Common.Persistence.Extensions;
 using EfMicroservice.Domain.Orders;
 using EfMicroservice.Domain.Products;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace EfMicroservice.Persistence.Contexts
 {
@@ -14,12 +14,13 @@ namespace EfMicroservice.Persistence.Contexts
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        {          
+        {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.FormatTypeConfigurationsForPostgres();
         }
     }
 }
