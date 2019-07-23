@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using EfMicroservice.Common.Api.Configuration.HttpClient;
+using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using EfMicroservice.Common.Http.Client.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -30,6 +31,94 @@ namespace EfMicroservice.Common.Http
         
         }
 
+  
+
+        public async Task<TResult> PutAsync<T, TResult>(T item, string url)
+        {
+            var uri = TryGetUri(url);
+            var content = GetStringContent(item);
+            var response = await _httpClient.PutAsync(uri, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PutAsync));
+            }
+
+            var responseErrorMessage = await GetErrorMessage(response);
+            _logger.LogError($"HttpClient Put request MessageError: {responseErrorMessage}");
+            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase, response.Content.ToString());
+        }
+        public async Task<TResult> SendAsync<TResult>(HttpRequestMessage request)
+        {
+            if (request == null)
+            {
+                throw new HttpRequestException("HttpRequestMessage not provided");
+            }
+            var response = await _httpClient.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.SendAsync));
+            }
+
+            var responseErrorMessage = await GetErrorMessage(response);
+            _logger.LogError($"HttpClient SendAsync request MessageError: {responseErrorMessage}");
+            throw new HttpCallException(request.RequestUri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase, response.Content.ToString());
+        }
+
+    
+
+        public async Task<TResult> PostAsync<T, TResult>(T item, string url)
+        {
+            var uri = TryGetUri(url);
+            var content = GetStringContent(item);
+            var response = await _httpClient.PostAsync(uri, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PostAsync));
+            }
+
+            var responseErrorMessage = await GetErrorMessage(response);
+
+            _logger.LogError($"HttpClient Post request MessageError: {responseErrorMessage}");
+            throw new HttpRequestException(responseErrorMessage);
+        }
+
+        public async Task<TResult> PatchAsync<T, TResult>(T item, string url)
+        {
+            var uri = TryGetUri(url);
+            var content = GetStringContent(item);
+            var response = await _httpClient.PatchAsync(uri, content);
+            var responseContent =await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return DeserializeObject<TResult>(responseContent, nameof(this.PutAsync));
+            }
+
+            var responseErrorMessage = await GetErrorMessage(response);
+            _logger.LogError($"HttpClient Patch request MessageError: {responseErrorMessage}");
+            throw new HttpCallException(uri,response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase, responseContent);
+        }
+
+        public async Task<TResult> GetAsync<TResult>(string url)
+        {
+            ValidateUrlString(url, UriKind.Relative);
+            var uri = new Uri(url, UriKind.Relative);
+            var response = await _httpClient.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.GetAsync));
+            }
+            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase, response.Content.ToString());
+        }
+
+        private StringContent GetStringContent<T>(T item)
+        {
+            var json = JsonConvert.SerializeObject(item,
+                new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+            var content = new StringContent(json, Encoding.UTF8, MediaType);
+            return content;
+        }
         private void ValidateUrlString(string url, UriKind uriKind)
         {
             if (string.IsNullOrWhiteSpace(url))
@@ -38,8 +127,15 @@ namespace EfMicroservice.Common.Http
                 throw new ArgumentException("URI is not well formed.", nameof(url));
         }
 
+        private Uri TryGetUri(string url)
+        {
+            ValidateUrlString(url, UriKind.Relative);
+            var uri = new Uri(url, UriKind.Relative);
+            return uri;
+        }
 
-        private T DeserializeObject<T>(string jsonObject,string methodName)
+
+        private T DeserializeObject<T>(string jsonObject, string methodName)
         {
             try
             {
@@ -72,92 +168,6 @@ namespace EfMicroservice.Common.Http
             }
 
             return responseErrorMessage;
-        }
-
-        public async Task<TResult> PutAsync<T, TResult>(T item, string url)
-        {
-            ValidateUrlString(url, UriKind.Relative);
-            var uri = new Uri(url, UriKind.Relative);
-            var json = JsonConvert.SerializeObject(item,
-                new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
-            var content = new StringContent(json, Encoding.UTF8, MediaType);
-            var response = await _httpClient.PutAsync(uri, content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PutAsync));
-            }
-
-            var responseErrorMessage = await GetErrorMessage(response);
-            _logger.LogInformation($"HttpClient Put request MessageError: {responseErrorMessage}");
-            throw new HttpRequestException(responseErrorMessage);
-        }
-        public async Task<TResult> SendAsync<TResult>(HttpRequestMessage request)
-        {
-            if (request == null)
-            {
-                throw new HttpRequestException("HttpRequestMessage not provided");
-            }
-            var response = await _httpClient.SendAsync(request);
-            if (response.IsSuccessStatusCode)
-            {
-                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.SendAsync));
-            }
-
-            var responseErrorMessage = await GetErrorMessage(response);
-            _logger.LogInformation($"HttpClient SendAsync request MessageError: {responseErrorMessage}");
-            throw new HttpRequestException(responseErrorMessage);
-        }
-        public async Task<TResult> PostAsync<T, TResult>(T item, string url)
-        {
-            ValidateUrlString(url, UriKind.Relative);
-            var uri = new Uri(url, UriKind.Relative);
-            var json = JsonConvert.SerializeObject(item,
-                new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-            var content = new StringContent(json, Encoding.UTF8, MediaType);
-            var response = await _httpClient.PostAsync(uri, content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PostAsync));
-            }
-
-            var responseErrorMessage = await GetErrorMessage(response);
-
-            _logger.LogInformation($"HttpClient Post request MessageError: {responseErrorMessage}");
-            throw new HttpRequestException(responseErrorMessage);
-        }
-
-        public async Task<TResult> PatchAsync<T, TResult>(T item, string url)
-        {
-            ValidateUrlString(url, UriKind.Relative);
-            var uri = new Uri(url, UriKind.Relative);
-            var json = JsonConvert.SerializeObject(item,
-                new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-            var content = new StringContent(json, Encoding.UTF8, MediaType);
-            var response = await _httpClient.PatchAsync(uri, content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PutAsync));
-            }
-
-            var responseErrorMessage = await GetErrorMessage(response);
-            _logger.LogInformation($"HttpClient Patch request MessageError: {responseErrorMessage}");
-            throw new HttpRequestException(responseErrorMessage);
-        }
-
-        public async Task<TResult> GetAsync<TResult>(string url)
-        {
-            ValidateUrlString(url, UriKind.Relative);
-            var uri = new Uri(url, UriKind.Relative);
-            var response = await _httpClient.GetAsync(uri);
-            if (response.IsSuccessStatusCode)
-            {
-                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.GetAsync));
-            }
-
-            throw new HttpRequestException("something happen making get request");
         }
     }
 }
