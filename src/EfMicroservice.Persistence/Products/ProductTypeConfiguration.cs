@@ -17,7 +17,7 @@ namespace EfMicroservice.Persistence.Products
 
             builder.Property(x => x.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(256);
 
             builder.Property(x => x.Price)
                 .IsRequired();

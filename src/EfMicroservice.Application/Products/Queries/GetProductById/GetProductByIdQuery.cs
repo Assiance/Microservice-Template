@@ -1,7 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using EfMicroservice.Application.Products.Mappings;
+﻿using EfMicroservice.Application.Products.Mappings;
 using EfMicroservice.Application.Shared.Repositories;
+using EfMicroservice.Common.ExceptionHandling.Exceptions;
+using System;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Application.Products.Queries.GetProductById
 {
@@ -19,6 +20,11 @@ namespace EfMicroservice.Application.Products.Queries.GetProductById
         public async Task<ProductModel> ExecuteAsync(Guid productId)
         {
             var product = await _unitOfWork.Products.FindAsync(productId);
+            if (product == null)
+            {
+                throw new NotFoundException(nameof(product));
+            }
+
             return _productMapper.Map(product);
         }
     }
