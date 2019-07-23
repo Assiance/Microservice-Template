@@ -42,7 +42,9 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
-            var downstreamRequest = await _haubService.Get();
+            //var downstreamRequest = await _haubService.Get();
+            //var downstreamRequest = await _haubService.SendAsyncDoesGet();
+            var downstreamRequest = await _haubService.SendAsyncDoesPost();
             _logger.LogError("Logging Things!!!");
 
             // throw new BadRequestException("WRONG");

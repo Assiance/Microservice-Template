@@ -92,7 +92,22 @@ namespace EfMicroservice.Common.Http
             _logger.LogInformation($"HttpClient Put request MessageError: {responseErrorMessage}");
             throw new HttpRequestException(responseErrorMessage);
         }
+        public async Task<TResult> SendAsync<TResult>(HttpRequestMessage request)
+        {
+            if (request == null)
+            {
+                throw new HttpRequestException("HttpRequestMessage not provided");
+            }
+            var response = await _httpClient.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.SendAsync));
+            }
 
+            var responseErrorMessage = await GetErrorMessage(response);
+            _logger.LogInformation($"HttpClient SendAsync request MessageError: {responseErrorMessage}");
+            throw new HttpRequestException(responseErrorMessage);
+        }
         public async Task<TResult> PostAsync<T, TResult>(T item, string url)
         {
             ValidateUrlString(url, UriKind.Relative);
