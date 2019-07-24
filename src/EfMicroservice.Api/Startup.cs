@@ -36,7 +36,6 @@ namespace EfMicroservice.Api
             {
                 { typeof(GitHaubClient), services => services.AddHttpClient<IGitHaubClient, GitHaubClient>() }
             };
-            //test
         }
 
         public IConfiguration Configuration { get; }
