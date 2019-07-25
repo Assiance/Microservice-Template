@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using EfMicroservice.Common.Api.Configuration.HttpClient;
+﻿using EfMicroservice.Common.Api.Configuration.HttpClient;
 using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using EfMicroservice.Common.Http.Client.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Common.Http
 {
@@ -28,60 +27,57 @@ namespace EfMicroservice.Common.Http
 
             _httpClient = httpClient;
             _logger = loggerFactory.CreateLogger<BaseHttpClient>();
-        
         }
-
-  
 
         public async Task<TResult> PutAsync<T, TResult>(T item, string url)
         {
             var uri = TryGetUri(url);
             var content = GetStringContent(item);
             var response = await _httpClient.PutAsync(uri, content);
+            var responseContent = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PutAsync));
+                return TryDeserializeObject<TResult>(responseContent, nameof(this.PutAsync));
             }
 
-            var responseErrorMessage = await GetErrorMessage(response);
-            _logger.LogError($"HttpClient Put request MessageError: {responseErrorMessage}");
-            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase, response.Content.ToString());
+            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase,
+                responseContent);
         }
+
         public async Task<TResult> SendAsync<TResult>(HttpRequestMessage request)
         {
             if (request == null)
             {
-                throw new HttpRequestException("HttpRequestMessage not provided");
+                throw new ArgumentNullException(nameof(HttpResponseMessage));
             }
+
             var response = await _httpClient.SendAsync(request);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
             if (response.IsSuccessStatusCode)
             {
-                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.SendAsync));
+                return TryDeserializeObject<TResult>(responseContent, nameof(this.SendAsync));
             }
 
-            var responseErrorMessage = await GetErrorMessage(response);
-            _logger.LogError($"HttpClient SendAsync request MessageError: {responseErrorMessage}");
-            throw new HttpCallException(request.RequestUri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase, response.Content.ToString());
+            throw new HttpCallException(request.RequestUri, response.RequestMessage.Method, response.StatusCode,
+                response.ReasonPhrase, responseContent);
         }
-
-    
 
         public async Task<TResult> PostAsync<T, TResult>(T item, string url)
         {
             var uri = TryGetUri(url);
             var content = GetStringContent(item);
             var response = await _httpClient.PostAsync(uri, content);
+            var responseContent = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PostAsync));
+                return TryDeserializeObject<TResult>(responseContent, nameof(this.PostAsync));
             }
 
-            var responseErrorMessage = await GetErrorMessage(response);
-
-            _logger.LogError($"HttpClient Post request MessageError: {responseErrorMessage}");
-            throw new HttpRequestException(responseErrorMessage);
+            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase,
+                responseContent);
         }
 
         public async Task<TResult> PatchAsync<T, TResult>(T item, string url)
@@ -89,27 +85,30 @@ namespace EfMicroservice.Common.Http
             var uri = TryGetUri(url);
             var content = GetStringContent(item);
             var response = await _httpClient.PatchAsync(uri, content);
-            var responseContent =await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
+
             if (response.IsSuccessStatusCode)
             {
-                return DeserializeObject<TResult>(responseContent, nameof(this.PutAsync));
+                return TryDeserializeObject<TResult>(responseContent, nameof(this.PutAsync));
             }
 
-            var responseErrorMessage = await GetErrorMessage(response);
-            _logger.LogError($"HttpClient Patch request MessageError: {responseErrorMessage}");
-            throw new HttpCallException(uri,response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase, responseContent);
+            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase,
+                responseContent);
         }
 
         public async Task<TResult> GetAsync<TResult>(string url)
         {
-            ValidateUrlString(url, UriKind.Relative);
-            var uri = new Uri(url, UriKind.Relative);
+            var uri = TryGetUri(url);
             var response = await _httpClient.GetAsync(uri);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
             if (response.IsSuccessStatusCode)
             {
-                return DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.GetAsync));
+                return TryDeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.GetAsync));
             }
-            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase, response.Content.ToString());
+
+            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase,
+                responseContent);
         }
 
         private StringContent GetStringContent<T>(T item)
@@ -119,13 +118,6 @@ namespace EfMicroservice.Common.Http
             var content = new StringContent(json, Encoding.UTF8, MediaType);
             return content;
         }
-        private void ValidateUrlString(string url, UriKind uriKind)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-                throw new ArgumentNullException(nameof(url));
-            if (!Uri.IsWellFormedUriString(url, uriKind))
-                throw new ArgumentException("URI is not well formed.", nameof(url));
-        }
 
         private Uri TryGetUri(string url)
         {
@@ -134,8 +126,15 @@ namespace EfMicroservice.Common.Http
             return uri;
         }
 
+        private void ValidateUrlString(string url, UriKind uriKind)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                throw new ArgumentNullException(nameof(url));
+            if (!Uri.IsWellFormedUriString(url, uriKind))
+                throw new ArgumentException("URI is not well formed.", nameof(url));
+        }
 
-        private T DeserializeObject<T>(string jsonObject, string methodName)
+        private T TryDeserializeObject<T>(string jsonObject, string methodName)
         {
             try
             {
@@ -143,31 +142,8 @@ namespace EfMicroservice.Common.Http
             }
             catch (JsonSerializationException e)
             {
-                _logger.LogWarning($"HttpClient {methodName} request response deserialization error {e.Message}");
-                return default(T);
+                throw new ArgumentException($"HttpClient {methodName} request response deserialization error {e.Message}");
             }
-        }
-
-        private async Task<string> GetErrorMessage(HttpResponseMessage response)
-        {
-            var errorResult = await response.Content.ReadAsStringAsync();
-            var type = response.Content.Headers.ContentType;
-            string responseErrorMessage;
-            if (type.MediaType == MediaType)
-            {
-                IDictionary<string, JToken> data = (JObject)JsonConvert.DeserializeObject(errorResult);
-                var jsonErrorMessageExist = data.TryGetValue("message", out JToken jsonErrorResult);
-                responseErrorMessage = jsonErrorMessageExist
-                    ? jsonErrorResult.ToString(Formatting.None)
-                    : response.ReasonPhrase;
-
-            }
-            else
-            {
-                responseErrorMessage = errorResult;
-            }
-
-            return responseErrorMessage;
         }
     }
 }
