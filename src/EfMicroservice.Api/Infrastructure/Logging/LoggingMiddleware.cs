@@ -65,7 +65,7 @@ namespace EfMicroservice.Api.Infrastructure.Logging
                 MachineName = Environment.MachineName,
                 ClientIP = httpContext.Connection.RemoteIpAddress,
                 RequestId = Guid.NewGuid(),
-                CorrelationId = correlationIdProvider.EnsureCorrelationIdPresent(httpContext.Request)
+                CorrelationId = correlationIdProvider.EnsureCorrelationIdPresent()
             });
         }
 

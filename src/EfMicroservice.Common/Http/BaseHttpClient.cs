@@ -1,5 +1,4 @@
 ﻿using EfMicroservice.Common.Api.Configuration.HttpClient;
-using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using EfMicroservice.Common.Http.Client.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,6 +7,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,17 +16,30 @@ namespace EfMicroservice.Common.Http
     public abstract class BaseHttpClient : IBaseHttpClient
     {
         protected readonly HttpClient _httpClient;
+        protected readonly ILogger _logger;
         private const string MediaType = "application/json";
-        private readonly ILogger _logger;
 
         public BaseHttpClient(Type childType, HttpClient httpClient, IOptions<List<HttpClientPolicy>> clientPolicies,
-            ILoggerFactory loggerFactory)
+            ILogger logger)
         {
             var client = clientPolicies.Value.GetClient(childType);
-            httpClient.BaseAddress = new Uri(client.Url);
+            httpClient.BaseAddress = new Uri(client.BaseUrl);
+            httpClient.DefaultRequestHeaders
+                .Accept
+                .Add(new MediaTypeWithQualityHeaderValue(MediaType));
 
             _httpClient = httpClient;
-            _logger = loggerFactory.CreateLogger<BaseHttpClient>();
+            _logger = logger;
+        }
+
+        public BaseHttpClient(HttpClient httpClient, ILogger logger)
+        {
+            httpClient.DefaultRequestHeaders
+                .Accept
+                .Add(new MediaTypeWithQualityHeaderValue(MediaType));
+
+            _httpClient = httpClient;
+            _logger = logger;
         }
 
         public async Task<TResult> PutAsync<T, TResult>(T item, string url)
@@ -34,15 +47,8 @@ namespace EfMicroservice.Common.Http
             var uri = TryGetUri(url);
             var content = GetStringContent(item);
             var response = await _httpClient.PutAsync(uri, content);
-            var responseContent = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-            {
-                return TryDeserializeObject<TResult>(responseContent, nameof(this.PutAsync));
-            }
-
-            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase,
-                responseContent);
+            return TryDeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PutAsync));
         }
 
         public async Task<TResult> SendAsync<TResult>(HttpRequestMessage request)
@@ -53,15 +59,8 @@ namespace EfMicroservice.Common.Http
             }
 
             var response = await _httpClient.SendAsync(request);
-            var responseContent = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-            {
-                return TryDeserializeObject<TResult>(responseContent, nameof(this.SendAsync));
-            }
-
-            throw new HttpCallException(request.RequestUri, response.RequestMessage.Method, response.StatusCode,
-                response.ReasonPhrase, responseContent);
+            return TryDeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.SendAsync));
         }
 
         public async Task<TResult> PostAsync<T, TResult>(T item, string url)
@@ -69,15 +68,8 @@ namespace EfMicroservice.Common.Http
             var uri = TryGetUri(url);
             var content = GetStringContent(item);
             var response = await _httpClient.PostAsync(uri, content);
-            var responseContent = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-            {
-                return TryDeserializeObject<TResult>(responseContent, nameof(this.PostAsync));
-            }
-
-            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase,
-                responseContent);
+            return TryDeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PostAsync));
         }
 
         public async Task<TResult> PatchAsync<T, TResult>(T item, string url)
@@ -85,30 +77,16 @@ namespace EfMicroservice.Common.Http
             var uri = TryGetUri(url);
             var content = GetStringContent(item);
             var response = await _httpClient.PatchAsync(uri, content);
-            var responseContent = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-            {
-                return TryDeserializeObject<TResult>(responseContent, nameof(this.PutAsync));
-            }
-
-            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase,
-                responseContent);
+            return TryDeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.PutAsync));
         }
 
         public async Task<TResult> GetAsync<TResult>(string url)
         {
             var uri = TryGetUri(url);
             var response = await _httpClient.GetAsync(uri);
-            var responseContent = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-            {
-                return TryDeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.GetAsync));
-            }
-
-            throw new HttpCallException(uri, response.RequestMessage.Method, response.StatusCode, response.ReasonPhrase,
-                responseContent);
+            return TryDeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result, nameof(this.GetAsync));
         }
 
         private StringContent GetStringContent<T>(T item)

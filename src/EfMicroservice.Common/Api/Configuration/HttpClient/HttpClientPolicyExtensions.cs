@@ -10,5 +10,10 @@ namespace EfMicroservice.Common.Api.Configuration.HttpClient
         {
             return httpClientPolicies.SelectMany(x => x.Clients).First(y => y.Namespace == clientClassType.FullName);
         }
+
+        public static ClientConfiguration GetClient(this List<HttpClientPolicy> httpClientPolicies, string baseUrl)
+        {
+            return httpClientPolicies.SelectMany(x => x.Clients).First(y => y.BaseUrl == baseUrl);
+        }
     }
 }

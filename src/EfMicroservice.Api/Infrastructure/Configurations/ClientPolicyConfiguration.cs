@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using EfMicroservice.Api.Infrastructure.Handlers;
 using EfMicroservice.Common.Api.Configuration.HttpClient;
+using EfMicroservice.Common.Http.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Bulkhead;
@@ -43,20 +45,25 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
                     var clientBuilder = clientDict[clientType](services);
 
                     clientBuilder.AddPolicyHandler(request =>
-                    {
-                        var method = request.Method;
-                        if (method == HttpMethod.Get)
                         {
-                            return timeout.WrapAsync(readRetry.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray())));
-                        }
+                            var method = request.Method;
+                            if (method == HttpMethod.Get)
+                            {
+                                return timeout.WrapAsync(
+                                    readRetry.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray())));
+                            }
 
-                        if (writeRetry != null && (method == HttpMethod.Put || method == HttpMethod.Delete))
-                        {
-                            return timeout.WrapAsync(writeRetry.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray())));
-                        }
+                            if (writeRetry != null && (method == HttpMethod.Put || method == HttpMethod.Delete))
+                            {
+                                return timeout.WrapAsync(
+                                    writeRetry.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray())));
+                            }
 
-                        return timeout.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray()));
-                    });
+                            return timeout.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray()));
+                        })
+                        .AddHttpMessageHandler<AppendHeadersHandler>()
+                        .AddHttpMessageHandler<UnsuccessfulResponseHandler>()
+                        .AddHttpMessageHandler<ReAuthHandler>();
                 }
             }
         }

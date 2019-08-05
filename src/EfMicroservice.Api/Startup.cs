@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using EfMicroservice.Api.Infrastructure.Configurations;
 using EfMicroservice.Api.Infrastructure.Exceptions;
 using EfMicroservice.Api.Infrastructure.Extensions;
@@ -7,6 +5,7 @@ using EfMicroservice.Application;
 using EfMicroservice.Common;
 using EfMicroservice.Common.Api.Configuration.Authentication;
 using EfMicroservice.Common.Api.Configuration.HttpClient;
+using EfMicroservice.Common.Http.Handlers;
 using EfMicroservice.Domain;
 using EfMicroservice.ExternalData;
 using EfMicroservice.ExternalData.Clients;
@@ -15,12 +14,18 @@ using EfMicroservice.Persistence;
 using EfMicroservice.Persistence.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using EfMicroservice.Api.Infrastructure.Handlers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace EfMicroservice.Api
 {
@@ -43,12 +48,21 @@ namespace EfMicroservice.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddVersionedApiExplorer(o => { 
+            services.AddVersionedApiExplorer(o =>
+            {
                 o.GroupNameFormat = "'v'VVV";
                 o.SubstituteApiVersionInUrl = true;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(x =>
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
+
+                    x.Filters.Add(new AuthorizeFilter(policy));
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             var authConfig = Configuration.GetSection("Authentication").Get<JwtConfiguration>();
             services.AddJwtAuthentication(authConfig);
@@ -70,15 +84,20 @@ namespace EfMicroservice.Api
             services.RegisterExternalDataDependencies();
 
             // Register Transient Dependencies
+            services.AddTransient<AppendHeadersHandler>();
+            services.AddTransient<ReAuthHandler>();
+            services.AddTransient<UnsuccessfulResponseHandler>();
             // Register Singleton Dependencies
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IErrorResultConverter, ErrorResultConverter>();
-            
+
             var httpClientPoliciesSection = Configuration.GetSection("HttpClientPolicies");
             services.Configure<List<HttpClientPolicy>>(httpClientPoliciesSection);
 
             var policies = httpClientPoliciesSection.Get<List<HttpClientPolicy>>();
             services.RegisterClients(policies, _clients);
 
+            services.AddAccessTokenProvider();
             services.AddApiVersioning();
             services.AddSwagger();
         }
