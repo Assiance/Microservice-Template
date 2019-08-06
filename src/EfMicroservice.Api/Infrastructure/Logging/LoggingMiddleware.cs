@@ -14,7 +14,8 @@ namespace EfMicroservice.Api.Infrastructure.Logging
 {
     public class LoggingMiddleware
     {
-        private static readonly HashSet<string> HeaderWhitelist = new HashSet<string> { "Content-Type", "Content-Length", "User-Agent" };
+        private static readonly HashSet<string> HeaderWhitelist = new HashSet<string>
+            {"Content-Type", "Content-Length", "User-Agent"};
 
         static readonly ILogger Log = Serilog.Log.ForContext<LoggingMiddleware>();
 
@@ -52,9 +53,9 @@ namespace EfMicroservice.Api.Infrastructure.Logging
                 var requestFinishingLog = GenerateRequestFinishingLogMessage(httpContext, elapsedMs);
                 log.Write(level, requestFinishingLog);
             }
-            catch (Exception ex) when (LogException(httpContext, GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()), ex))
+            catch (Exception ex) when (LogException(httpContext,
+                GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()), ex))
             {
-
             }
         }
 
@@ -90,7 +91,8 @@ namespace EfMicroservice.Api.Infrastructure.Logging
                 });
         }
 
-        private static string GenerateRequestFinishingLogMessage(HttpContext httpContext, double elapsed, int? statusCode = null)
+        private static string GenerateRequestFinishingLogMessage(HttpContext httpContext, double elapsed,
+            int? statusCode = null)
         {
             var request = httpContext.Request;
             var response = httpContext.Response;
@@ -143,7 +145,7 @@ namespace EfMicroservice.Api.Infrastructure.Logging
 
         private static double GetElapsedMilliseconds(long start, long stop)
         {
-            return (stop - start) * 1000 / (double)Stopwatch.Frequency;
+            return (stop - start) * 1000 / (double) Stopwatch.Frequency;
         }
     }
 }

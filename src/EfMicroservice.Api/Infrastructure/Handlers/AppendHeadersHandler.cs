@@ -23,7 +23,8 @@ namespace EfMicroservice.Api.Infrastructure.Handlers
             _logger = loggerFactory.CreateLogger<AppendHeadersHandler>();
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
             AddCorrelationIdToRequestHeader(request);
             await AddAuthorizationRequestHeaderAsync(request);
@@ -35,7 +36,8 @@ namespace EfMicroservice.Api.Infrastructure.Handlers
 
         private void AddCorrelationIdToRequestHeader(HttpRequestMessage request)
         {
-            _httpContextAccessor?.HttpContext?.Request?.Headers.TryGetValue(KnownHttpHeaders.CorrelationId, out StringValues values);
+            _httpContextAccessor?.HttpContext?.Request?.Headers.TryGetValue(KnownHttpHeaders.CorrelationId,
+                out StringValues values);
             var correlationId = values.FirstOrDefault();
 
             if (string.IsNullOrEmpty(correlationId))

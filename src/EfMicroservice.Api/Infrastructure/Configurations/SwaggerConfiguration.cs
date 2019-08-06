@@ -16,29 +16,31 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
 
                     foreach (var description in provider.ApiVersionDescriptions)
                     {
-                        options.SwaggerDoc( description.GroupName, CreateInfoForApiVersion( description ) );
+                        options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
                     }
                 });
 
             return services;
         }
 
-        public static IApplicationBuilder UseSwaggerUIDocs(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)
+        public static IApplicationBuilder UseSwaggerUIDocs(this IApplicationBuilder app,
+            IApiVersionDescriptionProvider provider)
         {
             app.UseSwaggerUI(
                 options =>
                 {
                     options.RoutePrefix = "docs";
-                    foreach ( var description in provider.ApiVersionDescriptions )
+                    foreach (var description in provider.ApiVersionDescriptions)
                     {
-                        options.SwaggerEndpoint( $"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant() );
+                        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                            description.GroupName.ToUpperInvariant());
                     }
                 });
 
-                return app;
+            return app;
         }
 
-        static Info CreateInfoForApiVersion( ApiVersionDescription description )
+        static Info CreateInfoForApiVersion(ApiVersionDescription description)
         {
             var info = new Info()
             {
@@ -47,7 +49,7 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
                 Description = "A sample microservice api.",
             };
 
-            if ( description.IsDeprecated )
+            if (description.IsDeprecated)
             {
                 info.Description += " This API version has been deprecated.";
             }

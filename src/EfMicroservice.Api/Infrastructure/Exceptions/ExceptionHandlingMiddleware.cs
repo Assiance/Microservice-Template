@@ -16,7 +16,8 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
         private readonly IErrorResultConverter _errorResultConverter;
         private readonly RequestDelegate _next;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IErrorResultConverter errorResultConverter)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory,
+            IErrorResultConverter errorResultConverter)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _logger = loggerFactory.CreateLogger<ExceptionHandlingMiddleware>();
@@ -37,31 +38,32 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             catch (BaseException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int)ex.HttpCode, errorResult);
+                await WriteErrorAsync(httpContext, ex, (int) ex.HttpCode, errorResult);
             }
             catch (ValidationException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.BadRequest, errorResult);
+                await WriteErrorAsync(httpContext, ex, (int) HttpStatusCode.BadRequest, errorResult);
             }
             catch (FluentValidation.ValidationException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.InternalServerError, errorResult);
+                await WriteErrorAsync(httpContext, ex, (int) HttpStatusCode.InternalServerError, errorResult);
             }
             catch (HttpCallException exception)
             {
                 var errorResult = _errorResultConverter.GetError(exception);
-                await WriteErrorAsync(httpContext, exception, (int)exception.StatusCode, errorResult);
+                await WriteErrorAsync(httpContext, exception, (int) exception.StatusCode, errorResult);
             }
             catch (Exception ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.InternalServerError, errorResult);
+                await WriteErrorAsync(httpContext, ex, (int) HttpStatusCode.InternalServerError, errorResult);
             }
         }
 
-        private Task WriteErrorAsync(HttpContext context, Exception exception, int httpStatusCode, ErrorResult errorResult, LogLevel logLevel = LogLevel.Error)
+        private Task WriteErrorAsync(HttpContext context, Exception exception, int httpStatusCode,
+            ErrorResult errorResult, LogLevel logLevel = LogLevel.Error)
         {
             context.Response.StatusCode = httpStatusCode;
             var payloadContent = JsonConvert.SerializeObject(errorResult, JsonSettings);
@@ -72,6 +74,7 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             return context.Response.WriteAsync(payloadContent);
         }
 
-        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
+            {ContractResolver = new CamelCasePropertyNamesContractResolver()};
     }
 }

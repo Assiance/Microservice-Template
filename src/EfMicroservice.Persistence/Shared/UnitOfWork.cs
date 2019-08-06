@@ -28,18 +28,12 @@ namespace EfMicroservice.Persistence.Shared
 
         public IProductRepository Products
         {
-            get
-            {
-                return _productRepository = _productRepository ?? new ProductRepository(_dbContext, _loggerFactory);
-            }
+            get { return _productRepository = _productRepository ?? new ProductRepository(_dbContext, _loggerFactory); }
         }
 
         public IOrderRepository Orders
         {
-            get
-            {
-                return _orderRepository = _orderRepository ?? new OrderRepository(_dbContext, _loggerFactory);
-            }
+            get { return _orderRepository = _orderRepository ?? new OrderRepository(_dbContext, _loggerFactory); }
         }
 
         public async Task SaveAsync()

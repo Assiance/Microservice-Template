@@ -7,7 +7,8 @@ namespace EfMicroservice.Common.DI
 {
     public static class AutoRegistrationHelper
     {
-        public static IServiceCollection RegisterAssemblyPublicNonGenericClasses(this IServiceCollection services, params Assembly[] assemblies)
+        public static IServiceCollection RegisterAssemblyPublicNonGenericClasses(this IServiceCollection services,
+            params Assembly[] assemblies)
         {
             var allPublicTypes = assemblies.SelectMany(x => x.GetExportedTypes()
                 .Where(y => y.IsClass && !y.IsAbstract && !y.IsGenericType && !y.IsNested));

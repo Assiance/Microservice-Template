@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EfMicroservice.Api.Orders.Models;
 using EfMicroservice.Application.Orders.Commands.PlaceOrder;
+using EfMicroservice.Application.Orders.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -24,8 +25,8 @@ namespace EfMicroservice.Api.Orders.Controllers.V1
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(string), 201)]
-        public async Task<IActionResult> Post([FromBody] CreateOrderRequest request)
+        [ProducesResponseType(typeof(OrderModel), 201)]
+        public async Task<ActionResult<OrderModel>> Post([FromBody] CreateOrderRequest request)
         {
             var newProduct = new PlaceOrderModel()
             {
@@ -35,7 +36,7 @@ namespace EfMicroservice.Api.Orders.Controllers.V1
 
             var createdOrder = await _placeOrderCommand.ExecuteAsync(newProduct);
 
-            return CreatedAtRoute("GetValueById", new { id = createdOrder.Id }, createdOrder);
+            return CreatedAtRoute("GetValueById", new {id = createdOrder.Id}, createdOrder);
         }
     }
 }

@@ -13,7 +13,9 @@ namespace EfMicroservice.Api
         public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+            .AddJsonFile(
+                $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
+                optional: true)
             .AddEnvironmentVariables()
             .Build();
 
@@ -47,18 +49,12 @@ namespace EfMicroservice.Api
         public static IWebHost BuildWebHost(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                .UseKestrel(options =>
-                {
-                    options.AddServerHeader = false;
-                })
+                .UseKestrel(options => { options.AddServerHeader = false; })
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseSerilog()
                 .CaptureStartupErrors(true)
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.AddSerilog();
-                })
+                .ConfigureLogging((hostingContext, logging) => { logging.AddSerilog(); })
                 .UseStartup<Startup>()
                 .UseConfiguration(Configuration)
                 .UseSetting("detailedErrors", "true")

@@ -16,7 +16,8 @@ namespace EfMicroservice.Common.ExceptionHandling.Exceptions
 
         public string ResponseBody { get; }
 
-        public HttpCallException(Uri requestUri, HttpMethod requestMethod, HttpStatusCode statusCode, string reasonPhrase, string responseBody)
+        public HttpCallException(Uri requestUri, HttpMethod requestMethod, HttpStatusCode statusCode,
+            string reasonPhrase, string responseBody)
             : base(BuildMessage(requestUri, requestMethod, statusCode, reasonPhrase))
         {
             RequestUri = requestUri;
@@ -27,9 +28,10 @@ namespace EfMicroservice.Common.ExceptionHandling.Exceptions
             Data["ResponseBody"] = responseBody;
         }
 
-        private static string BuildMessage(Uri requestUri, HttpMethod requestMethod, HttpStatusCode statusCode, string reasonPhrase)
+        private static string BuildMessage(Uri requestUri, HttpMethod requestMethod, HttpStatusCode statusCode,
+            string reasonPhrase)
         {
-            return $"Request {requestMethod} {requestUri} failed with {(int)statusCode} {reasonPhrase}";
+            return $"Request {requestMethod} {requestUri} failed with {(int) statusCode} {reasonPhrase}";
         }
     }
 }

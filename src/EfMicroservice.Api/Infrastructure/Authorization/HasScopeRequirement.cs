@@ -7,6 +7,7 @@ namespace EfMicroservice.Api.Infrastructure.Authorization
     {
         public string Issuer { get; }
         public string Scope { get; }
+
         public HasScopeRequirement(string scope, string issuer)
         {
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));

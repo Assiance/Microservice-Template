@@ -60,7 +60,8 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
                 StackTrace = exception.StackTrace
             };
 
-            var error = new Error(DefaultInstance, ErrorCode.System.ToString(), "Request Model Validation Failed", details);
+            var error = new Error(DefaultInstance, ErrorCode.System.ToString(), "Request Model Validation Failed",
+                details);
             return new ErrorResult(error);
         }
 
