@@ -8,16 +8,18 @@ namespace EfMicroservice.Common.Http.CorrelationId
 {
     public class CorrelationIdProvider : ICorrelationIdProvider
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger _logger;
 
-        public CorrelationIdProvider(ILoggerFactory loggerFactory)
+        public CorrelationIdProvider(IHttpContextAccessor httpContextAccessor, ILoggerFactory loggerFactory)
         {
+            _httpContextAccessor = httpContextAccessor;
             _logger = loggerFactory.CreateLogger(nameof(CorrelationIdProvider));
         }
 
-        public string EnsureCorrelationIdPresent(HttpRequest request)
+        public string EnsureCorrelationIdPresent()
         {
-            request.Headers.TryGetValue(KnownHttpHeaders.CorrelationId, out StringValues values);
+            _httpContextAccessor?.HttpContext?.Request?.Headers.TryGetValue(KnownHttpHeaders.CorrelationId, out StringValues values);
             var correlationId = values.FirstOrDefault();
 
             if (string.IsNullOrEmpty(correlationId))

@@ -4,6 +4,6 @@ namespace EfMicroservice.Common.Http.CorrelationId
 {
     public interface ICorrelationIdProvider
     {
-        string EnsureCorrelationIdPresent(HttpRequest request);
+        string EnsureCorrelationIdPresent();
     }
 }

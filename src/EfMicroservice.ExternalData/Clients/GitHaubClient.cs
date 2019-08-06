@@ -16,10 +16,8 @@ namespace EfMicroservice.ExternalData.Clients
 {
     public class GitHaubClient : BaseHttpClient, IGitHaubClient
     {
-        private readonly ILogger _logger;
-
         public GitHaubClient(HttpClient httpClient, IOptions<List<HttpClientPolicy>> clientPolicies, ILoggerFactory loggerFactory)
-            : base(typeof(GitHaubClient), httpClient, clientPolicies, loggerFactory)
+            : base(typeof(GitHaubClient), httpClient, clientPolicies, loggerFactory.CreateLogger<GitHaubClient>())
         {
         
         }
