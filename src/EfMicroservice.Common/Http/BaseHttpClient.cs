@@ -92,7 +92,7 @@ namespace EfMicroservice.Common.Http
         private StringContent GetStringContent<T>(T item)
         {
             var json = JsonConvert.SerializeObject(item,
-                new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
             var content = new StringContent(json, Encoding.UTF8, MediaType);
             return content;
         }
@@ -120,9 +120,9 @@ namespace EfMicroservice.Common.Http
             }
             catch (JsonSerializationException e)
             {
-                throw new ArgumentException($"HttpClient {methodName} request response deserialization error {e.Message}");
+                throw new ArgumentException(
+                    $"HttpClient {methodName} request response deserialization error {e.Message}");
             }
         }
     }
 }
-

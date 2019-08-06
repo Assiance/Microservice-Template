@@ -13,7 +13,7 @@ namespace EfMicroservice.Common.ExceptionHandling
 
         public ErrorHttpCodeAttribute(int code)
         {
-            Code = (HttpStatusCode)code;
+            Code = (HttpStatusCode) code;
         }
 
         public HttpStatusCode Code { get; set; }

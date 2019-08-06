@@ -13,18 +13,21 @@ namespace EfMicroservice.Common.Authentication
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AccessTokenProvider(IHttpContextAccessor httpContextAccessor, HttpClient httpClient, ILoggerFactory loggerFactory) : base(httpClient, loggerFactory.CreateLogger<AccessTokenProvider>())
+        public AccessTokenProvider(IHttpContextAccessor httpContextAccessor, HttpClient httpClient,
+            ILoggerFactory loggerFactory) : base(httpClient, loggerFactory.CreateLogger<AccessTokenProvider>())
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<string> RefreshAccessTokenAsync(string tokenEndpointUrl, string clientId, string clientSecret)
         {
-            var refreshToken = _httpContextAccessor.HttpContext.Request.Headers[KnownHttpHeaders.RefreshToken].FirstOrDefault();
+            var refreshToken = _httpContextAccessor.HttpContext.Request.Headers[KnownHttpHeaders.RefreshToken]
+                .FirstOrDefault();
             return await RefreshAccessTokenAsync(tokenEndpointUrl, clientId, clientSecret, refreshToken);
         }
 
-        public async Task<string> RefreshAccessTokenAsync(string tokenEndpointUrl, string clientId, string clientSecret, string refreshToken)
+        public async Task<string> RefreshAccessTokenAsync(string tokenEndpointUrl, string clientId, string clientSecret,
+            string refreshToken)
         {
             var body = new Dictionary<string, string>();
             body.Add("grant_type", "refresh_token");

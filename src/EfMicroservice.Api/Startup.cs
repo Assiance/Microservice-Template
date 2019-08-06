@@ -39,7 +39,7 @@ namespace EfMicroservice.Api
 
             _clients = new Dictionary<Type, Func<IServiceCollection, IHttpClientBuilder>>
             {
-                { typeof(GitHaubClient), services => services.AddHttpClient<IGitHaubClient, GitHaubClient>() }
+                {typeof(GitHaubClient), services => services.AddHttpClient<IGitHaubClient, GitHaubClient>()}
             };
         }
 
@@ -103,7 +103,8 @@ namespace EfMicroservice.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {

@@ -19,13 +19,15 @@ namespace EfMicroservice.Common.Http.CorrelationId
 
         public string EnsureCorrelationIdPresent()
         {
-            _httpContextAccessor?.HttpContext?.Request?.Headers.TryGetValue(KnownHttpHeaders.CorrelationId, out StringValues values);
+            _httpContextAccessor?.HttpContext?.Request?.Headers.TryGetValue(KnownHttpHeaders.CorrelationId,
+                out StringValues values);
             var correlationId = values.FirstOrDefault();
 
             if (string.IsNullOrEmpty(correlationId))
             {
                 correlationId = Guid.NewGuid().ToString();
-                _logger.LogInformation($"{KnownHttpHeaders.CorrelationId} header is not set. New CorrelationId is generated {correlationId}");
+                _logger.LogInformation(
+                    $"{KnownHttpHeaders.CorrelationId} header is not set. New CorrelationId is generated {correlationId}");
             }
 
             return correlationId;

@@ -21,7 +21,8 @@ namespace EfMicroservice.Common.Http.Handlers
             _clientPolicies = clientPolicies;
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
             var response = await base.SendAsync(request, cancellationToken);
 
@@ -30,7 +31,8 @@ namespace EfMicroservice.Common.Http.Handlers
                 var requestUri = request.RequestUri;
                 var client = _clientPolicies.Value.GetClient($"{requestUri.Scheme}://{requestUri.Authority}");
 
-                var accessToken = await _accessTokenProvider.RefreshAccessTokenAsync(client.TokenEndpointUrl, client.ClientId, client.ClientSecret);
+                var accessToken = await _accessTokenProvider.RefreshAccessTokenAsync(client.TokenEndpointUrl,
+                    client.ClientId, client.ClientSecret);
 
                 if (accessToken != null)
                 {

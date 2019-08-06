@@ -12,7 +12,7 @@ namespace EfMicroservice.Common.Persistence.Repositories
 {
     public abstract class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
         where TEntity : BaseEntity<TKey>
-        where TKey : struct 
+        where TKey : struct
     {
         private readonly DbContext _dbContext;
 
@@ -78,7 +78,8 @@ namespace EfMicroservice.Common.Persistence.Repositories
             _dbContext.Set<TEntity>().Remove(retrievedProduct);
         }
 
-        public IIncludableQueryable<TEntity, TProperty> Include<TProperty>(Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty: class
+        public IIncludableQueryable<TEntity, TProperty> Include<TProperty>(
+            Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty : class
         {
             return _dbContext.Set<TEntity>().Include(navigationPropertyPath);
         }

@@ -35,7 +35,6 @@ namespace EfMicroservice.Api.HealthCheck.Controllers
         [Authorize(Permissions.ReadMessages)]
         [HttpGet("private", Name = "privateTest")]
         [ProducesResponseType(200)]
-
         public IActionResult GetPrivate()
         {
             var health = new

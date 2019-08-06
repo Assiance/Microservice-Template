@@ -17,13 +17,13 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
 {
     public static class AuthenticationConfiguration
     {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, JwtConfiguration authConfig)
+        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services,
+            JwtConfiguration authConfig)
         {
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
             }).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -39,7 +39,7 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
 
         public static IServiceCollection AddAccessTokenProvider(this IServiceCollection services)
         {
-            var intervals = new List<int>() { 100, 500 };
+            var intervals = new List<int>() {100, 500};
             var readTimes = intervals.Select(ms => TimeSpan.FromMilliseconds(ms));
 
             services.AddHttpClient<IAccessTokenProvider, AccessTokenProvider>()

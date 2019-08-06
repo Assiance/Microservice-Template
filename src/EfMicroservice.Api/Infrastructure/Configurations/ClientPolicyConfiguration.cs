@@ -20,7 +20,8 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
 {
     public static class ClientPolicyConfiguration
     {
-        public static void RegisterClients(this IServiceCollection services, List<HttpClientPolicy> policies, Dictionary<Type, Func<IServiceCollection, IHttpClientBuilder>> clientDict)
+        public static void RegisterClients(this IServiceCollection services, List<HttpClientPolicy> policies,
+            Dictionary<Type, Func<IServiceCollection, IHttpClientBuilder>> clientDict)
         {
             var dataAssembly = Assembly.Load("EfMicroservice.ExternalData"); //Todo: EF
 
@@ -67,6 +68,7 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
                 }
             }
         }
+
         private static AsyncBulkheadPolicy<HttpResponseMessage> ConfigureBulkheadPolicy(HttpClientPolicy policy)
         {
             AsyncBulkheadPolicy<HttpResponseMessage> bulkhead = null;
@@ -76,14 +78,16 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
                     policy.Bulkhead.MaxQueuingActions,
                     async (context) =>
                     {
-                        Log.Logger.Warning($"{context.PolicyKey}: Bulkhead rejected. The client capacity has been exceeded.");
+                        Log.Logger.Warning(
+                            $"{context.PolicyKey}: Bulkhead rejected. The client capacity has been exceeded.");
                     });
             }
 
             return bulkhead;
         }
 
-        private static AsyncCircuitBreakerPolicy<HttpResponseMessage> ConfigureCircuitBreakerPolicy(HttpClientPolicy policy)
+        private static AsyncCircuitBreakerPolicy<HttpResponseMessage> ConfigureCircuitBreakerPolicy(
+            HttpClientPolicy policy)
         {
             AsyncCircuitBreakerPolicy<HttpResponseMessage> circuitBreaker = null;
             if (policy.CircuitBreaker != null)
@@ -94,11 +98,9 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
                         (result, timespan, context) =>
                         {
                             var request = result.Result.RequestMessage;
-                            Log.Logger.Warning($"{context.PolicyKey}: Breaking the circuit for {timespan.TotalSeconds} seconds. {request.Method} {request.RequestUri}");
-                        }, context =>
-                        {
-                            Log.Logger.Warning($"{context.PolicyKey}: Closing the circuit.");
-                        });
+                            Log.Logger.Warning(
+                                $"{context.PolicyKey}: Breaking the circuit for {timespan.TotalSeconds} seconds. {request.Method} {request.RequestUri}");
+                        }, context => { Log.Logger.Warning($"{context.PolicyKey}: Closing the circuit."); });
             }
 
             return circuitBreaker;
@@ -112,7 +114,8 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
                     : TimeSpan.FromMinutes(1),
                 async (context, timespan, task) =>
                 {
-                    Log.Logger.Warning($"{context.PolicyKey}: execution timed out after {timespan.TotalSeconds} seconds.");
+                    Log.Logger.Warning(
+                        $"{context.PolicyKey}: execution timed out after {timespan.TotalSeconds} seconds.");
                 });
 
             return timeout;
@@ -125,12 +128,15 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
             {
                 var writeTimes = policy.Retry?.Write?.IntervalsMs?.Select(ms => TimeSpan.FromMilliseconds(ms));
 
-                writeRetry = Policy.HandleResult<HttpResponseMessage>(response => policy.Retry.Write.HttpStatusCodes.Any(code => Enum.Parse<HttpStatusCode>(code) == response.StatusCode))
+                writeRetry = Policy.HandleResult<HttpResponseMessage>(response =>
+                        policy.Retry.Write.HttpStatusCodes.Any(code =>
+                            Enum.Parse<HttpStatusCode>(code) == response.StatusCode))
                     .WaitAndRetryAsync(writeTimes ?? new List<TimeSpan>(),
                         (result, timespan, retryCount, context) =>
                         {
                             var request = result.Result.RequestMessage;
-                            Log.Logger.Warning($"{context.PolicyKey}: (write) retry attempt {retryCount} starting after {timespan.TotalMilliseconds} milliseconds. {request.Method} {request.RequestUri}");
+                            Log.Logger.Warning(
+                                $"{context.PolicyKey}: (write) retry attempt {retryCount} starting after {timespan.TotalMilliseconds} milliseconds. {request.Method} {request.RequestUri}");
                         });
             }
 
@@ -139,15 +145,18 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
 
         private static AsyncRetryPolicy<HttpResponseMessage> ConfigureRetryReadPolicy(HttpClientPolicy policy)
         {
-            var intervals = policy.Retry?.Read?.IntervalsMs ?? new List<int>() { 100, 500 };
+            var intervals = policy.Retry?.Read?.IntervalsMs ?? new List<int>() {100, 500};
             var readTimes = intervals.Select(ms => TimeSpan.FromMilliseconds(ms));
 
-            var readRetry = Policy.HandleResult<HttpResponseMessage>(response => policy.Retry.Read.HttpStatusCodes.Any(code => Enum.Parse<HttpStatusCode>(code) == response.StatusCode))
+            var readRetry = Policy.HandleResult<HttpResponseMessage>(response =>
+                    policy.Retry.Read.HttpStatusCodes.Any(code =>
+                        Enum.Parse<HttpStatusCode>(code) == response.StatusCode))
                 .WaitAndRetryAsync(readTimes,
                     ((result, timespan, retryCount, context) =>
                     {
                         var request = result.Result.RequestMessage;
-                        Log.Logger.Warning($"{context.PolicyKey}: (read) retry attempt {retryCount} starting after {timespan.TotalMilliseconds} milliseconds. {request.Method} {request.RequestUri}");
+                        Log.Logger.Warning(
+                            $"{context.PolicyKey}: (read) retry attempt {retryCount} starting after {timespan.TotalMilliseconds} milliseconds. {request.Method} {request.RequestUri}");
                     }));
 
             return readRetry;

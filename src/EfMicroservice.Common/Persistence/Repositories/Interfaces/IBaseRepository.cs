@@ -15,6 +15,7 @@ namespace EfMicroservice.Common.Persistence.Repositories.Interfaces
 
         IIncludableQueryable<TEntity, TProperty> Include<TProperty>(
             Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty : class;
+
         Task<EntityEntry<TEntity>> AddAsync(TEntity entity);
         EntityEntry<TEntity> Add(TEntity entity);
         Task<TEntity> FindAsync(TKey id);

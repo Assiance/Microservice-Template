@@ -10,11 +10,13 @@ namespace EfMicroservice.Common.ExceptionHandling
         System,
 
         [ErrorHttpCode(HttpStatusCode.BadRequest)]
-        [Description("This error code is returned when argument passed is invalid. Details may return the argumentName that is invalid if set.")]
+        [Description(
+            "This error code is returned when argument passed is invalid. Details may return the argumentName that is invalid if set.")]
         InvalidArgumentException,
 
         [ErrorHttpCode(HttpStatusCode.BadRequest)]
-        [Description("This error code is returned when data passed fails modelstate validation. Details will return the errors with property information.")]
+        [Description(
+            "This error code is returned when data passed fails modelstate validation. Details will return the errors with property information.")]
         ValidationException,
 
         [ErrorHttpCode(HttpStatusCode.Conflict)]
@@ -22,7 +24,8 @@ namespace EfMicroservice.Common.ExceptionHandling
         ConcurrencyException,
 
         [ErrorHttpCode(HttpStatusCode.Conflict)]
-        [Description("This error code is returned when there is a duplicate key. Details may return the key that is found to be duplicate if set.")]
+        [Description(
+            "This error code is returned when there is a duplicate key. Details may return the key that is found to be duplicate if set.")]
         DuplicateKeyException,
 
         [ErrorHttpCode(HttpStatusCode.Forbidden)]

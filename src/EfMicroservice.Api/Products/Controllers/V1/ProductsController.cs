@@ -5,9 +5,11 @@ using EfMicroservice.Api.Products.Models;
 using EfMicroservice.Application.Products.Commands.CreateProduct;
 using EfMicroservice.Application.Products.Commands.DeleteProduct;
 using EfMicroservice.Application.Products.Commands.UpdateProduct;
+using EfMicroservice.Application.Products.Queries;
 using EfMicroservice.Application.Products.Queries.GetProductById;
 using EfMicroservice.Application.Products.Queries.GetProducts;
 using EfMicroservice.Common.ExceptionHandling.Exceptions;
+using EfMicroservice.Domain.Products;
 using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -39,21 +41,18 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
-        public async Task<ActionResult<IEnumerable<string>>> Get()
+        [ProducesResponseType(typeof(IEnumerable<ProductModel>), 200)]
+        public async Task<ActionResult<IEnumerable<ProductModel>>> Get()
         {
             var downstreamRequest = await _haubService.SendAsyncDoesPost();
-            _logger.LogError("Logging Things!!!");
-
-            // throw new BadRequestException("WRONG");
 
             return Ok(await _getProductsQuery.ExecuteAsync());
         }
 
         [HttpGet("{id}", Name = "GetValueById")]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(ProductModel), 200)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<string>> Get(Guid id)
+        public async Task<ActionResult<ProductModel>> Get(Guid id)
         {
             var product = await _getProductByIdQuery.ExecuteAsync(id);
 
@@ -67,7 +66,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
 
         [HttpPost]
         [ProducesResponseType(typeof(string), 201)]
-        public async Task<IActionResult> Post([FromBody] CreateProductRequest request)
+        public async Task<ActionResult<ProductModel>> Post([FromBody] CreateProductRequest request)
         {
             var newProduct = new CreateProductModel()
             {
