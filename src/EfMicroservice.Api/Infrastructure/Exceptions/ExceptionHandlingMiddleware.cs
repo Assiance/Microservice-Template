@@ -40,7 +40,7 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
                 var errorResult = _errorResultConverter.GetError(ex);
                 await WriteErrorAsync(httpContext, ex, (int) ex.HttpCode, errorResult);
             }
-            catch (ValidationException ex)
+            catch (System.ComponentModel.DataAnnotations.ValidationException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
                 await WriteErrorAsync(httpContext, ex, (int) HttpStatusCode.BadRequest, errorResult);

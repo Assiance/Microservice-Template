@@ -27,7 +27,7 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             return new ErrorResult(error);
         }
 
-        public ErrorResult GetError(ValidationException exception)
+        public ErrorResult GetError(System.ComponentModel.DataAnnotations.ValidationException exception)
         {
             dynamic details = new
             {

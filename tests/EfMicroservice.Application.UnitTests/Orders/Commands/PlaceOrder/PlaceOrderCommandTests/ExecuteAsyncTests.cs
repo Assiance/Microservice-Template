@@ -26,7 +26,7 @@ namespace EfMicroservice.Application.UnitTests.Orders.Commands.PlaceOrder.PlaceO
 
             //Act
             var sut = CreateSut();
-            var result = await Assert.ThrowsAsync<ValidationException>(() => sut.ExecuteAsync(placeOrder));
+            var result = await Assert.ThrowsAsync<FluentValidation.ValidationException>(() => sut.ExecuteAsync(placeOrder));
 
             //Assert
             Assert.Contains("'Quantity' must be greater than '0'", result.Message);

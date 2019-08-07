@@ -8,7 +8,7 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
     {
         ErrorResult GetError(BaseException exception);
 
-        ErrorResult GetError(ValidationException exception);
+        ErrorResult GetError(System.ComponentModel.DataAnnotations.ValidationException exception);
 
         ErrorResult GetError(FluentValidation.ValidationException exception);
 
