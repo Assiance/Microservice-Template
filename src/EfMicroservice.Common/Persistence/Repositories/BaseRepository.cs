@@ -58,24 +58,24 @@ namespace EfMicroservice.Common.Persistence.Repositories
 
         public virtual async Task RemoveAsync(TKey id)
         {
-            var retrievedProduct = await FindAsync(id);
-            if (retrievedProduct == null)
+            var retrievedEntity = await FindAsync(id);
+            if (retrievedEntity == null)
             {
                 throw new NotFoundException();
             }
 
-            _dbContext.Set<TEntity>().Remove(retrievedProduct);
+            _dbContext.Set<TEntity>().Remove(retrievedEntity);
         }
 
         public virtual void Remove(TKey id)
         {
-            var retrievedProduct = Find(id);
-            if (retrievedProduct == null)
+            var retrievedEntity = Find(id);
+            if (retrievedEntity == null)
             {
                 throw new NotFoundException();
             }
 
-            _dbContext.Set<TEntity>().Remove(retrievedProduct);
+            _dbContext.Set<TEntity>().Remove(retrievedEntity);
         }
 
         public IIncludableQueryable<TEntity, TProperty> Include<TProperty>(
