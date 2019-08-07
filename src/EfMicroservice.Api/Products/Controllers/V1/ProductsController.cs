@@ -29,7 +29,9 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         private readonly IGitHaubClient _haubService;
         private readonly ILogger _logger;
 
-        public ProductsController(IGetProductsQuery getProductsQuery, IGetProductByIdQuery getProductByIdQuery, ICreateProductCommand createProductCommand, IUpdateProductCommand updateProductCommand, IDeleteProductCommand deleteProductCommand, ILoggerFactory loggerFactory, IGitHaubClient haubService)
+        public ProductsController(IGetProductsQuery getProductsQuery, IGetProductByIdQuery getProductByIdQuery,
+            ICreateProductCommand createProductCommand, IUpdateProductCommand updateProductCommand,
+            IDeleteProductCommand deleteProductCommand, ILoggerFactory loggerFactory, IGitHaubClient haubService)
         {
             _getProductsQuery = getProductsQuery;
             _getProductByIdQuery = getProductByIdQuery;
