@@ -5,23 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20190712190702_Added_Orders.cs" />
-    <Compile Remove="Migrations\20190712190702_Added_Orders.Designer.cs" />
-    <Compile Remove="Migrations\20190712191446_Added_Orders.cs" />
-    <Compile Remove="Migrations\20190712191446_Added_Orders.Designer.cs" />
-    <Compile Remove="Migrations\20190712192742_Added_Orders.cs" />
-    <Compile Remove="Migrations\20190712192742_Added_Orders.Designer.cs" />
-    <Compile Remove="Migrations\20190715035248_test.cs" />
-    <Compile Remove="Migrations\20190715035248_test.Designer.cs" />
-    <Compile Remove="Migrations\20190715035454_Added_Orders.cs" />
-    <Compile Remove="Migrations\20190715035454_Added_Orders.Designer.cs" />
-    <Compile Remove="Migrations\20190715035613_Added_Orders.cs" />
-    <Compile Remove="Migrations\20190715035613_Added_Orders.Designer.cs" />
-    <Compile Remove="Migrations\20190715035642_Added_Orders.cs" />
-    <Compile Remove="Migrations\20190715035642_Added_Orders.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="8.3.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.0" />
   </ItemGroup>

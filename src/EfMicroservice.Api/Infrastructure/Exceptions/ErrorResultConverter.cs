@@ -85,7 +85,8 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             dynamic details = new
             {
                 ErrorMessage = exception.Message,
-                StackTrace = exception.StackTrace
+                StackTrace = exception.StackTrace,
+                InnerExceptionMessage = exception.InnerException?.Message
             };
 
             var error = new Error(DefaultInstance, ErrorCode.System.ToString(), exception.Message, details);
