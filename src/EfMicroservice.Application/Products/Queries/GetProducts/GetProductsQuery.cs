@@ -22,7 +22,7 @@ namespace EfMicroservice.Application.Products.Queries.GetProducts
 
         public async Task<IList<ProductModel>> ExecuteAsync()
         {
-            var products = await _unitOfWork.Products.Queryable.ToListAsync();
+            var products = await _unitOfWork.Products.GetAsync();
             return _productMapper.Map(products);
         }
     }

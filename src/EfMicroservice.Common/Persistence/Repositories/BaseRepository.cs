@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using EfMicroservice.Common.ExceptionHandling.Exceptions;
+﻿using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using EfMicroservice.Common.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Common.Persistence.Repositories
 {
@@ -21,7 +21,10 @@ namespace EfMicroservice.Common.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public IQueryable<TEntity> Queryable => _dbContext.Set<TEntity>().AsNoTracking();
+        public async Task<IList<TEntity>> GetAsync()
+        {
+            return await _dbContext.Set<TEntity>().AsNoTracking().ToListAsync();
+        }
 
         public virtual async Task<TEntity> FindAsync(TKey id)
         {

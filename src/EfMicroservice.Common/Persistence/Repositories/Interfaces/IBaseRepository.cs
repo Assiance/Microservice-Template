@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Query;
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace EfMicroservice.Common.Persistence.Repositories.Interfaces
 {
@@ -11,7 +11,7 @@ namespace EfMicroservice.Common.Persistence.Repositories.Interfaces
         where TEntity : BaseEntity<TKey>
         where TKey : struct
     {
-        IQueryable<TEntity> Queryable { get; }
+        Task<IList<TEntity>> GetAsync();
 
         IIncludableQueryable<TEntity, TProperty> Include<TProperty>(
             Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty : class;
