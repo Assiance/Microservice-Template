@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using EfMicroservice.Api.Products.Models;
+﻿using EfMicroservice.Api.Products.Models;
 using EfMicroservice.Application.Products.Commands.CreateProduct;
 using EfMicroservice.Application.Products.Commands.DeleteProduct;
 using EfMicroservice.Application.Products.Commands.UpdateProduct;
@@ -9,10 +6,12 @@ using EfMicroservice.Application.Products.Queries;
 using EfMicroservice.Application.Products.Queries.GetProductById;
 using EfMicroservice.Application.Products.Queries.GetProducts;
 using EfMicroservice.Common.ExceptionHandling.Exceptions;
-using EfMicroservice.Domain.Products;
 using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Api.Products.Controllers.V1
 {
@@ -51,10 +50,10 @@ namespace EfMicroservice.Api.Products.Controllers.V1
             return Ok(await _getProductsQuery.ExecuteAsync());
         }
 
-        [HttpGet("{id}", Name = "GetValueById")]
+        [HttpGet("{id}", Name = nameof(GetProductById))]
         [ProducesResponseType(typeof(ProductModel), 200)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<ProductModel>> Get(Guid id)
+        public async Task<ActionResult<ProductModel>> GetProductById(Guid id)
         {
             var product = await _getProductByIdQuery.ExecuteAsync(id);
 
@@ -79,7 +78,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
 
             var createdProduct = await _createProductCommand.ExecuteAsync(newProduct);
 
-            return CreatedAtRoute("GetValueById", new {id = createdProduct.Id}, createdProduct);
+            return CreatedAtRoute(nameof(GetProductById), new { id = createdProduct.Id }, createdProduct);
         }
 
         [HttpPut("{id}")]

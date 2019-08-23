@@ -36,16 +36,16 @@ namespace EfMicroservice.Common.Persistence.Repositories
             return _dbContext.Set<TEntity>().Find(id);
         }
 
-        public virtual async Task<EntityEntry<TEntity>> AddAsync(TEntity entity)
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
             var entityEntry = await _dbContext.Set<TEntity>().AddAsync(entity);
-            return entityEntry;
+            return entityEntry.Entity;
         }
 
-        public virtual EntityEntry<TEntity> Add(TEntity entity)
+        public virtual TEntity Add(TEntity entity)
         {
             var entityEntry = _dbContext.Set<TEntity>().Add(entity);
-            return entityEntry;
+            return entityEntry.Entity;
         }
 
         public virtual Task UpdateAsync(TEntity entity)

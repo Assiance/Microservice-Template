@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Query;
+﻿using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -16,8 +15,8 @@ namespace EfMicroservice.Common.Persistence.Repositories.Interfaces
         IIncludableQueryable<TEntity, TProperty> Include<TProperty>(
             Expression<Func<TEntity, TProperty>> navigationPropertyPath) where TProperty : class;
 
-        Task<EntityEntry<TEntity>> AddAsync(TEntity entity);
-        EntityEntry<TEntity> Add(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
+        TEntity Add(TEntity entity);
         Task<TEntity> FindAsync(TKey id);
         TEntity Find(TKey id);
         Task UpdateAsync(TEntity entity);

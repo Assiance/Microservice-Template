@@ -26,11 +26,11 @@ namespace EfMicroservice.Application.Orders.Commands.PlaceOrder
             var validator = new OrderValidator();
 
             validator.ValidateAndThrow(order);
-            var createdOrderEntry = await _unitOfWork.Orders.AddAsync(order);
+            var createdOrder = await _unitOfWork.Orders.AddAsync(order);
 
             await _unitOfWork.SaveAsync();
 
-            return _orderMapper.Map(createdOrderEntry.Entity);
+            return _orderMapper.Map(createdOrder);
         }
     }
 }
