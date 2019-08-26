@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EfMicroservice.Api.Orders.Models;
-using EfMicroservice.Application.Orders.Commands.PlaceOrder;
+﻿using EfMicroservice.Application.Orders.Commands.PlaceOrder;
 using EfMicroservice.Application.Orders.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Api.Orders.Controllers.V1
 {
@@ -26,17 +22,11 @@ namespace EfMicroservice.Api.Orders.Controllers.V1
 
         [HttpPost]
         [ProducesResponseType(typeof(OrderModel), 201)]
-        public async Task<ActionResult<OrderModel>> Post([FromBody] CreateOrderRequest request)
+        public async Task<ActionResult<OrderModel>> Post([FromBody] PlaceOrderModel newProduct)
         {
-            var newProduct = new PlaceOrderModel()
-            {
-                ProductId = request.ProductId,
-                Quantity = request.Quantity
-            };
-
             var createdOrder = await _placeOrderCommand.ExecuteAsync(newProduct);
 
-            return CreatedAtRoute("GetValueById", new {id = createdOrder.Id}, createdOrder);
+            return CreatedAtRoute("GetValueById", new { id = createdOrder.Id }, createdOrder);
         }
     }
 }

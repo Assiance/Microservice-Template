@@ -13,5 +13,6 @@ namespace EfMicroservice.Application.Products.Mappings
         IList<ProductModel> Map(IList<Product> source);
         Product Map(CreateProductModel source);
         Product Map(Guid productId, UpdateProductModel source);
+        UpdateProductModel Map(ProductModel source);
     }
 }

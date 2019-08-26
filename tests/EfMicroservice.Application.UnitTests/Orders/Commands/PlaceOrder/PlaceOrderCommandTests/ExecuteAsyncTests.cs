@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using AutoFixture;
 using EfMicroservice.Application.Orders.Commands.PlaceOrder;
-using EfMicroservice.Application.UnitTests.Builders;
-using FluentValidation;
+using EfMicroservice.Domain.Orders;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace EfMicroservice.Application.UnitTests.Orders.Commands.PlaceOrder.PlaceOrderCommandTests
@@ -18,9 +18,9 @@ namespace EfMicroservice.Application.UnitTests.Orders.Commands.PlaceOrder.PlaceO
                 Quantity = quantity
             };
 
-            var order = new OrderBuilder()
-                .WithQuantity(quantity)
-                .Build();
+            var order = _fixture.Build<Order>()
+                .With(x => x.Quantity, quantity)
+                .Create();
 
             _orderMapperMock.Setup(x => x.Map(placeOrder)).Returns(order);
 
@@ -29,7 +29,7 @@ namespace EfMicroservice.Application.UnitTests.Orders.Commands.PlaceOrder.PlaceO
             var result = await Assert.ThrowsAsync<FluentValidation.ValidationException>(() => sut.ExecuteAsync(placeOrder));
 
             //Assert
-            Assert.Contains("'Quantity' must be greater than '0'", result.Message);
+            Assert.Contains($"'{nameof(Order.Quantity)}' must be greater than '0'", result.Message);
         }
     }
 }
