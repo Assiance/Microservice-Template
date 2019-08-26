@@ -26,7 +26,7 @@ namespace EfMicroservice.Persistence.Products
                 .IsRequired()
                 .HasForeignKey(x => x.ProductId);
 
-            builder.HasRecordInfo();
+            builder.HasAuditInfo();
             builder.HasRowVersion();
         }
     }

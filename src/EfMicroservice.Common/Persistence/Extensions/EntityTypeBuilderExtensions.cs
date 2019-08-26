@@ -22,7 +22,7 @@ namespace EfMicroservice.Common.Persistence.Extensions
                 .IsRowVersion();
         }
 
-        public static void HasRecordInfo<T>(this EntityTypeBuilder<T> builder)
+        public static void HasAuditInfo<T>(this EntityTypeBuilder<T> builder)
             where T : class, IAuditInfo
         {
             builder.Property(x => x.CreatedDate)
