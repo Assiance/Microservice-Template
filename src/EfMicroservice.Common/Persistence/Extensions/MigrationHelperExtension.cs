@@ -10,13 +10,13 @@ namespace EfMicroservice.Common.Persistence.Extensions
     public static class MigrationHelperExtension
     {
         private static string _migrationFolder = "Migrations";
-        public static void ComposeSqlUpUsingFile(this MigrationBuilder builder, Type executingType)
+        public static void ComposeSqlUp(this MigrationBuilder builder, Type executingType)
         {
             var sqlString = ReadSqlFile(executingType,"Ups");
             builder.Sql(sqlString);
         }
 
-        public static void ComposeSqlDownUsingFile(this MigrationBuilder builder, Type executingType)
+        public static void ComposeSqlDown(this MigrationBuilder builder, Type executingType)
         {
             var sqlString = ReadSqlFile(executingType,"Downs");
             builder.Sql(sqlString);
