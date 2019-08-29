@@ -23,7 +23,7 @@ namespace EfMicroservice.Application.Products.Queries.GetProductById
             var product = await _unitOfWork.Products.FindAsync(productId);
             if (product == null)
             {
-                throw new NotFoundException(nameof(Product));
+                throw new NotFoundException($"{nameof(Product)}: {productId} not found.");
             }
 
             return _productMapper.Map(product);

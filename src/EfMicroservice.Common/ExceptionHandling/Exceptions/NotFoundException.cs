@@ -6,8 +6,7 @@
         {
         }
 
-        public NotFoundException(string propertyName) : base($"{propertyName} not found",
-            ErrorCode.KeyNotFoundException)
+        public NotFoundException(string message) : base(message, ErrorCode.KeyNotFoundException)
         {
         }
     }
