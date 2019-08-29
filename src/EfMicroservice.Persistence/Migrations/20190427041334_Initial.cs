@@ -21,11 +21,8 @@ namespace EfMicroservice.Persistence.Migrations
     [Migration("20190427041334_Initial")]
     public partial class Initial : Migration
     {
-
-
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-
             migrationBuilder.ComposeSqlUp(typeof(Initial));
         }
 

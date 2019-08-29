@@ -48,5 +48,16 @@ namespace EfMicroservice.Application.Products.Mappings
                 RowVersion = source.RowVersion
             };
         }
+
+        public UpdateProductModel Map(ProductModel source)
+        {
+            return new UpdateProductModel()
+            {
+                Name = source.Name,
+                Price = source.Price,
+                Quantity = source.Quantity,
+                RowVersion = source.RowVersion
+            };
+        }
     }
 }

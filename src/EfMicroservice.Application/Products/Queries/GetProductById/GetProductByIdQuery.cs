@@ -3,6 +3,7 @@ using EfMicroservice.Application.Shared.Repositories;
 using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using System;
 using System.Threading.Tasks;
+using EfMicroservice.Domain.Products;
 
 namespace EfMicroservice.Application.Products.Queries.GetProductById
 {
@@ -22,7 +23,7 @@ namespace EfMicroservice.Application.Products.Queries.GetProductById
             var product = await _unitOfWork.Products.FindAsync(productId);
             if (product == null)
             {
-                throw new NotFoundException(nameof(product));
+                throw new NotFoundException($"{nameof(Product)}: {productId} not found.");
             }
 
             return _productMapper.Map(product);

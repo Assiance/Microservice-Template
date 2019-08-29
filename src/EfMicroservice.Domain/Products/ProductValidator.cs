@@ -7,7 +7,6 @@ namespace EfMicroservice.Domain.Products
         public ProductValidator()
         {
             RuleFor(x => x.Name)
-                .NotNull()
                 .NotEmpty()
                 .MaximumLength(100);
         }

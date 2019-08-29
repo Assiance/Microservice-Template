@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using EfMicroservice.Application.Products.Mappings;
+﻿using EfMicroservice.Application.Products.Mappings;
 using EfMicroservice.Application.Shared.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Application.Products.Queries.GetProducts
 {

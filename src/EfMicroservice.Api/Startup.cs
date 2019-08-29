@@ -24,6 +24,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using EfMicroservice.Api.Infrastructure.Handlers;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 
@@ -62,7 +63,8 @@ namespace EfMicroservice.Api
 
                     x.Filters.Add(new AuthorizeFilter(policy));
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddFluentValidation();
 
             var authConfig = Configuration.GetSection("Authentication").Get<JwtConfiguration>();
             services.AddJwtAuthentication(authConfig);
@@ -82,6 +84,8 @@ namespace EfMicroservice.Api
             services.RegisterDomainDependencies();
             services.RegisterPersistenceDependencies();
             services.RegisterExternalDataDependencies();
+
+            services.RegisterRequestValidation();
 
             // Register Transient Dependencies
             services.AddTransient<AppendHeadersHandler>();

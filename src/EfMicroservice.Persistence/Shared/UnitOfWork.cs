@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using EfMicroservice.Application.Orders.Repositories;
+﻿using EfMicroservice.Application.Orders.Repositories;
 using EfMicroservice.Application.Products.Repositories;
 using EfMicroservice.Application.Shared.Repositories;
 using EfMicroservice.Common.Persistence;
@@ -9,20 +8,24 @@ using EfMicroservice.Persistence.Orders;
 using EfMicroservice.Persistence.Products;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Persistence.Shared
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IChangeTrackingService _changeTrackingService;
         private readonly ILoggerFactory _loggerFactory;
 
         private IProductRepository _productRepository;
         private IOrderRepository _orderRepository;
 
-        public UnitOfWork(ApplicationDbContext dbContext, ILoggerFactory loggerFactory)
+        public UnitOfWork(ApplicationDbContext dbContext, IChangeTrackingService changeTrackingService, ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext;
+            _changeTrackingService = changeTrackingService;
             _loggerFactory = loggerFactory;
         }
 
@@ -38,11 +41,13 @@ namespace EfMicroservice.Persistence.Shared
 
         public async Task SaveAsync()
         {
+            await OnBeforeSaveChangesAsync();
             await _dbContext.SaveChangesAsync();
         }
 
         public void Save()
         {
+            OnBeforeSaveChangesAsync().GetAwaiter();
             _dbContext.SaveChanges();
         }
 
@@ -59,6 +64,15 @@ namespace EfMicroservice.Persistence.Shared
         public void UpdateRowVersion(IVersionInfo versionInfo, byte[] newRowVersion)
         {
             _dbContext.UpdateRowVersion(versionInfo, newRowVersion);
+        }
+
+        private async Task OnBeforeSaveChangesAsync()
+        {
+            var entries = _dbContext.ChangeTracker.Entries().ToList();
+            foreach (var entry in entries)
+            {
+                await _changeTrackingService.ExecuteResolversAsync(entry);
+            }
         }
     }
 }

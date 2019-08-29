@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System;
 
 namespace EfMicroservice.Common.Persistence.Extensions
 {
@@ -22,6 +20,20 @@ namespace EfMicroservice.Common.Persistence.Extensions
                 .HasColumnType("xid")
                 .HasConversion(Converter)
                 .IsRowVersion();
+        }
+
+        public static void HasAuditInfo<T>(this EntityTypeBuilder<T> builder)
+            where T : class, IAuditInfo
+        {
+            builder.Property(x => x.CreatedDate)
+                .IsRequired();
+
+            builder.Property(x => x.ModifiedBy);
+
+            builder.Property(x => x.CreatedBy)
+                .IsRequired();
+
+            builder.Property(x => x.ModifiedBy);
         }
     }
 }
