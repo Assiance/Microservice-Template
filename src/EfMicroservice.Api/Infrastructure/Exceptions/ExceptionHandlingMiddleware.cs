@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -54,6 +55,11 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             {
                 var errorResult = _errorResultConverter.GetError(exception);
                 await WriteErrorAsync(httpContext, exception, (int) exception.StatusCode, errorResult);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                var errorResult = _errorResultConverter.GetError(ex);
+                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.Conflict, errorResult);
             }
             catch (Exception ex)
             {
