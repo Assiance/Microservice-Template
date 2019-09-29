@@ -2,7 +2,7 @@
 
 namespace EfMicroservice.Application.Products.Queries
 {
-    public class ProductModel
+    public class ProductModel : IAuditInfoModel
     {
         public Guid Id { get; set; }
 

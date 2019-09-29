@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace EfMicroservice.Common.Persistence
+namespace EfMicroservice.Common.Shared
 {
-    public interface IAuditInfo
+    public interface IAuditInfoModel
     {
         DateTimeOffset CreatedDate { get; set; }
         DateTimeOffset? ModifiedDate { get; set; }
