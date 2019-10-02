@@ -23,9 +23,8 @@ namespace EfMicroservice.Application.Orders.Commands.PlaceOrder
         public async Task<OrderModel> ExecuteAsync(PlaceOrderModel orderToCreate)
         {
             var order = _orderMapper.Map(orderToCreate);
-            var validator = new OrderValidator();
+            order.TryValidate();
 
-            validator.ValidateAndThrow(order);
             var createdOrder = await _unitOfWork.Orders.AddAsync(order);
 
             await _unitOfWork.SaveAsync();

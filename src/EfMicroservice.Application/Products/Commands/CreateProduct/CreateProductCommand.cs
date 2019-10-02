@@ -24,9 +24,8 @@ namespace EfMicroservice.Application.Products.Commands.CreateProduct
         public async Task<ProductModel> ExecuteAsync(CreateProductModel productToCreate)
         {
             var product = _productMapper.Map(productToCreate);
-            var validator = new ProductValidator();
+            product.TryValidate();
 
-            validator.ValidateAndThrow(product);
             var createdProduct = await _unitOfWork.Products.AddAsync(product);
 
             await _unitOfWork.SaveAsync();

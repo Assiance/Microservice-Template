@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using EfMicroservice.Common.Persistence;
 using EfMicroservice.Domain.Products;
+using FluentValidation;
 
 namespace EfMicroservice.Domain.Orders
 {
@@ -19,6 +20,12 @@ namespace EfMicroservice.Domain.Orders
         public decimal TotalCost()
         {
             return Quantity * Product.Price;
+        }
+
+        public void TryValidate()
+        {
+            var validator = new OrderValidator();
+            validator.ValidateAndThrow(this);
         }
     }
 }

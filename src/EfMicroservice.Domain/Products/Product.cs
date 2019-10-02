@@ -1,5 +1,6 @@
 ﻿using EfMicroservice.Common.Persistence;
 using EfMicroservice.Domain.Orders;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 
@@ -20,5 +21,11 @@ namespace EfMicroservice.Domain.Products
         public DateTimeOffset? ModifiedDate { get; set; }
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
+
+        public void TryValidate()
+        {
+            var validator = new ProductValidator();
+            validator.ValidateAndThrow(this);
+        }
     }
 }

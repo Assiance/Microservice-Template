@@ -21,9 +21,8 @@ namespace EfMicroservice.Application.Products.Commands.UpdateProduct
         public async Task ExecuteAsync(Guid productId, UpdateProductModel productToUpdate)
         {
             var product = _productMapper.Map(productId, productToUpdate);
-            var validator = new ProductValidator();
+            product.TryValidate();
 
-            validator.ValidateAndThrow(product);
             await _unitOfWork.Products.UpdateAsync(product);
 
             await _unitOfWork.SaveAsync();
