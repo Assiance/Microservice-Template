@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EfMicroservice.Common.Authentication
+﻿namespace EfMicroservice.Common.Authentication
 {
     public class TokenResponse
     {

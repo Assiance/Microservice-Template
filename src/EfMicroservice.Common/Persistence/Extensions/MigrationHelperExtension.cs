@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 using System.IO;
 using System.Reflection;
-using System.Text;
-using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EfMicroservice.Common.Persistence.Extensions
 {
@@ -12,17 +10,17 @@ namespace EfMicroservice.Common.Persistence.Extensions
         private static string _migrationFolder = "Migrations";
         public static void ComposeSqlUp(this MigrationBuilder builder, Type executingType)
         {
-            var sqlString = ReadSqlFile(executingType,"Ups");
+            var sqlString = ReadSqlFile(executingType, "Ups");
             builder.Sql(sqlString);
         }
 
         public static void ComposeSqlDown(this MigrationBuilder builder, Type executingType)
         {
-            var sqlString = ReadSqlFile(executingType,"Downs");
+            var sqlString = ReadSqlFile(executingType, "Downs");
             builder.Sql(sqlString);
         }
 
-        private static string ReadSqlFile(Type executingType,string migrationType)
+        private static string ReadSqlFile(Type executingType, string migrationType)
         {
             var myAttribute =
                 (MigrationAttribute)Attribute.GetCustomAttribute(executingType, typeof(MigrationAttribute));

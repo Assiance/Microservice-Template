@@ -18,8 +18,9 @@ namespace EfMicroservice.Application.Products.Commands.DeleteProduct
 
         public async Task ExecuteAsync(Guid productId)
         {
-            await _unitOfWork.Products.RemoveAsync(productId);
+            var product = await _unitOfWork.Products.FindAsync(productId);
 
+            _unitOfWork.Products.Remove(product);
             await _unitOfWork.SaveAsync();
         }
     }

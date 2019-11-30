@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using EfMicroservice.Common.Shared;
+﻿using EfMicroservice.Common.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace EfMicroservice.Common.Persistence.Extensions

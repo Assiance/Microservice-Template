@@ -21,7 +21,6 @@ namespace EfMicroservice.Common.Persistence.Repositories.Interfaces
         TEntity Find(TKey id);
         Task UpdateAsync(TEntity entity);
         void Update(TEntity entity);
-        Task RemoveAsync(TKey id);
-        void Remove(TKey id);
+        void Remove(TEntity entity);
     }
 }

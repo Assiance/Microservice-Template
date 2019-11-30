@@ -59,26 +59,9 @@ namespace EfMicroservice.Common.Persistence.Repositories
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
 
-        public virtual async Task RemoveAsync(TKey id)
+        public virtual void Remove(TEntity entity)
         {
-            var retrievedEntity = await FindAsync(id);
-            if (retrievedEntity == null)
-            {
-                throw new NotFoundException();
-            }
-
-            _dbContext.Set<TEntity>().Remove(retrievedEntity);
-        }
-
-        public virtual void Remove(TKey id)
-        {
-            var retrievedEntity = Find(id);
-            if (retrievedEntity == null)
-            {
-                throw new NotFoundException();
-            }
-
-            _dbContext.Set<TEntity>().Remove(retrievedEntity);
+            _dbContext.Set<TEntity>().Remove(entity);
         }
 
         public IIncludableQueryable<TEntity, TProperty> Include<TProperty>(

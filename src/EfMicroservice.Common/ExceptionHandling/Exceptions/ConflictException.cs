@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EfMicroservice.Common.ExceptionHandling.Exceptions
+﻿namespace EfMicroservice.Common.ExceptionHandling.Exceptions
 {
     public class ConflictException : BaseException
     {

@@ -11,7 +11,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EfMicroservice.Common.Http
+namespace EfMicroservice.Common.Http.Client
 {
     public abstract class BaseHttpClient : IBaseHttpClient
     {
@@ -92,7 +92,7 @@ namespace EfMicroservice.Common.Http
         private StringContent GetStringContent<T>(T item)
         {
             var json = JsonConvert.SerializeObject(item,
-                new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
+                new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
             var content = new StringContent(json, Encoding.UTF8, MediaType);
             return content;
         }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using EfMicroservice.Common.Http.Client;
 
 namespace EfMicroservice.Common.Authentication
 {

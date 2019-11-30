@@ -1,12 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using EfMicroservice.Common.Http;
+﻿using EfMicroservice.Common.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace EfMicroservice.Common.Shared.UserProvider
 {
-    public class CurrentUserService: ICurrentUserService
+    public class CurrentUserService : ICurrentUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -19,8 +19,8 @@ namespace EfMicroservice.Common.Shared.UserProvider
         {
             var request = _httpContextAccessor.HttpContext.Request;
 
-            var userProfileTokenExist=request.Headers.TryGetValue(KnownHttpHeaders.ProfileToken, out StringValues requestHeaderValue);
-            var userProviderModel=new UserProviderModel();
+            var userProfileTokenExist = request.Headers.TryGetValue(KnownHttpHeaders.ProfileToken, out StringValues requestHeaderValue);
+            var userProviderModel = new UserProviderModel();
 
             if (!userProfileTokenExist) return userProviderModel;
 

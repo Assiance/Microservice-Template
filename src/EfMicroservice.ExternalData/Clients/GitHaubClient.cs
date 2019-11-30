@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EfMicroservice.Common.Api.Configuration.HttpClient;
 using EfMicroservice.Common.Http;
+using EfMicroservice.Common.Http.Client;
 using EfMicroservice.Domain.Products;
 using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.Extensions.Logging;
