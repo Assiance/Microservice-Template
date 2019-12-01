@@ -18,7 +18,11 @@ namespace EfMicroservice.Application.Products.Mappings
                 Name = source.Name,
                 Price = source.Price,
                 Quantity = source.Quantity,
-                RowVersion = source.RowVersion
+                RowVersion = source.RowVersion,
+                CreatedBy = source.CreatedBy,
+                ModifiedBy = source.ModifiedBy,
+                CreatedDate = source.CreatedDate,
+                ModifiedDate = source.ModifiedDate
             };
         }
 
