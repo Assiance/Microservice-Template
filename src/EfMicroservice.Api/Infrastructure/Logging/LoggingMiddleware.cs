@@ -12,21 +12,21 @@ using Serilog.Events;
 
 namespace EfMicroservice.Api.Infrastructure.Logging
 {
-    public class LoggingMiddleware
+    public class LoggingMiddleware : IMiddleware
     {
+        private readonly ICorrelationIdProvider _correlationIdProvider;
+
         private static readonly HashSet<string> HeaderWhitelist = new HashSet<string>
             {"Content-Type", "Content-Length", "User-Agent"};
 
         static readonly ILogger Log = Serilog.Log.ForContext<LoggingMiddleware>();
 
-        private readonly RequestDelegate _next;
-
-        public LoggingMiddleware(RequestDelegate next)
+        public LoggingMiddleware(ICorrelationIdProvider correlationIdProvider)
         {
-            _next = next ?? throw new ArgumentNullException(nameof(next));
+            _correlationIdProvider = correlationIdProvider;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, ICorrelationIdProvider correlationIdProvider)
+        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
             if (httpContext == null)
             {
@@ -35,14 +35,14 @@ namespace EfMicroservice.Api.Infrastructure.Logging
 
             var start = Stopwatch.GetTimestamp();
 
-            PushInfoToContext(httpContext, correlationIdProvider);
+            PushInfoToContext(httpContext, _correlationIdProvider);
 
             var requestStartingLog = GenerateRequestStartingLogMessage(httpContext);
             Log.Information(requestStartingLog);
 
             try
             {
-                await _next(httpContext);
+                await next(httpContext);
 
                 var elapsedMs = GetElapsedMilliseconds(start, Stopwatch.GetTimestamp());
 

@@ -1,31 +1,28 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Threading.Tasks;
-using EfMicroservice.Common.ExceptionHandling.Exceptions;
+﻿using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Api.Infrastructure.Exceptions
 {
-    public class ExceptionHandlingMiddleware
+    public class ExceptionHandlingMiddleware : IMiddleware
     {
         private readonly ILogger _logger;
         private readonly IErrorResultConverter _errorResultConverter;
-        private readonly RequestDelegate _next;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory,
+        public ExceptionHandlingMiddleware(ILoggerFactory loggerFactory,
             IErrorResultConverter errorResultConverter)
         {
-            _next = next ?? throw new ArgumentNullException(nameof(next));
             _logger = loggerFactory.CreateLogger<ExceptionHandlingMiddleware>();
             _errorResultConverter = errorResultConverter;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext)
+        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
             if (httpContext == null)
             {
@@ -34,27 +31,27 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
 
             try
             {
-                await _next(httpContext);
+                await next(httpContext);
             }
             catch (BaseException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int) ex.HttpCode, errorResult);
+                await WriteErrorAsync(httpContext, ex, (int)ex.HttpCode, errorResult);
             }
             catch (System.ComponentModel.DataAnnotations.ValidationException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int) HttpStatusCode.BadRequest, errorResult);
+                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.BadRequest, errorResult);
             }
             catch (FluentValidation.ValidationException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int) HttpStatusCode.InternalServerError, errorResult);
+                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.InternalServerError, errorResult);
             }
             catch (HttpCallException exception)
             {
                 var errorResult = _errorResultConverter.GetError(exception);
-                await WriteErrorAsync(httpContext, exception, (int) exception.StatusCode, errorResult);
+                await WriteErrorAsync(httpContext, exception, (int)exception.StatusCode, errorResult);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -64,7 +61,7 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             catch (Exception ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int) HttpStatusCode.InternalServerError, errorResult);
+                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.InternalServerError, errorResult);
             }
         }
 
@@ -81,6 +78,6 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
         }
 
         private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
-            {ContractResolver = new CamelCasePropertyNamesContractResolver()};
+        { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     }
 }

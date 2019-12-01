@@ -51,7 +51,8 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<ProductModel>), 200)]
         public async Task<ActionResult<IEnumerable<ProductModel>>> Get()
         {
-            var downstreamRequest = await _haubService.SendAsyncDoesPost();
+            var downstreamRequest = await _haubService.Get();
+            var downstreamRequest2 = await _haubService.SendAsyncDoesPost();
 
             return Ok(await _getProductsQuery.ExecuteAsync());
         }
@@ -70,7 +71,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         {
             var createdProduct = await _createProductCommand.ExecuteAsync(newProduct);
 
-            return CreatedAtRoute(nameof(GetProductById), new { id = createdProduct.Id }, createdProduct);
+            return CreatedAtRoute(nameof(GetProductById), new { id = createdProduct.Id, version = "1" }, createdProduct);
         }
 
         [HttpPut("{id}")]
@@ -97,7 +98,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
             var productModel = await _getProductByIdQuery.ExecuteAsync(id);
             var patchModel = _mapper.Map(productModel);
 
-            patch.ApplyTo(patchModel, ModelState);
+            patch.ApplyTo(patchModel);
 
             if (!ModelState.IsValid || !TryValidateModel(patchModel))
             {

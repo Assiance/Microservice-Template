@@ -1,6 +1,7 @@
 using EfMicroservice.Api.Infrastructure.Configurations;
 using EfMicroservice.Api.Infrastructure.Exceptions;
 using EfMicroservice.Api.Infrastructure.Extensions;
+using EfMicroservice.Api.Infrastructure.Handlers;
 using EfMicroservice.Application;
 using EfMicroservice.Common;
 using EfMicroservice.Common.Api.Configuration.Authentication;
@@ -12,21 +13,24 @@ using EfMicroservice.ExternalData.Clients;
 using EfMicroservice.ExternalData.Clients.Interfaces;
 using EfMicroservice.Persistence;
 using EfMicroservice.Persistence.Contexts;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using EfMicroservice.Api.Infrastructure.Handlers;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
+using System.Net.Http;
+using EfMicroservice.Api.Infrastructure.Logging;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Serialization;
 
 namespace EfMicroservice.Api
 {
@@ -49,22 +53,17 @@ namespace EfMicroservice.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApiVersioning(o => {
+                o.ReportApiVersions = true;
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+            });
+
             services.AddVersionedApiExplorer(o =>
             {
                 o.GroupNameFormat = "'v'VVV";
                 o.SubstituteApiVersionInUrl = true;
             });
-
-            services.AddMvc(x =>
-                {
-                    var policy = new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .Build();
-
-                    x.Filters.Add(new AuthorizeFilter(policy));
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddFluentValidation();
 
             var authConfig = Configuration.GetSection("Authentication").Get<JwtConfiguration>();
             services.AddJwtAuthentication(authConfig);
@@ -91,6 +90,10 @@ namespace EfMicroservice.Api
             services.AddTransient<AppendHeadersHandler>();
             services.AddTransient<ReAuthHandler>();
             services.AddTransient<UnsuccessfulResponseHandler>();
+            services.AddTransient<HttpClient>();
+            services.AddTransient<LoggingMiddleware>();
+            services.AddTransient<AddCorrelationIdToHeaderMiddleware>();
+            services.AddTransient<ExceptionHandlingMiddleware>();
             // Register Singleton Dependencies
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IErrorResultConverter, ErrorResultConverter>();
@@ -102,13 +105,24 @@ namespace EfMicroservice.Api
             services.RegisterClients(policies, _clients);
 
             services.AddAccessTokenProvider();
-            services.AddApiVersioning();
             services.AddSwagger();
+            services.AddSwaggerGen();
+            services.AddControllers(x =>
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
+
+                    x.Filters.Add(new AuthorizeFilter(policy));
+                })
+                .AddFluentValidation()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ContractResolver =
+                        new CamelCasePropertyNamesContractResolver());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-            IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -119,16 +133,24 @@ namespace EfMicroservice.Api
                 app.UseHsts();
             }
 
-            ConfigureCors(app);
-
             app.UseSwagger();
             app.UseSwaggerUIDocs(provider);
+
+            app.UseHttpsRedirection();
+            app.UseRouting();
+            ConfigureCors(app);
+
             app.UseAuthentication();
+            app.UseAuthorization();
+            
             app.UseLoggingMiddleware();
             app.UseAddCorrelationIdToHeaderMiddleware();
             app.UseExceptionHandlingMiddleware();
-            app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
 
         private void ConfigureCors(IApplicationBuilder app)

@@ -1,10 +1,10 @@
-﻿using System;
-using System.IO;
-using EfMicroservice.Common.Logging;
-using Microsoft.AspNetCore;
+﻿using EfMicroservice.Common.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Serilog;
+using System;
+using System.IO;
 
 namespace EfMicroservice.Api
 {
@@ -32,7 +32,7 @@ namespace EfMicroservice.Api
             try
             {
                 Log.Information("Starting web host");
-                BuildWebHost(args).Run();
+                CreateHostBuilder(args).Build().Run();
                 return 0;
             }
             catch (Exception ex)
@@ -46,19 +46,24 @@ namespace EfMicroservice.Api
             }
         }
 
-        public static IWebHost BuildWebHost(string[] args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return WebHost.CreateDefaultBuilder(args)
-                .UseKestrel(options => { options.AddServerHeader = false; })
+            return Host.CreateDefaultBuilder(args)
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
-                .UseSerilog()
-                .CaptureStartupErrors(true)
-                .ConfigureLogging((hostingContext, logging) => { logging.AddSerilog(); })
-                .UseStartup<Startup>()
-                .UseConfiguration(Configuration)
-                .UseSetting("detailedErrors", "true")
-                .Build();
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                        {
+                            serverOptions.AddServerHeader = false;
+                        })
+                        .UseIISIntegration()
+                        .UseSerilog()
+                        .CaptureStartupErrors(true)
+                        .ConfigureLogging((hostingContext, logging) => { logging.AddSerilog(); })
+                        .UseStartup<Startup>()
+                        .UseConfiguration(Configuration)
+                        .UseSetting("detailedErrors", "true");
+                });
         }
     }
 }

@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace EfMicroservice.Api.Infrastructure.Logging
 {
-    public class AddCorrelationIdToHeaderMiddleware
+    public class AddCorrelationIdToHeaderMiddleware : IMiddleware
     {
-        private readonly RequestDelegate _next;
+        private readonly ICorrelationIdProvider _correlationIdProvider;
 
-        public AddCorrelationIdToHeaderMiddleware(RequestDelegate next)
+        public AddCorrelationIdToHeaderMiddleware(ICorrelationIdProvider correlationIdProvider)
         {
-            _next = next;
+            _correlationIdProvider = correlationIdProvider;
         }
 
-        public async Task Invoke(HttpContext context, ICorrelationIdProvider correlationIdProvider)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var correlation = correlationIdProvider.EnsureCorrelationIdPresent();
+            var correlation = _correlationIdProvider.EnsureCorrelationIdPresent();
             var request = context.Request;
             var response = context.Response;
 
@@ -34,7 +34,7 @@ namespace EfMicroservice.Api.Infrastructure.Logging
                 response.Headers.Add(KnownHttpHeaders.CorrelationId, correlation);
             }
 
-            await _next(context);
+            await next(context);
         }
     }
 }
