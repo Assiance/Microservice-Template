@@ -66,7 +66,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(ProductModel), 201)]
         public async Task<ActionResult<ProductModel>> Post([FromBody] CreateProductModel newProduct)
         {
             var createdProduct = await _createProductCommand.ExecuteAsync(newProduct);
@@ -75,7 +75,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateProductModel updatedProduct)
         {
@@ -98,7 +98,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
             var productModel = await _getProductByIdQuery.ExecuteAsync(id);
             var patchModel = _mapper.Map(productModel);
 
-            patch.ApplyTo(patchModel);
+            patch.ApplyTo(patchModel, ModelState);
 
             if (!ModelState.IsValid || !TryValidateModel(patchModel))
             {

@@ -69,12 +69,11 @@ namespace EfMicroservice.Api
             services.AddJwtAuthentication(authConfig);
             services.AddAuthorizationPolicies(authConfig);
 
+            var serviceProvider = services.BuildServiceProvider();
             services.AddEntityFrameworkNpgsql()
-                .AddDbContext<ApplicationDbContext>(options => options
+                .AddDbContextPool<ApplicationDbContext>(options => options
                     .UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
-                    .UseLoggerFactory(services.BuildServiceProvider()
-                        .GetService<ILoggerFactory>()))
-                .BuildServiceProvider();
+                    .UseLoggerFactory(serviceProvider.GetService<ILoggerFactory>()));
 
             // Register Scoped Dependencies
             services.RegisterCommonDependencies();
