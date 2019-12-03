@@ -5,14 +5,14 @@ using EfMicroservice.Application.Products.Mappings;
 using EfMicroservice.Application.Products.Queries;
 using EfMicroservice.Application.Products.Queries.GetProductById;
 using EfMicroservice.Application.Products.Queries.GetProducts;
-using EfMicroservice.Common.Api.Extensions;
-using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
+using Omni.BuildingBlocks.Api.Extensions;
+using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -51,7 +51,8 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<ProductModel>), 200)]
         public async Task<ActionResult<IEnumerable<ProductModel>>> Get()
         {
-            var downstreamRequest = await _haubService.SendAsyncDoesPost();
+            var downstreamRequest = await _haubService.Get();
+            var downstreamRequest2 = await _haubService.SendAsyncDoesPost();
 
             return Ok(await _getProductsQuery.ExecuteAsync());
         }
@@ -65,16 +66,16 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(ProductModel), 201)]
         public async Task<ActionResult<ProductModel>> Post([FromBody] CreateProductModel newProduct)
         {
             var createdProduct = await _createProductCommand.ExecuteAsync(newProduct);
 
-            return CreatedAtRoute(nameof(GetProductById), new { id = createdProduct.Id }, createdProduct);
+            return CreatedAtRoute(nameof(GetProductById), new { id = createdProduct.Id, version = "1" }, createdProduct);
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateProductModel updatedProduct)
         {

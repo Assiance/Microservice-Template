@@ -1,9 +1,8 @@
-﻿using EfMicroservice.Common.Api.Configuration.Authentication;
-using EfMicroservice.Common.Authentication;
-using EfMicroservice.Common.Http.Handlers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Omni.BuildingBlocks.Api.Configuration.Authentication;
+using Omni.BuildingBlocks.Authentication;
 using Polly;
 using Polly.Extensions.Http;
 using Serilog;
@@ -11,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EfMicroservice.Api.Infrastructure.Handlers;
 
 namespace EfMicroservice.Api.Infrastructure.Configurations
 {
@@ -39,7 +37,7 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
 
         public static IServiceCollection AddAccessTokenProvider(this IServiceCollection services)
         {
-            var intervals = new List<int>() {100, 500};
+            var intervals = new List<int>() { 100, 500 };
             var readTimes = intervals.Select(ms => TimeSpan.FromMilliseconds(ms));
 
             services.AddHttpClient<IAccessTokenProvider, AccessTokenProvider>()

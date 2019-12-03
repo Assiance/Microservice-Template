@@ -1,8 +1,8 @@
-﻿using EfMicroservice.Common.Persistence;
-using EfMicroservice.Domain.Orders;
+﻿using EfMicroservice.Domain.Orders;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using Omni.BuildingBlocks.Persistence;
 
 namespace EfMicroservice.Domain.Products
 {

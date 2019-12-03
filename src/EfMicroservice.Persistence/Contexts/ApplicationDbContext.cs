@@ -1,8 +1,8 @@
-﻿using EfMicroservice.Common.Persistence.Extensions;
-using EfMicroservice.Domain.Orders;
+﻿using EfMicroservice.Domain.Orders;
 using EfMicroservice.Domain.Products;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Omni.BuildingBlocks.Persistence.Extensions;
 
 namespace EfMicroservice.Persistence.Contexts
 {

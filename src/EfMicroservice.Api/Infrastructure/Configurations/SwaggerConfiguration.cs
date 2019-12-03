@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace EfMicroservice.Api.Infrastructure.Configurations
 {
@@ -40,9 +40,9 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
             return app;
         }
 
-        static Info CreateInfoForApiVersion(ApiVersionDescription description)
+        static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
         {
-            var info = new Info()
+            var info = new OpenApiInfo()
             {
                 Title = $"New Microservice API {description.ApiVersion}",
                 Version = description.ApiVersion.ToString(),

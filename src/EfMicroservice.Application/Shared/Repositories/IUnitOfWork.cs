@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using EfMicroservice.Application.Orders.Repositories;
 using EfMicroservice.Application.Products.Repositories;
-using EfMicroservice.Common.Persistence;
 using Microsoft.EntityFrameworkCore.Storage;
+using Omni.BuildingBlocks.Persistence;
 
 namespace EfMicroservice.Application.Shared.Repositories
 {

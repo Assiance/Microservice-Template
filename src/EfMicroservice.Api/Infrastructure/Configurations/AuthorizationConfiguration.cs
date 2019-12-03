@@ -1,6 +1,6 @@
 ﻿using EfMicroservice.Api.Infrastructure.Authorization;
-using EfMicroservice.Common.Api.Configuration.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+using Omni.BuildingBlocks.Api.Configuration.Authentication;
 
 namespace EfMicroservice.Api.Infrastructure.Configurations
 {
