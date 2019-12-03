@@ -1,6 +1,6 @@
 ﻿using System;
-using EfMicroservice.Common.Persistence.Repositories.Interfaces;
 using EfMicroservice.Domain.Products;
+using Omni.BuildingBlocks.Persistence.Repositories.Interfaces;
 
 namespace EfMicroservice.Application.Products.Repositories
 {

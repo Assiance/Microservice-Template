@@ -1,9 +1,9 @@
 ﻿using EfMicroservice.Application.Products.Mappings;
 using EfMicroservice.Application.Shared.Repositories;
-using EfMicroservice.Common.ExceptionHandling.Exceptions;
 using System;
 using System.Threading.Tasks;
 using EfMicroservice.Domain.Products;
+using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 
 namespace EfMicroservice.Application.Products.Queries.GetProductById
 {

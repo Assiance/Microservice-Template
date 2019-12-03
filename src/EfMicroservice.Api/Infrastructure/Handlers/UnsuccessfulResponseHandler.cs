@@ -1,5 +1,5 @@
-﻿using EfMicroservice.Common.ExceptionHandling.Exceptions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;

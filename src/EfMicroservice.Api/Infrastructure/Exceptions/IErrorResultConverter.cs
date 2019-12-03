@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using EfMicroservice.Common.ExceptionHandling.Exceptions;
+using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 
 namespace EfMicroservice.Api.Infrastructure.Exceptions
 {

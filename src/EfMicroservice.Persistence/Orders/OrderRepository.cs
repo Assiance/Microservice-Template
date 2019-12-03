@@ -1,8 +1,8 @@
 ﻿using EfMicroservice.Application.Orders.Repositories;
-using EfMicroservice.Common.Persistence.Repositories;
 using EfMicroservice.Domain.Orders;
 using EfMicroservice.Persistence.Contexts;
 using Microsoft.Extensions.Logging;
+using Omni.BuildingBlocks.Persistence.Repositories;
 
 namespace EfMicroservice.Persistence.Orders
 {

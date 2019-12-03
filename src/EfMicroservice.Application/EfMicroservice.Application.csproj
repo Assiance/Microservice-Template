@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Omni.BuildingBlocks" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EfMicroservice.Common\EfMicroservice.Common.csproj" />
     <ProjectReference Include="..\EfMicroservice.Domain\EfMicroservice.Domain.csproj" />
   </ItemGroup>

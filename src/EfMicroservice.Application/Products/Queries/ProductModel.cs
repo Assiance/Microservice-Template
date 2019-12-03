@@ -1,5 +1,5 @@
 ﻿using System;
-using EfMicroservice.Common.Shared;
+using Omni.BuildingBlocks.Shared;
 
 namespace EfMicroservice.Application.Products.Queries
 {

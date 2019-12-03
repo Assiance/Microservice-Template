@@ -1,7 +1,7 @@
-﻿using EfMicroservice.Common.Persistence;
-using EfMicroservice.Common.Persistence.Resolvers.Interfaces;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Threading.Tasks;
+using Omni.BuildingBlocks.Persistence;
+using Omni.BuildingBlocks.Persistence.Resolvers.Interfaces;
 
 namespace EfMicroservice.Persistence.ChangeTracking
 {

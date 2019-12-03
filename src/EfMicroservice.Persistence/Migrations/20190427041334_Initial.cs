@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Dynamic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using EfMicroservice.Common.Api.Configuration.HttpClient;
-using EfMicroservice.Common.Persistence.Extensions;
-using EfMicroservice.Persistence.Contexts;
+﻿using EfMicroservice.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Options;
+using Omni.BuildingBlocks.Persistence.Extensions;
 
 namespace EfMicroservice.Persistence.Migrations
 {

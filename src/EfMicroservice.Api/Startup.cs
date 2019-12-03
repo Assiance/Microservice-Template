@@ -4,9 +4,6 @@ using EfMicroservice.Api.Infrastructure.Extensions;
 using EfMicroservice.Api.Infrastructure.Handlers;
 using EfMicroservice.Application;
 using EfMicroservice.Common;
-using EfMicroservice.Common.Api.Configuration.Authentication;
-using EfMicroservice.Common.Api.Configuration.HttpClient;
-using EfMicroservice.Common.Http.Handlers;
 using EfMicroservice.Domain;
 using EfMicroservice.ExternalData;
 using EfMicroservice.ExternalData.Clients;
@@ -31,6 +28,10 @@ using EfMicroservice.Api.Infrastructure.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
+using Omni.BuildingBlocks;
+using Omni.BuildingBlocks.Api.Configuration.Authentication;
+using Omni.BuildingBlocks.Api.Configuration.HttpClient;
+using Omni.BuildingBlocks.Http.Handlers;
 
 namespace EfMicroservice.Api
 {
@@ -76,6 +77,7 @@ namespace EfMicroservice.Api
                     .UseLoggerFactory(serviceProvider.GetService<ILoggerFactory>()));
 
             // Register Scoped Dependencies
+            services.RegisterOmniBuildingBlockDependencies();
             services.RegisterCommonDependencies();
             services.RegisterApiDependencies();
             services.RegisterApplicationDependencies();

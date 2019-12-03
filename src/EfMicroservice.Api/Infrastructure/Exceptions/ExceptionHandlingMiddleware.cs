@@ -1,9 +1,9 @@
-﻿using EfMicroservice.Common.ExceptionHandling.Exceptions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System;
 using System.Net;
 using System.Threading.Tasks;

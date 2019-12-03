@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using EfMicroservice.Common.Api.Configuration.HttpClient;
-using EfMicroservice.Common.Http;
-using EfMicroservice.Common.Http.Client;
 using EfMicroservice.Domain.Products;
 using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Omni.BuildingBlocks.Api.Configuration.HttpClient;
+using Omni.BuildingBlocks.Http.Client;
 
 namespace EfMicroservice.ExternalData.Clients
 {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using EfMicroservice.Common.Persistence;
 using EfMicroservice.Domain.Products;
 using FluentValidation;
+using Omni.BuildingBlocks.Persistence;
 
 namespace EfMicroservice.Domain.Orders
 {

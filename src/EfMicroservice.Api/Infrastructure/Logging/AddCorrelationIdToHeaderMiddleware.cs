@@ -1,9 +1,9 @@
-﻿using EfMicroservice.Common.Http;
-using EfMicroservice.Common.Http.CorrelationId;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
 using System.Threading.Tasks;
+using Omni.BuildingBlocks.Http;
+using Omni.BuildingBlocks.Http.CorrelationId;
 
 namespace EfMicroservice.Api.Infrastructure.Logging
 {

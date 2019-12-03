@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using Omni.BuildingBlocks.ExceptionHandling;
+using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using EfMicroservice.Common.ExceptionHandling;
-using EfMicroservice.Common.ExceptionHandling.Exceptions;
-using Newtonsoft.Json.Linq;
 
 namespace EfMicroservice.Api.Infrastructure.Exceptions
 {

@@ -1,5 +1,5 @@
-﻿using EfMicroservice.Common.Persistence.Repositories.Interfaces;
-using EfMicroservice.Domain.Orders;
+﻿using EfMicroservice.Domain.Orders;
+using Omni.BuildingBlocks.Persistence.Repositories.Interfaces;
 
 namespace EfMicroservice.Application.Orders.Repositories
 {

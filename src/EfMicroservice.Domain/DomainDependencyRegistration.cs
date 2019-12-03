@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using EfMicroservice.Common.DI;
 using Microsoft.Extensions.DependencyInjection;
+using Omni.BuildingBlocks.DI;
 
 namespace EfMicroservice.Domain
 {

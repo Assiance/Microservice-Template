@@ -1,13 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using EfMicroservice.Application.Products.Repositories;
-using EfMicroservice.Common.ExceptionHandling.Exceptions;
-using EfMicroservice.Common.Persistence.Extensions;
-using EfMicroservice.Common.Persistence.Repositories;
+﻿using EfMicroservice.Application.Products.Repositories;
 using EfMicroservice.Domain.Products;
 using EfMicroservice.Persistence.Contexts;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
+using Omni.BuildingBlocks.Persistence.Extensions;
+using Omni.BuildingBlocks.Persistence.Repositories;
+using System;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Persistence.Products
 {

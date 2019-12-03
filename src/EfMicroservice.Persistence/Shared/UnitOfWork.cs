@@ -1,13 +1,13 @@
 ﻿using EfMicroservice.Application.Orders.Repositories;
 using EfMicroservice.Application.Products.Repositories;
 using EfMicroservice.Application.Shared.Repositories;
-using EfMicroservice.Common.Persistence;
-using EfMicroservice.Common.Persistence.Extensions;
 using EfMicroservice.Persistence.Contexts;
 using EfMicroservice.Persistence.Orders;
 using EfMicroservice.Persistence.Products;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using Omni.BuildingBlocks.Persistence;
+using Omni.BuildingBlocks.Persistence.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
 

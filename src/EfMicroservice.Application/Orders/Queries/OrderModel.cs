@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using EfMicroservice.Common.Shared;
+using Omni.BuildingBlocks.Shared;
 
 namespace EfMicroservice.Application.Orders.Queries
 {
