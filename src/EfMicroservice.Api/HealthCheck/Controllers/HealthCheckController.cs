@@ -11,9 +11,9 @@ namespace EfMicroservice.Api.HealthCheck.Controllers
     [ApiController]
     public class HealthCheckController : ControllerBase
     {
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
-        public HealthCheckController(IHostingEnvironment environment)
+        public HealthCheckController(IWebHostEnvironment environment)
         {
             _environment = environment;
         }

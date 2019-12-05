@@ -3,13 +3,15 @@ using Omni.BuildingBlocks.ExceptionHandling;
 using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace EfMicroservice.Api.Infrastructure.Exceptions
 {
     public class ErrorResultConverter : IErrorResultConverter
     {
-        private const string DefaultInstance = "EfMicroservice"; //Todo: EF-Change
+        private const string DefaultInstance = "CompositeX"; //Todo: EF-Change
         private const string DefaultErrorMessage = "Internal Server Error";
 
         public ErrorResult GetError(BaseException exception)
@@ -26,7 +28,7 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             return new ErrorResult(error);
         }
 
-        public ErrorResult GetError(System.ComponentModel.DataAnnotations.ValidationException exception)
+        public ErrorResult GetError(ValidationException exception)
         {
             dynamic details = new
             {
@@ -76,6 +78,32 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             };
 
             var error = new Error(DefaultInstance, ErrorCode.System.ToString(), DefaultErrorMessage, details);
+            return new ErrorResult(error);
+        }
+
+        public ErrorResult GetError(DbUpdateConcurrencyException exception)
+        {
+            dynamic details = new
+            {
+                ErrorMessage = exception.Message,
+                StackTrace = exception.StackTrace,
+                InnerExceptionMessage = exception.InnerException?.Message
+            };
+
+            var error = new Error(DefaultInstance, ErrorCode.System.ToString(), exception.Message, details);
+            return new ErrorResult(error);
+        }
+
+        public ErrorResult GetError(DbUpdateException exception)
+        {
+            dynamic details = new
+            {
+                ErrorMessage = exception.Message,
+                StackTrace = exception.StackTrace,
+                InnerExceptionMessage = exception.InnerException?.Message
+            };
+
+            var error = new Error(DefaultInstance, ErrorCode.System.ToString(), exception.ExtractDetails(), details);
             return new ErrorResult(error);
         }
 
