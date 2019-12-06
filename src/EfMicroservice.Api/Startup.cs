@@ -74,6 +74,7 @@ namespace EfMicroservice.Api
             services.AddEntityFrameworkNpgsql()
                 .AddDbContextPool<ApplicationDbContext>(options => options
                     .UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
+                    .UseSnakeCaseNamingConvention()
                     .UseLoggerFactory(serviceProvider.GetService<ILoggerFactory>()));
 
             // Register Scoped Dependencies

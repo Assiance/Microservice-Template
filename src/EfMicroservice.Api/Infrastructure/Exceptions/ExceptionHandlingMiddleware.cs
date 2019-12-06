@@ -5,8 +5,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
+using Omni.BuildingBlocks.ExceptionHandling;
 
 namespace EfMicroservice.Api.Infrastructure.Exceptions
 {
@@ -38,7 +40,7 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
                 var errorResult = _errorResultConverter.GetError(ex);
                 await WriteErrorAsync(httpContext, ex, (int)ex.HttpCode, errorResult);
             }
-            catch (System.ComponentModel.DataAnnotations.ValidationException ex)
+            catch (ValidationException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
                 await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.BadRequest, errorResult);
@@ -57,6 +59,17 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             {
                 var errorResult = _errorResultConverter.GetError(ex);
                 await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.Conflict, errorResult);
+            }
+            catch (DbUpdateException ex)
+            {
+                var details = ex.ExtractDetails();
+                var errorResult = _errorResultConverter.GetError(ex);
+
+                var statusCode = details.Contains("is not present in table")
+                    ? (int)HttpStatusCode.NotFound
+                    : (int)HttpStatusCode.Conflict;
+
+                await WriteErrorAsync(httpContext, ex, statusCode, errorResult);
             }
             catch (Exception ex)
             {

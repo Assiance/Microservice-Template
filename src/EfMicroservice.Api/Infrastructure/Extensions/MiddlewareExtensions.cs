@@ -16,9 +16,9 @@ namespace EfMicroservice.Api.Infrastructure.Extensions
             return builder.UseMiddleware<ExceptionHandlingMiddleware>();
         }
 
-        public static IApplicationBuilder UseAddCorrelationIdToHeaderMiddleware(this IApplicationBuilder builer)
+        public static IApplicationBuilder UseAddCorrelationIdToHeaderMiddleware(this IApplicationBuilder builder)
         {
-            return builer.UseMiddleware<AddCorrelationIdToHeaderMiddleware>();
+            return builder.UseMiddleware<AddCorrelationIdToHeaderMiddleware>();
         }
     }
 }

@@ -20,7 +20,6 @@ namespace EfMicroservice.Persistence.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            modelBuilder.FormatTypeConfigurationsForPostgres();
         }
     }
 }
