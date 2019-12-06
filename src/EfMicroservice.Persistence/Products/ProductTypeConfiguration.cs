@@ -24,7 +24,8 @@ namespace EfMicroservice.Persistence.Products
             builder.HasMany(x => x.Orders)
                 .WithOne(x => x.Product)
                 .IsRequired()
-                .HasForeignKey(x => x.ProductId);
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasAuditInfo();
             builder.HasRowVersion();

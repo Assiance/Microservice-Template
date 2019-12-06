@@ -26,7 +26,7 @@ namespace EfMicroservice.Api.Orders.Controllers.V1
         {
             var createdOrder = await _placeOrderCommand.ExecuteAsync(newProduct);
 
-            return CreatedAtRoute("GetValueById", new { id = createdOrder.Id }, createdOrder);
+            return Created(string.Empty, createdOrder);
         }
     }
 }
