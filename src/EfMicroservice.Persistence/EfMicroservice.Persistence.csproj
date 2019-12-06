@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Feature\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Feature\Migrations\Downs\20190427041334_Initial.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
