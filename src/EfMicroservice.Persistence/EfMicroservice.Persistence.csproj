@@ -16,4 +16,13 @@
     <ProjectReference Include="..\EfMicroservice.Common\EfMicroservice.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Feature\Migrations\Downs\20190427041334_Initial.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Feature\Migrations\Ups\20190427041334_Initial.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

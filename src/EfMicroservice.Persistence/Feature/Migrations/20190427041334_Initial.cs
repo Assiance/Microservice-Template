@@ -12,12 +12,12 @@ namespace EfMicroservice.Persistence.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.ComposeSqlUp(typeof(Initial));
+            migrationBuilder.ComposeSqlUp(typeof(Initial), "Feature");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.ComposeSqlDown((typeof(Initial)));
+            migrationBuilder.ComposeSqlDown((typeof(Initial)), "Feature");
         }
     }
 }
