@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using EfMicroservice.Domain.Products;
+using EfMicroservice.ExternalData.Clients.Interfaces;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Omni.BuildingBlocks.Http.Client;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using EfMicroservice.Domain.Products;
-using EfMicroservice.ExternalData.Clients.Interfaces;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Omni.BuildingBlocks.Api.Configuration.HttpClient;
-using Omni.BuildingBlocks.Http.Client;
 
 namespace EfMicroservice.ExternalData.Clients
 {
     public class GitHaubClient : BaseHttpClient, IGitHaubClient
     {
-        public GitHaubClient(HttpClient httpClient, IOptions<List<HttpClientPolicy>> clientPolicies,
-            ILoggerFactory loggerFactory)
-            : base(typeof(GitHaubClient), httpClient, clientPolicies, loggerFactory.CreateLogger<GitHaubClient>())
+        public GitHaubClient(HttpClient httpClient, ILoggerFactory loggerFactory)
+            : base(httpClient, loggerFactory.CreateLogger<GitHaubClient>())
         {
         }
 
@@ -43,8 +39,8 @@ namespace EfMicroservice.ExternalData.Clients
 
         public async Task<object> SendAsyncDoesPost()
         {
-            var json = JsonConvert.SerializeObject(new {name = "testmarlo132n", price = 12324, quantity = 1},
-                new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
+            var json = JsonConvert.SerializeObject(new { name = "testmarlo132n", price = 12324, quantity = 1 },
+                new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
             var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
             HttpRequestMessage request = new HttpRequestMessage

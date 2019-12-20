@@ -1,7 +1,8 @@
 using EfMicroservice.Api.Infrastructure.Configurations;
 using EfMicroservice.Api.Infrastructure.Exceptions;
 using EfMicroservice.Api.Infrastructure.Extensions;
-using EfMicroservice.Api.Infrastructure.Handlers;
+using EfMicroservice.Api.Infrastructure.Logging;
+using EfMicroservice.Api.Infrastructure.Registrations;
 using EfMicroservice.Application;
 using EfMicroservice.Common;
 using EfMicroservice.Domain;
@@ -15,23 +16,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using EfMicroservice.Api.Infrastructure.Logging;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using Omni.BuildingBlocks;
 using Omni.BuildingBlocks.Api.Configuration.Authentication;
-using Omni.BuildingBlocks.Api.Configuration.HttpClient;
 using Omni.BuildingBlocks.Http.Handlers;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace EfMicroservice.Api
 {
@@ -54,7 +53,8 @@ namespace EfMicroservice.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApiVersioning(o => {
+            services.AddApiVersioning(o =>
+            {
                 o.ReportApiVersions = true;
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(1, 0);
@@ -89,8 +89,9 @@ namespace EfMicroservice.Api
             services.RegisterRequestValidation();
 
             // Register Transient Dependencies
-            services.AddTransient<AppendHeadersHandler>();
-            services.AddTransient<ReAuthHandler>();
+            services.AddTransient<AppendCorrelationIdHeaderHandler>();
+            services.AddTransient<AppendAuthHeaderHandler>();
+            services.AddTransient<UnsuccessfulResponseHandler>();
             services.AddTransient<UnsuccessfulResponseHandler>();
             services.AddTransient<HttpClient>();
             services.AddTransient<LoggingMiddleware>();
@@ -100,11 +101,8 @@ namespace EfMicroservice.Api
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IErrorResultConverter, ErrorResultConverter>();
 
-            var httpClientPoliciesSection = Configuration.GetSection("HttpClientPolicies");
-            services.Configure<List<HttpClientPolicy>>(httpClientPoliciesSection);
-
-            var policies = httpClientPoliciesSection.Get<List<HttpClientPolicy>>();
-            services.RegisterClients(policies, _clients);
+            // Register HttpClients
+            services.AddGitHaubClient(Configuration);
 
             services.AddAccessTokenProvider();
             services.AddSwagger();
@@ -144,7 +142,7 @@ namespace EfMicroservice.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
             app.UseLoggingMiddleware();
             app.UseAddCorrelationIdToHeaderMiddleware();
             app.UseExceptionHandlingMiddleware();

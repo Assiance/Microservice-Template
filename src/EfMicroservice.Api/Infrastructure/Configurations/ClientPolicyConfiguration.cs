@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Reflection;
-using EfMicroservice.Api.Infrastructure.Handlers;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Omni.BuildingBlocks.Api.Configuration.HttpClient;
 using Omni.BuildingBlocks.Http.Handlers;
 using Polly;
@@ -15,67 +8,58 @@ using Polly.Extensions.Http;
 using Polly.Retry;
 using Polly.Timeout;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 
 namespace EfMicroservice.Api.Infrastructure.Configurations
 {
     public static class ClientPolicyConfiguration
     {
-        public static void RegisterClients(this IServiceCollection services, List<HttpClientPolicy> policies,
-            Dictionary<Type, Func<IServiceCollection, IHttpClientBuilder>> clientDict)
+        public static IHttpClientBuilder AddPolicy(this IHttpClientBuilder builder, HttpClientPolicy policy)
         {
-            var dataAssembly = Assembly.Load("EfMicroservice.ExternalData"); //Todo: EF
+            var policiesToWrap = new List<IAsyncPolicy<HttpResponseMessage>>();
 
-            foreach (var policy in policies)
+            var timeout = ConfigureTimeoutPolicy(policy.RequestTimeoutMs);
+
+            var readRetry = ConfigureRetryReadPolicy(policy.Retry?.Read);
+            var writeRetry = ConfigureRetryWritePolicy(policy.Retry?.Write);
+
+            var circuitBreaker = ConfigureCircuitBreakerPolicy(policy.CircuitBreaker);
+            policiesToWrap.Add(circuitBreaker);
+
+            var bulkhead = ConfigureBulkheadPolicy(policy.Bulkhead);
+            policiesToWrap.Add(bulkhead);
+
+            return builder.AddPolicyHandler(request =>
             {
-                var policiesToWrap = new List<IAsyncPolicy<HttpResponseMessage>>();
-
-                var timeout = ConfigureTimeoutPolicy(policy);
-
-                var readRetry = ConfigureRetryReadPolicy(policy);
-                var writeRetry = ConfigureRetryWritePolicy(policy);
-
-                var circuitBreaker = ConfigureCircuitBreakerPolicy(policy);
-                policiesToWrap.Add(circuitBreaker);
-
-                var bulkhead = ConfigureBulkheadPolicy(policy);
-                policiesToWrap.Add(bulkhead);
-
-                foreach (var client in policy.Clients)
+                var method = request.Method;
+                if (method == HttpMethod.Get)
                 {
-                    var clientType = dataAssembly.GetType(client.Namespace);
-                    var clientBuilder = clientDict[clientType](services);
-
-                    clientBuilder.AddPolicyHandler(request =>
-                        {
-                            var method = request.Method;
-                            if (method == HttpMethod.Get)
-                            {
-                                return timeout.WrapAsync(
-                                    readRetry.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray())));
-                            }
-
-                            if (writeRetry != null && (method == HttpMethod.Put || method == HttpMethod.Delete))
-                            {
-                                return timeout.WrapAsync(
-                                    writeRetry.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray())));
-                            }
-
-                            return timeout.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray()));
-                        })
-                        .AddHttpMessageHandler<AppendHeadersHandler>()
-                        .AddHttpMessageHandler<UnsuccessfulResponseHandler>()
-                        .AddHttpMessageHandler<ReAuthHandler>();
+                    return timeout.WrapAsync(
+                        readRetry.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray())));
                 }
-            }
+
+                if (writeRetry != null && (method == HttpMethod.Put || method == HttpMethod.Delete))
+                {
+                    return timeout.WrapAsync(
+                        writeRetry.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray())));
+                }
+
+                return timeout.WrapAsync(Policy.WrapAsync(policiesToWrap.ToArray()));
+            })
+                .AddHttpMessageHandler<AppendCorrelationIdHeaderHandler>();
         }
 
-        private static AsyncBulkheadPolicy<HttpResponseMessage> ConfigureBulkheadPolicy(HttpClientPolicy policy)
+        public static AsyncBulkheadPolicy<HttpResponseMessage> ConfigureBulkheadPolicy(BulkheadConfiguration bulkheadConfig)
         {
             AsyncBulkheadPolicy<HttpResponseMessage> bulkhead = null;
-            if (policy.Bulkhead != null)
+            if (bulkheadConfig != null)
             {
-                bulkhead = Policy.BulkheadAsync<HttpResponseMessage>(policy.Bulkhead.MaxParallelization,
-                    policy.Bulkhead.MaxQueuingActions,
+                bulkhead = Policy.BulkheadAsync<HttpResponseMessage>(bulkheadConfig.MaxParallelization,
+                    bulkheadConfig.MaxQueuingActions,
                     async (context) =>
                     {
                         Log.Logger.Warning(
@@ -86,15 +70,14 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
             return bulkhead;
         }
 
-        private static AsyncCircuitBreakerPolicy<HttpResponseMessage> ConfigureCircuitBreakerPolicy(
-            HttpClientPolicy policy)
+        public static AsyncCircuitBreakerPolicy<HttpResponseMessage> ConfigureCircuitBreakerPolicy(CircuitBreakerConfiguration circuitBreakerConfig)
         {
             AsyncCircuitBreakerPolicy<HttpResponseMessage> circuitBreaker = null;
-            if (policy.CircuitBreaker != null)
+            if (circuitBreakerConfig != null)
             {
                 circuitBreaker = HttpPolicyExtensions.HandleTransientHttpError()
-                    .CircuitBreakerAsync(policy.CircuitBreaker.ExceptionsAllowedBeforeBreaking,
-                        TimeSpan.FromMilliseconds(policy.CircuitBreaker.DurationOfBreakMs),
+                    .CircuitBreakerAsync(circuitBreakerConfig.ExceptionsAllowedBeforeBreaking,
+                        TimeSpan.FromMilliseconds(circuitBreakerConfig.DurationOfBreakMs),
                         (result, timespan, context) =>
                         {
                             var request = result.Result.RequestMessage;
@@ -106,11 +89,11 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
             return circuitBreaker;
         }
 
-        private static AsyncTimeoutPolicy<HttpResponseMessage> ConfigureTimeoutPolicy(HttpClientPolicy policy)
+        public static AsyncTimeoutPolicy<HttpResponseMessage> ConfigureTimeoutPolicy(int? requestTimeoutMs)
         {
             var timeout = Policy.TimeoutAsync<HttpResponseMessage>(
-                policy.RequestTimeoutMs.HasValue
-                    ? TimeSpan.FromMilliseconds(policy.RequestTimeoutMs.Value)
+                requestTimeoutMs.HasValue
+                    ? TimeSpan.FromMilliseconds(requestTimeoutMs.Value)
                     : TimeSpan.FromMinutes(1),
                 async (context, timespan, task) =>
                 {
@@ -121,15 +104,15 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
             return timeout;
         }
 
-        private static AsyncRetryPolicy<HttpResponseMessage> ConfigureRetryWritePolicy(HttpClientPolicy policy)
+        public static AsyncRetryPolicy<HttpResponseMessage> ConfigureRetryWritePolicy(RetryRequestConfiguration writeConfig)
         {
             AsyncRetryPolicy<HttpResponseMessage> writeRetry = null;
-            if (policy.Retry?.Write != null)
+            if (writeConfig != null)
             {
-                var writeTimes = policy.Retry?.Write?.IntervalsMs?.Select(ms => TimeSpan.FromMilliseconds(ms));
+                var writeTimes = writeConfig.IntervalsMs?.Select(ms => TimeSpan.FromMilliseconds(ms));
 
                 writeRetry = Policy.HandleResult<HttpResponseMessage>(response =>
-                        policy.Retry.Write.HttpStatusCodes.Any(code =>
+                        writeConfig.HttpStatusCodes.Any(code =>
                             Enum.Parse<HttpStatusCode>(code) == response.StatusCode))
                     .WaitAndRetryAsync(writeTimes ?? new List<TimeSpan>(),
                         (result, timespan, retryCount, context) =>
@@ -143,13 +126,13 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
             return writeRetry;
         }
 
-        private static AsyncRetryPolicy<HttpResponseMessage> ConfigureRetryReadPolicy(HttpClientPolicy policy)
+        public static AsyncRetryPolicy<HttpResponseMessage> ConfigureRetryReadPolicy(RetryRequestConfiguration readConfig)
         {
-            var intervals = policy.Retry?.Read?.IntervalsMs ?? new List<int>() {100, 500};
+            var intervals = readConfig?.IntervalsMs ?? new List<int>() { 100, 500 };
             var readTimes = intervals.Select(ms => TimeSpan.FromMilliseconds(ms));
 
             var readRetry = Policy.HandleResult<HttpResponseMessage>(response =>
-                    policy.Retry.Read.HttpStatusCodes.Any(code =>
+                    readConfig.HttpStatusCodes.Any(code =>
                         Enum.Parse<HttpStatusCode>(code) == response.StatusCode))
                 .WaitAndRetryAsync(readTimes,
                     ((result, timespan, retryCount, context) =>
