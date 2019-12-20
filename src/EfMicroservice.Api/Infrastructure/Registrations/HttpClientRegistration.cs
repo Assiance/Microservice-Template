@@ -1,12 +1,12 @@
 ﻿using EfMicroservice.Api.Infrastructure.Configurations;
 using EfMicroservice.ExternalData.Clients;
 using EfMicroservice.ExternalData.Clients.ClientConfigurations;
-using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Omni.BuildingBlocks.Api.Configuration.HttpClient;
 using Omni.BuildingBlocks.Http.Handlers;
 using System;
+using EfMicroservice.Application.Products.Clients;
 
 namespace EfMicroservice.Api.Infrastructure.Registrations
 {

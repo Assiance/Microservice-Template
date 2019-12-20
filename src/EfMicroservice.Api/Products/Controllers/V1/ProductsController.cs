@@ -5,7 +5,6 @@ using EfMicroservice.Application.Products.Mappings;
 using EfMicroservice.Application.Products.Queries;
 using EfMicroservice.Application.Products.Queries.GetProductById;
 using EfMicroservice.Application.Products.Queries.GetProducts;
-using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +15,7 @@ using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EfMicroservice.Application.Products.Clients;
 
 namespace EfMicroservice.Api.Products.Controllers.V1
 {

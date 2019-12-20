@@ -1,5 +1,4 @@
 ﻿using EfMicroservice.Domain.Products;
-using EfMicroservice.ExternalData.Clients.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -8,6 +7,7 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using EfMicroservice.Application.Products.Clients;
 
 namespace EfMicroservice.ExternalData.Clients
 {

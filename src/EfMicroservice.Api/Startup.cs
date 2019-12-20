@@ -8,7 +8,6 @@ using EfMicroservice.Common;
 using EfMicroservice.Domain;
 using EfMicroservice.ExternalData;
 using EfMicroservice.ExternalData.Clients;
-using EfMicroservice.ExternalData.Clients.Interfaces;
 using EfMicroservice.Persistence;
 using EfMicroservice.Persistence.Contexts;
 using FluentValidation.AspNetCore;
@@ -31,6 +30,7 @@ using Omni.BuildingBlocks.Http.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using EfMicroservice.Application.Products.Clients;
 
 namespace EfMicroservice.Api
 {

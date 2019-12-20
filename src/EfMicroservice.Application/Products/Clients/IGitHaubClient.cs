@@ -1,7 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace EfMicroservice.ExternalData.Clients.Interfaces
+namespace EfMicroservice.Application.Products.Clients
 {
     public interface IGitHaubClient
     {
