@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
 using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
+using Polly.CircuitBreaker;
 
 namespace EfMicroservice.Api.Infrastructure.Exceptions
 {
@@ -14,6 +16,8 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
         ErrorResult GetError(FluentValidation.ValidationException exception);
 
         ErrorResult GetError(HttpCallException exception);
+
+        ErrorResult GetError(BrokenCircuitException<HttpResponseMessage> exception);
 
         ErrorResult GetError(DbUpdateConcurrencyException exception);
 

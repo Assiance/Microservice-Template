@@ -7,8 +7,10 @@ using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Omni.BuildingBlocks.ExceptionHandling;
+using Polly.CircuitBreaker;
 
 namespace EfMicroservice.Api.Infrastructure.Exceptions
 {
@@ -54,6 +56,11 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             {
                 var errorResult = _errorResultConverter.GetError(exception);
                 await WriteErrorAsync(httpContext, exception, (int)exception.StatusCode, errorResult);
+            }
+            catch (BrokenCircuitException<HttpResponseMessage> exception)
+            {
+                var errorResult = _errorResultConverter.GetError(exception);
+                await WriteErrorAsync(httpContext, exception, (int)exception.Result.StatusCode, errorResult);
             }
             catch (DbUpdateConcurrencyException ex)
             {

@@ -1,4 +1,4 @@
-﻿using Omni.BuildingBlocks.Api.Configuration.HttpClient;
+﻿using Omni.BuildingBlocks.Api.Configuration.HttpClient.Models;
 
 namespace EfMicroservice.ExternalData.Clients.ClientConfigurations
 {

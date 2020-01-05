@@ -1,12 +1,12 @@
-﻿using EfMicroservice.Api.Infrastructure.Configurations;
+﻿using EfMicroservice.Api.Infrastructure.Extensions;
+using EfMicroservice.Application.Products.Clients;
 using EfMicroservice.ExternalData.Clients;
 using EfMicroservice.ExternalData.Clients.ClientConfigurations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Omni.BuildingBlocks.Api.Configuration.HttpClient;
+using Omni.BuildingBlocks.Api.Configuration.HttpClient.Models;
 using Omni.BuildingBlocks.Http.Handlers;
 using System;
-using EfMicroservice.Application.Products.Clients;
 
 namespace EfMicroservice.Api.Infrastructure.Registrations
 {
@@ -25,7 +25,6 @@ namespace EfMicroservice.Api.Infrastructure.Registrations
                     c.BaseAddress = new Uri(client.BaseUrl);
                 })
                 .AddPolicy(policy)
-                .AddHttpMessageHandler<UnsuccessfulResponseHandler>()
                 .AddReAuthHandler(client);
         }
     }

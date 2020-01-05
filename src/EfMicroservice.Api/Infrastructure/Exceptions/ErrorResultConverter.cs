@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
+using Polly.CircuitBreaker;
 
 namespace EfMicroservice.Api.Infrastructure.Exceptions
 {
@@ -71,13 +73,31 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             dynamic details = new
             {
                 RequestUrl = exception.RequestUri.ToString(),
-                exception.RequestMethod,
+                RequestMethod = exception.RequestMethod.Method,
                 ErrorMessage = exception.Message,
-                ResponseBody = GetResponseBody(exception),
+                ResponseBody = GetResponseBody(exception.ResponseBody),
                 StackTrace = exception.StackTrace
             };
 
-            var error = new Error(DefaultInstance, ErrorCode.System.ToString(), DefaultErrorMessage, details);
+            var error = new Error(DefaultInstance, ErrorCode.System.ToString(), exception.Message, details);
+            return new ErrorResult(error);
+        }
+
+        public ErrorResult GetError(BrokenCircuitException<HttpResponseMessage> exception)
+        {
+            var detailsErrorMessage = HttpCallException.BuildMessage(exception.Result.RequestMessage.RequestUri,
+                exception.Result.RequestMessage.Method, exception.Result.StatusCode, exception.Result.ReasonPhrase);
+
+            dynamic details = new
+            {
+                RequestUrl = exception.Result.RequestMessage.RequestUri.ToString(),
+                RequestMethod = exception.Result.RequestMessage.Method.Method,
+                ErrorMessage = detailsErrorMessage,
+                ResponseBody = GetResponseBody(exception.Result.Content.ReadAsStringAsync().Result),
+                StackTrace = exception.StackTrace
+            };
+
+            var error = new Error(DefaultInstance, ErrorCode.System.ToString(), exception.Message, details);
             return new ErrorResult(error);
         }
 
@@ -120,15 +140,15 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             return new ErrorResult(error);
         }
 
-        private static object GetResponseBody(HttpCallException httpCallException)
+        private static object GetResponseBody(string responseBody)
         {
             try
             {
-                return JObject.Parse(httpCallException.ResponseBody);
+                return JObject.Parse(responseBody);
             }
             catch
             {
-                return httpCallException.ResponseBody;
+                return responseBody;
             }
         }
     }
