@@ -1,10 +1,10 @@
-﻿using EfMicroservice.Application.Products.Commands.CreateProduct;
+﻿using EfMicroservice.Application.Products.Clients;
+using EfMicroservice.Application.Products.Commands.CreateProduct;
 using EfMicroservice.Application.Products.Commands.DeleteProduct;
 using EfMicroservice.Application.Products.Commands.UpdateProduct;
 using EfMicroservice.Application.Products.Mappings;
 using EfMicroservice.Application.Products.Queries;
-using EfMicroservice.Application.Products.Queries.GetProductById;
-using EfMicroservice.Application.Products.Queries.GetProducts;
+using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +15,8 @@ using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EfMicroservice.Application.Products.Clients;
+using EfMicroservice.Application.Products.Queries.GetProductById;
+using EfMicroservice.Application.Products.Queries.GetProducts;
 
 namespace EfMicroservice.Api.Products.Controllers.V1
 {
@@ -24,24 +25,14 @@ namespace EfMicroservice.Api.Products.Controllers.V1
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IGetProductsQuery _getProductsQuery;
-        private readonly IGetProductByIdQuery _getProductByIdQuery;
-        private readonly ICreateProductCommand _createProductCommand;
-        private readonly IUpdateProductCommand _updateProductCommand;
-        private readonly IDeleteProductCommand _deleteProductCommand;
+        private readonly IMediator _mediator;
         private readonly IProductMapper _mapper;
         private readonly IGitHaubClient _haubService;
         private readonly ILogger _logger;
 
-        public ProductsController(IGetProductsQuery getProductsQuery, IGetProductByIdQuery getProductByIdQuery,
-            ICreateProductCommand createProductCommand, IUpdateProductCommand updateProductCommand,
-            IDeleteProductCommand deleteProductCommand, IProductMapper mapper, ILoggerFactory loggerFactory, IGitHaubClient haubService)
+        public ProductsController(IMediator mediator, IProductMapper mapper, ILoggerFactory loggerFactory, IGitHaubClient haubService)
         {
-            _getProductsQuery = getProductsQuery;
-            _getProductByIdQuery = getProductByIdQuery;
-            _createProductCommand = createProductCommand;
-            _updateProductCommand = updateProductCommand;
-            _deleteProductCommand = deleteProductCommand;
+            _mediator = mediator;
             _mapper = mapper;
             _haubService = haubService;
             _logger = loggerFactory.CreateLogger<ProductsController>();
@@ -51,10 +42,10 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [ProducesResponseType(typeof(IEnumerable<ProductModel>), 200)]
         public async Task<ActionResult<IEnumerable<ProductModel>>> Get()
         {
-            var downstreamRequest = await _haubService.Get();
-            var downstreamRequest2 = await _haubService.SendAsyncDoesPost();
+            //var downstreamRequest = await _haubService.Get();
+            //var downstreamRequest2 = await _haubService.SendAsyncDoesPost();
 
-            return Ok(await _getProductsQuery.ExecuteAsync());
+            return Ok(await _mediator.Send(new GetProductsQuery()));
         }
 
         [HttpGet("{id}", Name = nameof(GetProductById))]
@@ -62,14 +53,14 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [ProducesResponseType(404)]
         public async Task<ActionResult<ProductModel>> GetProductById(Guid id)
         {
-            return Ok(await _getProductByIdQuery.ExecuteAsync(id));
+            return Ok(await _mediator.Send(new GetProductByIdQuery(id)));
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(ProductModel), 201)]
-        public async Task<ActionResult<ProductModel>> Post([FromBody] CreateProductModel newProduct)
+        public async Task<ActionResult<ProductModel>> Post([FromBody] CreateProductCommand newProduct)
         {
-            var createdProduct = await _createProductCommand.ExecuteAsync(newProduct);
+            var createdProduct = await _mediator.Send(newProduct);
 
             return CreatedAtRoute(nameof(GetProductById), new { id = createdProduct.Id, version = "1" }, createdProduct);
         }
@@ -77,9 +68,10 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateProductModel updatedProduct)
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateProductCommand updatedProduct)
         {
-            await _updateProductCommand.ExecuteAsync(id, updatedProduct);
+            updatedProduct.ProductId = id;
+            await _mediator.Send(updatedProduct);
 
             return NoContent();
         }
@@ -87,7 +79,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [HttpPatch("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Patch(Guid id, [FromBody] JsonPatchDocument<UpdateProductModel> patch)
+        public async Task<IActionResult> Patch(Guid id, [FromBody] JsonPatchDocument<UpdateProductCommand> patch)
         {
             var supportedOps = new[] { OperationType.Replace };
             patch.IncludedPatchOps(supportedOps);
@@ -95,7 +87,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
             var restrictedPaths = Array.Empty<string>();
             patch.ExcludedPatchPaths(restrictedPaths);
 
-            var productModel = await _getProductByIdQuery.ExecuteAsync(id);
+            var productModel = await _mediator.Send(new GetProductByIdQuery(id));
             var patchModel = _mapper.Map(productModel);
 
             patch.ApplyTo(patchModel, ModelState);
@@ -105,7 +97,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
                 throw new BadRequestException(ModelState.ToFormattedErrors().Join());
             }
 
-            await _updateProductCommand.ExecuteAsync(id, patchModel);
+            await _mediator.Send(patchModel);
 
             return NoContent();
         }
@@ -114,7 +106,10 @@ namespace EfMicroservice.Api.Products.Controllers.V1
         [ProducesResponseType(204)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _deleteProductCommand.ExecuteAsync(id);
+            await _mediator.Send(new DeleteProductCommand()
+            {
+                ProductId = id
+            });
 
             return NoContent();
         }

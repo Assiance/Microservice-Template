@@ -2,7 +2,7 @@
 
 namespace EfMicroservice.Application.Products.Commands.CreateProduct
 {
-    public class CreateProductModelValidator : AbstractValidator<CreateProductModel>
+    public class CreateProductModelValidator : AbstractValidator<CreateProductCommand>
     {
         public CreateProductModelValidator()
         {

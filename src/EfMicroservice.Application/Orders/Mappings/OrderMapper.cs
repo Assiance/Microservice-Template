@@ -17,7 +17,7 @@ namespace EfMicroservice.Application.Orders.Mappings
             };
         }
 
-        public Order Map(PlaceOrderModel source)
+        public Order Map(PlaceOrderCommand source)
         {
             return new Order()
             {

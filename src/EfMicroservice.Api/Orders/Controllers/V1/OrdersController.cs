@@ -3,6 +3,7 @@ using EfMicroservice.Application.Orders.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace EfMicroservice.Api.Orders.Controllers.V1
 {
@@ -11,20 +12,20 @@ namespace EfMicroservice.Api.Orders.Controllers.V1
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly IPlaceOrderCommand _placeOrderCommand;
+        private readonly IMediator _mediator;
         private readonly ILogger _logger;
 
-        public OrdersController(IPlaceOrderCommand placeOrderCommand, ILoggerFactory loggerFactory)
+        public OrdersController(IMediator mediator, ILoggerFactory loggerFactory)
         {
-            _placeOrderCommand = placeOrderCommand;
+            _mediator = mediator;
             _logger = loggerFactory.CreateLogger<OrdersController>();
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(OrderModel), 201)]
-        public async Task<ActionResult<OrderModel>> Post([FromBody] PlaceOrderModel newProduct)
+        public async Task<ActionResult<OrderModel>> Post([FromBody] PlaceOrderCommand newProduct)
         {
-            var createdOrder = await _placeOrderCommand.ExecuteAsync(newProduct);
+            var createdOrder = await _mediator.Send(newProduct);
 
             return Created(string.Empty, createdOrder);
         }

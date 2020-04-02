@@ -1,27 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using EfMicroservice.Application.Products.Mappings;
-using EfMicroservice.Application.Shared.Repositories;
+﻿using MediatR;
+using System;
+using EfMicroservice.Application.Behaviors;
 
 namespace EfMicroservice.Application.Products.Commands.DeleteProduct
 {
-    public class DeleteProductCommand : IDeleteProductCommand
+    public class DeleteProductCommand : IRequest
     {
-        private readonly IProductMapper _productMapper;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public DeleteProductCommand(IProductMapper productMapper, IUnitOfWork unitOfWork)
-        {
-            _productMapper = productMapper;
-            _unitOfWork = unitOfWork;
-        }
-
-        public async Task ExecuteAsync(Guid productId)
-        {
-            var product = await _unitOfWork.Products.FindAsync(productId);
-
-            _unitOfWork.Products.Remove(product);
-            await _unitOfWork.SaveAsync();
-        }
+        public Guid ProductId { get; set; }
     }
 }

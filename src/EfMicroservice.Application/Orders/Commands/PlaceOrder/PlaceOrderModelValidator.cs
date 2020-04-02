@@ -2,7 +2,7 @@
 
 namespace EfMicroservice.Application.Orders.Commands.PlaceOrder
 {
-    public class PlaceOrderModelValidator : AbstractValidator<PlaceOrderModel>
+    public class PlaceOrderModelValidator : AbstractValidator<PlaceOrderCommand>
     {
         public PlaceOrderModelValidator()
         {

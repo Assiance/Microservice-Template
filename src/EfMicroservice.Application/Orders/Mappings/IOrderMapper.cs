@@ -8,6 +8,6 @@ namespace EfMicroservice.Application.Orders.Mappings
     public interface IOrderMapper
     {
         OrderModel Map(Order source);
-        Order Map(PlaceOrderModel source);
+        Order Map(PlaceOrderCommand source);
     }
 }

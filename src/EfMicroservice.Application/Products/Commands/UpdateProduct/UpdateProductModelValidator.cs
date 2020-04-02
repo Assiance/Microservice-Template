@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace EfMicroservice.Application.Products.Commands.UpdateProduct
 {
-    public class UpdateProductModelValidator : AbstractValidator<UpdateProductModel>
+    public class UpdateProductModelValidator : AbstractValidator<UpdateProductCommand>
     {
         public UpdateProductModelValidator()
         {

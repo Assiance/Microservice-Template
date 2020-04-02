@@ -31,7 +31,7 @@ namespace EfMicroservice.Application.Products.Mappings
             return source?.Select(s => Map(s)).ToList();
         }
 
-        public Product Map(CreateProductModel source)
+        public Product Map(CreateProductCommand source)
         {
             return new Product()
             {
@@ -41,11 +41,11 @@ namespace EfMicroservice.Application.Products.Mappings
             };
         }
 
-        public Product Map(Guid productId, UpdateProductModel source)
+        public Product Map(UpdateProductCommand source)
         {
             return new Product()
             {
-                Id = productId,
+                Id = source.ProductId,
                 Name = source.Name,
                 Price = source.Price,
                 Quantity = source.Quantity,
@@ -53,9 +53,9 @@ namespace EfMicroservice.Application.Products.Mappings
             };
         }
 
-        public UpdateProductModel Map(ProductModel source)
+        public UpdateProductCommand Map(ProductModel source)
         {
-            return new UpdateProductModel()
+            return new UpdateProductCommand()
             {
                 Name = source.Name,
                 Price = source.Price,

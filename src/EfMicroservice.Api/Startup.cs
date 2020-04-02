@@ -86,8 +86,6 @@ namespace EfMicroservice.Api
             services.RegisterPersistenceDependencies();
             services.RegisterExternalDataDependencies();
 
-            services.RegisterRequestValidation();
-
             // Register Transient Dependencies
             services.AddTransient<AppendCorrelationIdHeaderHandler>();
             services.AddTransient<AppendAuthHeaderHandler>();
@@ -115,7 +113,6 @@ namespace EfMicroservice.Api
 
                     x.Filters.Add(new AuthorizeFilter(policy));
                 })
-                .AddFluentValidation()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ContractResolver =
                         new CamelCasePropertyNamesContractResolver());
