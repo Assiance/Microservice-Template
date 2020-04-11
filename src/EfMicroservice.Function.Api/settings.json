@@ -1,0 +1,59 @@
+{
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Console" ],
+    "MinimumLevel": "Information",
+    "Override": {
+      "Microsoft": "Warning",
+      "System": "Warning"
+    },
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "outputTemplate": "{TimestampUtc:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {SourceContext} {Message} {Info} {NewLine} {NewLine}"
+        }
+      },
+      {
+        "Name": "ApplicationInsightsTraces",
+        "Args": {
+          "instrumentationKey": "<MyApplicationInsightsInstrumentationKey>" //Todo: EF-Change
+        }
+      }
+    ]
+  },
+  "AllowedHosts": [ "*" ],
+  "Authentication": {
+    "ValidIssuer": "https://thecompositex.auth0.com/",
+    "ValidAudience": "testAPI",
+    "IssuerSigningKey": "0NNosK2kTXLrZnUE0aIxkgcbNYh8uiq4"
+  },
+  "GitHaubClient": {
+    "Name": "GitHaub",
+    "Audience": "testAPI",
+    "BaseUrl": "https://localhost:5001",
+    "TokenEndpointUrl": "https://thecompositex.auth0.com/oauth/token",
+    "ClientId": "svRiz53VK6Xcapp4UZnfCZXwTsO1YG3x",
+    "ClientSecret": "V9RPPfwYtngUVaXwvBdJFXwmf7-OYYG3xvUR2HWpnAil-Ohu0rZ2XzFLOC5KrQ6J"
+  },
+  "DefaultPolicy": {
+    "Retry": {
+      "Read": {
+        "IntervalsMs": [ 100, 500 ],
+        "HttpStatusCodes": [ "BadGateway", "ServiceUnavailable", "GatewayTimeout" ]
+      },
+      "Write": {
+        "IntervalsMs": [ 100, 500 ],
+        "HttpStatusCodes": [ "BadGateway", "ServiceUnavailable", "GatewayTimeout" ]
+      }
+    },
+    "RequestTimeoutMs": 60000,
+    "CircuitBreaker": {
+      "DurationOfBreakMs": 30000,
+      "ExceptionsAllowedBeforeBreaking": 12
+    },
+    "Bulkhead": {
+      "maxParallelization": 10,
+      "maxQueuingActions": 2
+    }
+  }
+}
