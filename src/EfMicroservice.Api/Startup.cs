@@ -106,6 +106,7 @@ namespace EfMicroservice.Api
 
                     x.Filters.Add(new AuthorizeFilter(policy));
                 })
+                .AddFluentValidation()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ContractResolver =
                         new CamelCasePropertyNamesContractResolver());

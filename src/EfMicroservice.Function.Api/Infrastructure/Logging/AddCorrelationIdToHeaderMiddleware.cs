@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Omni.BuildingBlocks.Http;
 using Omni.BuildingBlocks.Http.CorrelationId;
+using Serverless.Function.Middleware;
+using Serverless.Function.Middleware.Abstractions;
 
 namespace EfMicroservice.Function.Api.Infrastructure.Logging
 {
-    public class AddCorrelationIdToHeaderMiddleware : IMiddleware
+    public class AddCorrelationIdToHeaderMiddleware : IFunctionMiddleware
     {
         private readonly ICorrelationIdProvider _correlationIdProvider;
 
@@ -16,7 +18,7 @@ namespace EfMicroservice.Function.Api.Infrastructure.Logging
             _correlationIdProvider = correlationIdProvider;
         }
 
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public async Task InvokeAsync(HttpContext context, FunctionRequestDelegate next)
         {
             var correlation = _correlationIdProvider.EnsureCorrelationIdPresent();
             var request = context.Request;

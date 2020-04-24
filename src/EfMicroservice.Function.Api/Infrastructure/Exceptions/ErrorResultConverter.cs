@@ -46,6 +46,7 @@ namespace EfMicroservice.Function.Api.Infrastructure.Exceptions
 
         public ErrorResult GetError(FluentValidation.ValidationException exception)
         {
+            var badRequest = exception.Data.Contains(ExceptionDataKeys.IsBadRequest) && (bool)exception.Data[ExceptionDataKeys.IsBadRequest];
             var errors = new List<ValidationExceptionDetailProperty>();
             if (exception.Errors.Any())
             {
@@ -57,12 +58,23 @@ namespace EfMicroservice.Function.Api.Infrastructure.Exceptions
                 }));
             }
 
-            dynamic details = new
+            dynamic details = null;
+            if (badRequest)
             {
-                Errors = errors,
-                StackTrace = exception.StackTrace
-            };
-
+                details = new
+                {
+                    Errors = errors,
+                };
+            }
+            else
+            {
+                details = new
+                {
+                    Errors = errors,
+                    StackTrace = exception.StackTrace
+                };
+            }
+            
             var error = new Error(DefaultInstance, ErrorCode.System.ToString(), "Request Model Validation Failed",
                 details);
             return new ErrorResult(error);

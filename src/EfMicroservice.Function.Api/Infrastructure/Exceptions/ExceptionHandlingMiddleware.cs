@@ -11,10 +11,12 @@ using Newtonsoft.Json.Serialization;
 using Omni.BuildingBlocks.ExceptionHandling;
 using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using Polly.CircuitBreaker;
+using Serverless.Function.Middleware;
+using Serverless.Function.Middleware.Abstractions;
 
 namespace EfMicroservice.Function.Api.Infrastructure.Exceptions
 {
-    public class ExceptionHandlingMiddleware : IMiddleware
+    public class ExceptionHandlingMiddleware : IFunctionMiddleware
     {
         private readonly ILogger _logger;
         private readonly IErrorResultConverter _errorResultConverter;
@@ -26,7 +28,7 @@ namespace EfMicroservice.Function.Api.Infrastructure.Exceptions
             _errorResultConverter = errorResultConverter;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
+        public async Task InvokeAsync(HttpContext httpContext, FunctionRequestDelegate next)
         {
             if (httpContext == null)
             {
@@ -50,7 +52,16 @@ namespace EfMicroservice.Function.Api.Infrastructure.Exceptions
             catch (FluentValidation.ValidationException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.InternalServerError, errorResult);
+
+                var statusCode = ex.Data.Contains(ExceptionDataKeys.IsBadRequest) && (bool) ex.Data[ExceptionDataKeys.IsBadRequest]
+                    ? (int) HttpStatusCode.BadRequest
+                    : (int) HttpStatusCode.InternalServerError;
+
+                var logLevel = ex.Data.Contains(ExceptionDataKeys.IsBadRequest) && (bool)ex.Data[ExceptionDataKeys.IsBadRequest]
+                    ? LogLevel.Information
+                    : LogLevel.Error;
+
+                await WriteErrorAsync(httpContext, ex, statusCode, errorResult, logLevel);
             }
             catch (HttpCallException exception)
             {

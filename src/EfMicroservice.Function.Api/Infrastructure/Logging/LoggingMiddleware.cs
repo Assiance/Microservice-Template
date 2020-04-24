@@ -9,10 +9,12 @@ using Omni.BuildingBlocks.Http.CorrelationId;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
+using Serverless.Function.Middleware;
+using Serverless.Function.Middleware.Abstractions;
 
 namespace EfMicroservice.Function.Api.Infrastructure.Logging
 {
-    public class LoggingMiddleware : IMiddleware
+    public class LoggingMiddleware : IFunctionMiddleware
     {
         private readonly ICorrelationIdProvider _correlationIdProvider;
 
@@ -26,7 +28,7 @@ namespace EfMicroservice.Function.Api.Infrastructure.Logging
             _correlationIdProvider = correlationIdProvider;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
+        public async Task InvokeAsync(HttpContext httpContext, FunctionRequestDelegate next)
         {
             if (httpContext == null)
             {

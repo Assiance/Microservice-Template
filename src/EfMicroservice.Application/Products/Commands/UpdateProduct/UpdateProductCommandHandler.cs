@@ -1,12 +1,8 @@
-﻿using System;
+﻿using EfMicroservice.Application.Products.Mappings;
+using EfMicroservice.Application.Shared.Repositories;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using EfMicroservice.Application.Products.Commands.DeleteProduct;
-using EfMicroservice.Application.Products.Mappings;
-using EfMicroservice.Application.Shared.Repositories;
-using EfMicroservice.Domain.Products;
-using FluentValidation;
-using MediatR;
 
 namespace EfMicroservice.Application.Products.Commands.UpdateProduct
 {
