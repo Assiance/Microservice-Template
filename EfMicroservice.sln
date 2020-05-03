@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.ExternalData
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{77EDA1BC-6A05-4498-B698-77B221CB68A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfMicroservice.Application.UnitTests", "tests\EfMicroservice.Application.UnitTests\EfMicroservice.Application.UnitTests.csproj", "{FA3D6643-7513-44F1-A34B-B02EF933002C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Application.UnitTests", "tests\EfMicroservice.Application.UnitTests\EfMicroservice.Application.UnitTests.csproj", "{FA3D6643-7513-44F1-A34B-B02EF933002C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Function.Api", "src\EfMicroservice.Function.Api\EfMicroservice.Function.Api.csproj", "{052CD314-B1B3-4340-B271-41DE057AD900}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,18 @@ Global
 		{FA3D6643-7513-44F1-A34B-B02EF933002C}.Release|x64.Build.0 = Release|Any CPU
 		{FA3D6643-7513-44F1-A34B-B02EF933002C}.Release|x86.ActiveCfg = Release|Any CPU
 		{FA3D6643-7513-44F1-A34B-B02EF933002C}.Release|x86.Build.0 = Release|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|x64.Build.0 = Debug|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|x86.Build.0 = Debug|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|Any CPU.Build.0 = Release|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|x64.ActiveCfg = Release|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|x64.Build.0 = Release|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|x86.ActiveCfg = Release|Any CPU
+		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

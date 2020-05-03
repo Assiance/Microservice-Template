@@ -36,16 +36,9 @@ namespace EfMicroservice.Api
 {
     public class Startup
     {
-        private readonly Dictionary<Type, Func<IServiceCollection, IHttpClientBuilder>> _clients;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            _clients = new Dictionary<Type, Func<IServiceCollection, IHttpClientBuilder>>
-            {
-                {typeof(GitHaubClient), services => services.AddHttpClient<IGitHaubClient, GitHaubClient>()}
-            };
         }
 
         public IConfiguration Configuration { get; }
@@ -113,6 +106,7 @@ namespace EfMicroservice.Api
 
                     x.Filters.Add(new AuthorizeFilter(policy));
                 })
+                .AddFluentValidation()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ContractResolver =
                         new CamelCasePropertyNamesContractResolver());

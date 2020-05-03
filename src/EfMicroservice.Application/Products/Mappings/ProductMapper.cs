@@ -57,6 +57,7 @@ namespace EfMicroservice.Application.Products.Mappings
         {
             return new UpdateProductCommand()
             {
+                ProductId = source.Id,
                 Name = source.Name,
                 Price = source.Price,
                 Quantity = source.Quantity,
