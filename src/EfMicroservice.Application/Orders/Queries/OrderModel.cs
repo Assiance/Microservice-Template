@@ -12,6 +12,7 @@ namespace EfMicroservice.Application.Orders.Queries
         public Guid ProductId { get; set; }
 
         public int Quantity { get; set; }
+        public string Status { get; set; }
         public byte[] RowVersion { get; set; }
     }
 }

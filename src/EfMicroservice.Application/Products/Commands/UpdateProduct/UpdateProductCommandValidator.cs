@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace EfMicroservice.Application.Products.Commands.UpdateProduct
 {
-    public class UpdateProductModelValidator : AbstractValidator<UpdateProductCommand>
+    public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
     {
-        public UpdateProductModelValidator()
+        public UpdateProductCommandValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty();

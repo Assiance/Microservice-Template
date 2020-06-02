@@ -13,6 +13,8 @@ namespace EfMicroservice.Application.Products.Queries
 
         public int Quantity { get; set; }
 
+        public string Status { get; set; }
+
         public byte[] RowVersion { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset? ModifiedDate { get; set; }

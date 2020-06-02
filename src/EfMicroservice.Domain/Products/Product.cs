@@ -1,20 +1,56 @@
-﻿using EfMicroservice.Domain.Orders;
+﻿using EfMicroservice.Common;
+using EfMicroservice.Domain.Events;
+using EfMicroservice.Domain.Orders;
 using FluentValidation;
+using Omni.BuildingBlocks.Persistence;
 using System;
 using System.Collections.Generic;
-using Omni.BuildingBlocks.Persistence;
 
 namespace EfMicroservice.Domain.Products
 {
     public class Product : BaseEntity<Guid>, IVersionInfo, IAuditInfo
     {
-        public string Name { get; set; }
+        private static readonly ProductValidator _validator = new ProductValidator();
 
-        public decimal Price { get; set; }
+        private string _name;
+        public string Name
+        {
+            get => _name;
 
-        public int Quantity { get; set; }
+            set
+            {
+                _name = value;
+                _validator.ValidatePropertyAndThrow(this, (x) => x.Name);
+            }
+        }
 
-        public IEnumerable<Order> Orders { get; set; }
+        private decimal _price;
+        public decimal Price
+        {
+            get => _price;
+
+            set
+            {
+                _price = value;
+                _validator.ValidatePropertyAndThrow(this, (x) => x.Price);
+            }
+        }
+
+        private int _quantity;
+        public int Quantity
+        {
+            get => _quantity;
+
+            set
+            {
+                _quantity = value;
+                _validator.ValidatePropertyAndThrow(this, (x) => x.Quantity);
+            }
+        }
+
+        //public ProductStatus Status { get; private set; }
+        public ProductStatuses StatusId { get; set; }
+        public ProductStatus Status { get; private set; }
 
         public byte[] RowVersion { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
@@ -22,10 +58,27 @@ namespace EfMicroservice.Domain.Products
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
 
-        public void TryValidate()
+        public IEnumerable<Order> Orders { get; set; }
+
+        protected Product(int quantity)
         {
-            var validator = new ProductValidator();
-            validator.ValidateAndThrow(this);
+            StatusId = quantity == 0 ? ProductStatuses.OutOfStock : ProductStatuses.InStock;
+        }
+
+        public Product(string name, decimal price, int quantity)
+            : this(quantity)
+        {
+            Name = name;
+            Price = price;
+            Quantity = quantity;
+
+            _validator.ValidateAndThrow(this);
+        }
+
+        public void SetDiscontinueStatus()
+        {
+            StatusId = ProductStatuses.Discontinued;
+            AddDomainEvent(new ProductDiscontinuedDomainEvent(this));
         }
     }
 }

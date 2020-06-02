@@ -22,6 +22,7 @@ namespace EfMicroservice.Persistence.Products
             _logger = loggerFactory.CreateLogger<ProductRepository>();
         }
 
+        // Example Override
         public override async Task UpdateAsync(Product updatedProduct)
         {
             var retrievedProduct = await FindAsync(updatedProduct.Id);
