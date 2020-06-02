@@ -2,9 +2,9 @@
 
 namespace EfMicroservice.Application.Products.Commands.CreateProduct
 {
-    public class CreateProductModelValidator : AbstractValidator<CreateProductCommand>
+    public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
     {
-        public CreateProductModelValidator()
+        public CreateProductCommandValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty();

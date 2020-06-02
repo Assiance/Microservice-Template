@@ -20,6 +20,7 @@ using Serverless.Function.Middleware.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EfMicroservice.Application.Products.Commands.Discontinue;
 
 namespace EfMicroservice.Function.Api.Products.Controllers.V1
 {
@@ -102,6 +103,26 @@ namespace EfMicroservice.Function.Api.Products.Controllers.V1
 
                 updatedProduct.ProductId = id;
                 await _mediator.Send(updatedProduct);
+
+                return new NoContentResult();
+            });
+
+            return await pipeline.RunAsync(req.HttpContext);
+        }
+
+        [FunctionName(nameof(DiscontinueProduct))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DiscontinueProduct([HttpTrigger(AuthorizationLevel.Function, "put", Route = "v1/products/{id}/discontinue")]
+            HttpRequest req,
+            Guid id, ILogger log)
+        {
+            var pipeline = _builder.UseFunction(async () =>
+            {
+                var discontinuedProduct = await GetRequestBodyAndValidateAsync<DiscontinueProductCommand>(req);
+
+                discontinuedProduct.ProductId = id;
+                await _mediator.Send(discontinuedProduct);
 
                 return new NoContentResult();
             });

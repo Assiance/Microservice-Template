@@ -21,7 +21,6 @@ namespace EfMicroservice.Application.Products.Commands.CreateProduct
         public async Task<ProductModel> Handle(CreateProductCommand productToCreate, CancellationToken cancellationToken)
         {
             var product = _productMapper.Map(productToCreate);
-            product.TryValidate();
 
             var createdProduct = await _unitOfWork.Products.AddAsync(product);
 

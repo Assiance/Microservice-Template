@@ -9,6 +9,8 @@ namespace EfMicroservice.Persistence.Products
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            builder.ToTable("products");
+
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Name)
@@ -20,6 +22,12 @@ namespace EfMicroservice.Persistence.Products
 
             builder.Property(x => x.Quantity)
                 .IsRequired();
+
+            builder.HasOne(x => x.Status)
+                .WithMany()
+                .IsRequired()
+                .HasForeignKey(x => x.StatusId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(x => x.Orders)
                 .WithOne(x => x.Product)

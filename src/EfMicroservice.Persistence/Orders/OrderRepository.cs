@@ -1,8 +1,13 @@
 ﻿using EfMicroservice.Application.Orders.Repositories;
 using EfMicroservice.Domain.Orders;
 using EfMicroservice.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Omni.BuildingBlocks.Persistence.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EfMicroservice.Persistence.Orders
 {
@@ -16,6 +21,11 @@ namespace EfMicroservice.Persistence.Orders
         {
             _dbContext = dbContext;
             _logger = loggerFactory.CreateLogger<OrderRepository>();
+        }
+
+        public async Task<IList<Order>> FindUnShippedOrdersByProductIdAsync(Guid productId)
+        {
+            return await _dbContext.Orders.Where(x => x.ProductId == productId && x.StatusId != OrderStatuses.Shipped).ToListAsync();
         }
     }
 }

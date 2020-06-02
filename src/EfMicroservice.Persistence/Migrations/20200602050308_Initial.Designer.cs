@@ -10,15 +10,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EfMicroservice.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191206055834_initial")]
-    partial class initial
+    [Migration("20200602050308_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.0")
+                .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("EfMicroservice.Domain.Orders.Order", b =>
@@ -43,11 +43,43 @@ namespace EfMicroservice.Persistence.Migrations
                         .HasColumnName("xmin")
                         .HasColumnType("xid");
 
-                    b.HasKey("Id");
+                    b.Property<int>("StatusId")
+                        .HasColumnName("status_id")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("ProductId");
+                    b.HasKey("Id")
+                        .HasName("pk_orders");
+
+                    b.HasIndex("ProductId")
+                        .HasName("ix_orders_product_id");
+
+                    b.HasIndex("StatusId")
+                        .HasName("ix_orders_status_id");
 
                     b.ToTable("orders");
+                });
+
+            modelBuilder.Entity("EfMicroservice.Domain.Orders.OrderStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnName("id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasColumnName("description")
+                        .HasColumnType("character varying(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnName("name")
+                        .HasColumnType("character varying(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id")
+                        .HasName("pk_order_statuses");
+
+                    b.ToTable("order_statuses");
                 });
 
             modelBuilder.Entity("EfMicroservice.Domain.Products.Product", b =>
@@ -94,9 +126,40 @@ namespace EfMicroservice.Persistence.Migrations
                         .HasColumnName("xmin")
                         .HasColumnType("xid");
 
-                    b.HasKey("Id");
+                    b.Property<int>("StatusId")
+                        .HasColumnName("status_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id")
+                        .HasName("pk_products");
+
+                    b.HasIndex("StatusId")
+                        .HasName("ix_products_status_id");
 
                     b.ToTable("products");
+                });
+
+            modelBuilder.Entity("EfMicroservice.Domain.Products.ProductStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnName("id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasColumnName("description")
+                        .HasColumnType("character varying(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnName("name")
+                        .HasColumnType("character varying(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id")
+                        .HasName("pk_product_statuses");
+
+                    b.ToTable("product_statuses");
                 });
 
             modelBuilder.Entity("EfMicroservice.Domain.Orders.Order", b =>
@@ -104,6 +167,24 @@ namespace EfMicroservice.Persistence.Migrations
                     b.HasOne("EfMicroservice.Domain.Products.Product", "Product")
                         .WithMany("Orders")
                         .HasForeignKey("ProductId")
+                        .HasConstraintName("fk_orders_products_product_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("EfMicroservice.Domain.Orders.OrderStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .HasConstraintName("fk_orders_order_statuses_status_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EfMicroservice.Domain.Products.Product", b =>
+                {
+                    b.HasOne("EfMicroservice.Domain.Products.ProductStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .HasConstraintName("fk_products_product_statuses_status_id")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });

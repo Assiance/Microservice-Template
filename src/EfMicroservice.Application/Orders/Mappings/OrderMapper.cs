@@ -12,6 +12,7 @@ namespace EfMicroservice.Application.Orders.Mappings
             return new OrderModel()
             {
                 Id = source.Id,
+                Status = source.StatusId.ToString(),
                 ProductId = source.ProductId,
                 Quantity = source.Quantity
             };
@@ -19,11 +20,7 @@ namespace EfMicroservice.Application.Orders.Mappings
 
         public Order Map(PlaceOrderCommand source)
         {
-            return new Order()
-            {
-                Quantity = source.Quantity,
-                ProductId = source.ProductId
-            };
+            return new Order(source.ProductId, source.Quantity);
         }
     }
 }

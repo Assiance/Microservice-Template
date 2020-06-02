@@ -20,7 +20,6 @@ namespace EfMicroservice.Application.Products.Commands.UpdateProduct
         protected override async Task Handle(UpdateProductCommand productToUpdate, CancellationToken cancellationToken)
         {
             var product = _productMapper.Map(productToUpdate);
-            product.TryValidate();
 
             await _unitOfWork.Products.UpdateAsync(product);
 

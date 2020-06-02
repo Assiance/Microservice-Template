@@ -21,7 +21,6 @@ namespace EfMicroservice.Application.Orders.Commands.PlaceOrder
         public async Task<OrderModel> Handle(PlaceOrderCommand orderToCreate, CancellationToken cancellationToken)
         {
             var order = _orderMapper.Map(orderToCreate);
-            order.TryValidate();
 
             var createdOrder = await _unitOfWork.Orders.AddAsync(order);
 

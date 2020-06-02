@@ -2,8 +2,10 @@
 using EfMicroservice.Application.Products.Repositories;
 using EfMicroservice.Application.Shared.Repositories;
 using EfMicroservice.Persistence.Contexts;
+using EfMicroservice.Persistence.Extensions;
 using EfMicroservice.Persistence.Orders;
 using EfMicroservice.Persistence.Products;
+using MediatR;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Omni.BuildingBlocks.Persistence;
@@ -17,15 +19,17 @@ namespace EfMicroservice.Persistence.Shared
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IChangeTrackingService _changeTrackingService;
+        private readonly IMediator _mediator;
         private readonly ILoggerFactory _loggerFactory;
 
         private IProductRepository _productRepository;
         private IOrderRepository _orderRepository;
 
-        public UnitOfWork(ApplicationDbContext dbContext, IChangeTrackingService changeTrackingService, ILoggerFactory loggerFactory)
+        public UnitOfWork(ApplicationDbContext dbContext, IChangeTrackingService changeTrackingService, IMediator mediator, ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext;
             _changeTrackingService = changeTrackingService;
+            _mediator = mediator;
             _loggerFactory = loggerFactory;
         }
 
@@ -68,6 +72,8 @@ namespace EfMicroservice.Persistence.Shared
 
         private async Task OnBeforeSaveChangesAsync()
         {
+            await _mediator.DispatchDomainEventsAsync(_dbContext);
+
             var entries = _dbContext.ChangeTracker.Entries().ToList();
             foreach (var entry in entries)
             {
