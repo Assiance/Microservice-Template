@@ -106,10 +106,10 @@ namespace EfMicroservice.Persistence.Migrations
             migrationBuilder.InsertData("product_statuses", new[] { "id", "name", "description" }, new[] { ((int)ProductStatuses.OutOfStock).ToString(), ProductStatuses.OutOfStock.ToString(), string.Empty });
             migrationBuilder.InsertData("product_statuses", new[] { "id", "name", "description" }, new[] { ((int)ProductStatuses.Discontinued).ToString(), ProductStatuses.Discontinued.ToString(), string.Empty });
 
-            migrationBuilder.InsertData("order_statuses", new[] { "id", "name", "description" }, new[] { ((int)OrderStatus.Submitted).ToString(), OrderStatus.Submitted.ToString(), string.Empty });
-            migrationBuilder.InsertData("order_statuses", new[] { "id", "name", "description" }, new[] { ((int)OrderStatus.Paid).ToString(), OrderStatus.Paid.ToString(), string.Empty });
-            migrationBuilder.InsertData("order_statuses", new[] { "id", "name", "description" }, new[] { ((int)OrderStatus.Shipped).ToString(), OrderStatus.Shipped.ToString(), string.Empty });
-            migrationBuilder.InsertData("order_statuses", new[] { "id", "name", "description" }, new[] { ((int)OrderStatus.Cancelled).ToString(), OrderStatus.Cancelled.ToString(), string.Empty });
+            migrationBuilder.InsertData("order_statuses", new[] { "id", "name", "description" }, new[] { ((int)OrderStatuses.Submitted).ToString(), OrderStatuses.Submitted.ToString(), string.Empty });
+            migrationBuilder.InsertData("order_statuses", new[] { "id", "name", "description" }, new[] { ((int)OrderStatuses.Paid).ToString(), OrderStatuses.Paid.ToString(), string.Empty });
+            migrationBuilder.InsertData("order_statuses", new[] { "id", "name", "description" }, new[] { ((int)OrderStatuses.Shipped).ToString(), OrderStatuses.Shipped.ToString(), string.Empty });
+            migrationBuilder.InsertData("order_statuses", new[] { "id", "name", "description" }, new[] { ((int)OrderStatuses.Cancelled).ToString(), OrderStatuses.Cancelled.ToString(), string.Empty });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

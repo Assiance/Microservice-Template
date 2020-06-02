@@ -25,7 +25,7 @@ namespace EfMicroservice.Persistence.Orders
 
         public async Task<IList<Order>> FindUnShippedOrdersByProductIdAsync(Guid productId)
         {
-            return await _dbContext.Orders.Where(x => x.ProductId == productId && x.StatusId != OrderStatus.Shipped).ToListAsync();
+            return await _dbContext.Orders.Where(x => x.ProductId == productId && x.StatusId != OrderStatuses.Shipped).ToListAsync();
         }
     }
 }

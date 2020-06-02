@@ -1,6 +1,4 @@
-﻿using EfMicroservice.Domain.Orders.Exceptions;
-using System;
-using System.Linq;
+﻿using Omni.BuildingBlocks.Persistence;
 
 namespace EfMicroservice.Domain.Orders
 {
@@ -12,7 +10,7 @@ namespace EfMicroservice.Domain.Orders
         Cancelled = 4
     }
 
-    public class OrderStatus
+    public class OrderStatus : ILookup<OrderStatuses>
     {
         public OrderStatuses Id { get; set; }
         public string Name { get; set; }
