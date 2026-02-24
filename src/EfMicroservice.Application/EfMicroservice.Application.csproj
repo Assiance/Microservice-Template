@@ -14,4 +14,8 @@
     <ProjectReference Include="..\EfMicroservice.Domain\EfMicroservice.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Orders\Queries\" />
+  </ItemGroup>
+
 </Project>

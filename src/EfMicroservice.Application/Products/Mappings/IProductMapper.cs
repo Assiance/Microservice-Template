@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using EfMicroservice.Application.Products.Commands.CreateProduct;
-using EfMicroservice.Application.Products.Commands.UpdateProduct;
-using EfMicroservice.Application.Products.Queries;
+using EfMicroservice.Application.Products.Commands;
+using EfMicroservice.Application.Products.Models;
 using EfMicroservice.Domain.Products;
 
 namespace EfMicroservice.Application.Products.Mappings

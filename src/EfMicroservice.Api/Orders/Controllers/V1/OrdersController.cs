@@ -1,10 +1,10 @@
 using Asp.Versioning;
 using EfMicroservice.Application.Orders.Commands.PlaceOrder;
-using EfMicroservice.Application.Orders.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using MediatR;
+using EfMicroservice.Application.Orders.Models;
 
 namespace EfMicroservice.Api.Orders.Controllers.V1
 {

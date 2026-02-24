@@ -1,5 +1,5 @@
 ﻿using EfMicroservice.Application.Orders.Commands.PlaceOrder;
-using EfMicroservice.Application.Orders.Queries;
+using EfMicroservice.Application.Orders.Models;
 using EfMicroservice.Function.Api.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Http;

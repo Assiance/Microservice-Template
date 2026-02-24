@@ -1,9 +1,7 @@
 using System.Reflection;
 using EfMicroservice.Application.Behaviors;
 using EfMicroservice.Application.Orders.Commands.PlaceOrder;
-using EfMicroservice.Application.Products.Commands.CreateProduct;
-using EfMicroservice.Application.Products.Commands.Discontinue;
-using EfMicroservice.Application.Products.Commands.UpdateProduct;
+using EfMicroservice.Application.Products.Commands;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

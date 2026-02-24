@@ -1,8 +1,5 @@
 using Asp.Versioning;
 using EfMicroservice.Application.Products.Clients;
-using EfMicroservice.Application.Products.Commands.CreateProduct;
-using EfMicroservice.Application.Products.Commands.DeleteProduct;
-using EfMicroservice.Application.Products.Commands.UpdateProduct;
 using EfMicroservice.Application.Products.Mappings;
 using EfMicroservice.Application.Products.Queries;
 using MediatR;
@@ -16,8 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EfMicroservice.Application.Products.Queries.GetProductById;
-using EfMicroservice.Application.Products.Queries.GetProducts;
+using EfMicroservice.Application.Products.Commands;
+using EfMicroservice.Application.Products.Models;
 
 namespace EfMicroservice.Api.Products.Controllers.V1
 {
