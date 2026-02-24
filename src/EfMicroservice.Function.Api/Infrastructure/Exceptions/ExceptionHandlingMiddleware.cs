@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http;
@@ -11,12 +11,10 @@ using Newtonsoft.Json.Serialization;
 using Omni.BuildingBlocks.ExceptionHandling;
 using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using Polly.CircuitBreaker;
-using Serverless.Function.Middleware;
-using Serverless.Function.Middleware.Abstractions;
 
 namespace EfMicroservice.Function.Api.Infrastructure.Exceptions
 {
-    public class ExceptionHandlingMiddleware : IFunctionMiddleware
+    public class ExceptionHandlingMiddleware : IMiddleware
     {
         private readonly ILogger _logger;
         private readonly IErrorResultConverter _errorResultConverter;
@@ -28,7 +26,7 @@ namespace EfMicroservice.Function.Api.Infrastructure.Exceptions
             _errorResultConverter = errorResultConverter;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, FunctionRequestDelegate next)
+        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
             if (httpContext == null)
             {

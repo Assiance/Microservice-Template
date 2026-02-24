@@ -1,4 +1,4 @@
-﻿using EfMicroservice.Function.Api.Infrastructure.Exceptions;
+using EfMicroservice.Function.Api.Infrastructure.Exceptions;
 using EfMicroservice.Function.Api.Infrastructure.Logging;
 using Microsoft.AspNetCore.Builder;
 
