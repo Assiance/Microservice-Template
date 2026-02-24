@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using EfMicroservice.Api.Infrastructure.Configurations;
 using EfMicroservice.Api.Infrastructure.Exceptions;
 using EfMicroservice.Api.Infrastructure.Extensions;
@@ -15,8 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +27,7 @@ using Newtonsoft.Json.Serialization;
 using Omni.BuildingBlocks;
 using Omni.BuildingBlocks.Api.Configuration.Authentication;
 using Omni.BuildingBlocks.Http.Handlers;
+using Scalar.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -43,7 +44,6 @@ namespace EfMicroservice.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApiVersioning(o =>
@@ -51,9 +51,8 @@ namespace EfMicroservice.Api
                 o.ReportApiVersions = true;
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(1, 0);
-            });
-
-            services.AddVersionedApiExplorer(o =>
+            })
+            .AddApiExplorer(o =>
             {
                 o.GroupNameFormat = "'v'VVV";
                 o.SubstituteApiVersionInUrl = true;
@@ -63,12 +62,10 @@ namespace EfMicroservice.Api
             services.AddJwtAuthentication(authConfig);
             services.AddAuthorizationPolicies(authConfig);
 
-            var serviceProvider = services.BuildServiceProvider();
-            services.AddEntityFrameworkNpgsql()
-                .AddDbContextPool<ApplicationDbContext>(options => options
-                    .UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
-                    .UseSnakeCaseNamingConvention()
-                    .UseLoggerFactory(serviceProvider.GetService<ILoggerFactory>()));
+            services.AddDbContextPool<ApplicationDbContext>(options => options
+                .UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
+                .UseSnakeCaseNamingConvention()
+                .UseLoggerFactory(services.BuildServiceProvider().GetService<ILoggerFactory>()));
 
             // Register Scoped Dependencies
             services.RegisterOmniBuildingBlockDependencies();
@@ -97,7 +94,6 @@ namespace EfMicroservice.Api
 
             services.AddAccessTokenProvider();
             services.AddSwagger();
-            services.AddSwaggerGen();
             services.AddControllers(x =>
                 {
                     var policy = new AuthorizationPolicyBuilder()
@@ -106,13 +102,13 @@ namespace EfMicroservice.Api
 
                     x.Filters.Add(new AuthorizeFilter(policy));
                 })
-                .AddFluentValidation()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ContractResolver =
                         new CamelCasePropertyNamesContractResolver());
+
+            services.AddFluentValidationAutoValidation();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
@@ -123,9 +119,6 @@ namespace EfMicroservice.Api
             {
                 app.UseHsts();
             }
-
-            app.UseSwagger();
-            app.UseSwaggerUIDocs(provider);
 
             app.UseHttpsRedirection();
             app.UseRouting();
@@ -141,6 +134,11 @@ namespace EfMicroservice.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapOpenApi();
+                endpoints.MapScalarApiReference("/docs", o =>
+                {
+                    o.Title = "Microservice API";
+                });
             });
         }
 

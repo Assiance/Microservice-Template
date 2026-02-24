@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -50,6 +50,7 @@ namespace EfMicroservice.Api
         {
             return Host.CreateDefaultBuilder(args)
                 .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
@@ -57,9 +58,7 @@ namespace EfMicroservice.Api
                             serverOptions.AddServerHeader = false;
                         })
                         .UseIISIntegration()
-                        .UseSerilog()
                         .CaptureStartupErrors(true)
-                        .ConfigureLogging((hostingContext, logging) => { logging.AddSerilog(); })
                         .UseStartup<Startup>()
                         .UseConfiguration(Configuration)
                         .UseSetting("detailedErrors", "true");

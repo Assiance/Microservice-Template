@@ -1,4 +1,5 @@
-﻿using EfMicroservice.Application.Products.Clients;
+using Asp.Versioning;
+using EfMicroservice.Application.Products.Clients;
 using EfMicroservice.Application.Products.Commands.CreateProduct;
 using EfMicroservice.Application.Products.Commands.DeleteProduct;
 using EfMicroservice.Application.Products.Commands.UpdateProduct;
@@ -8,12 +9,12 @@ using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using Omni.BuildingBlocks.Api.Extensions;
 using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using EfMicroservice.Application.Products.Queries.GetProductById;
 using EfMicroservice.Application.Products.Queries.GetProducts;
@@ -94,7 +95,7 @@ namespace EfMicroservice.Api.Products.Controllers.V1
 
             if (!ModelState.IsValid || !TryValidateModel(patchModel))
             {
-                throw new BadRequestException(ModelState.ToFormattedErrors().Join());
+                throw new BadRequestException(string.Join(", ", ModelState.ToFormattedErrors()));
             }
 
             await _mediator.Send(patchModel);

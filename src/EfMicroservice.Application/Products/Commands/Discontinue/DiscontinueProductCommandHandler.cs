@@ -1,4 +1,4 @@
-﻿using EfMicroservice.Application.Products.Mappings;
+using EfMicroservice.Application.Products.Mappings;
 using EfMicroservice.Application.Shared.Repositories;
 using MediatR;
 using System.Threading;
@@ -8,7 +8,7 @@ using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 
 namespace EfMicroservice.Application.Products.Commands.Discontinue
 {
-    public class DiscontinueProductCommandHandler : AsyncRequestHandler<DiscontinueProductCommand>
+    public class DiscontinueProductCommandHandler : IRequestHandler<DiscontinueProductCommand>
     {
         private readonly IProductMapper _productMapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -19,7 +19,7 @@ namespace EfMicroservice.Application.Products.Commands.Discontinue
             _unitOfWork = unitOfWork;
         }
 
-        protected override async Task Handle(DiscontinueProductCommand productToUpdate, CancellationToken cancellationToken)
+        public async Task Handle(DiscontinueProductCommand productToUpdate, CancellationToken cancellationToken)
         {
             var product = await _unitOfWork.Products.FindAsync(productToUpdate.ProductId);
             if (product == null)

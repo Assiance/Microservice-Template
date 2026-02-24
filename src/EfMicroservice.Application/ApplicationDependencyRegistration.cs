@@ -16,7 +16,7 @@ namespace EfMicroservice.Application
         public static IServiceCollection RegisterApplicationDependencies(this IServiceCollection services)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            services.AddMediatR(assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidatorBehavior<,>));
 
             services.AddTransient<IValidator<CreateProductCommand>, CreateProductCommandValidator>();

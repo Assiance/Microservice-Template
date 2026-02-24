@@ -1,4 +1,4 @@
-﻿using EfMicroservice.Application.Products.Mappings;
+using EfMicroservice.Application.Products.Mappings;
 using EfMicroservice.Application.Shared.Repositories;
 using MediatR;
 using System.Threading;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EfMicroservice.Application.Products.Commands.UpdateProduct
 {
-    public class UpdateProductCommandHandler : AsyncRequestHandler<UpdateProductCommand>
+    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
     {
         private readonly IProductMapper _productMapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -17,7 +17,7 @@ namespace EfMicroservice.Application.Products.Commands.UpdateProduct
             _unitOfWork = unitOfWork;
         }
 
-        protected override async Task Handle(UpdateProductCommand productToUpdate, CancellationToken cancellationToken)
+        public async Task Handle(UpdateProductCommand productToUpdate, CancellationToken cancellationToken)
         {
             var product = _productMapper.Map(productToUpdate);
 

@@ -1,4 +1,5 @@
-﻿using EfMicroservice.Api.Infrastructure.Authorization;
+using Asp.Versioning;
+using EfMicroservice.Api.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
