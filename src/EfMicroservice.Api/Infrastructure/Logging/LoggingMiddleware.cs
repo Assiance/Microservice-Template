@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -34,24 +33,24 @@ namespace EfMicroservice.Api.Infrastructure.Logging
             }
 
             var start = Stopwatch.GetTimestamp();
-
             PushInfoToContext(httpContext, _correlationIdProvider);
 
-            var requestStartingLog = GenerateRequestStartingLogMessage(httpContext);
-            Log.Information(requestStartingLog);
+            var req = httpContext.Request;
+            Log.Information("Request starting {Method} {Scheme}://{Host}{Path}{QueryString}",
+                req.Method, req.Scheme, req.Host.Value, req.Path.Value, req.QueryString.Value);
 
             try
             {
                 await next(httpContext);
 
                 var elapsedMs = GetElapsedMilliseconds(start, Stopwatch.GetTimestamp());
-
                 var statusCode = httpContext.Response?.StatusCode;
                 var level = statusCode >= 500 ? LogEventLevel.Error : LogEventLevel.Information;
 
                 var log = level == LogEventLevel.Error ? LogForErrorContext(httpContext) : Log;
-                var requestFinishingLog = GenerateRequestFinishingLogMessage(httpContext, elapsedMs);
-                log.Write(level, requestFinishingLog);
+                log.Write(level,
+                    "Request finished in {ElapsedMs:0.0000}ms {StatusCode} {ContentType}",
+                    elapsedMs, statusCode, httpContext.Response.ContentType);
             }
             catch (Exception ex) when (LogException(httpContext,
                 GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()), ex))
@@ -61,63 +60,19 @@ namespace EfMicroservice.Api.Infrastructure.Logging
 
         private static void PushInfoToContext(HttpContext httpContext, ICorrelationIdProvider correlationIdProvider)
         {
-            LogContext.PushProperty("Info", new
-            {
-                MachineName = Environment.MachineName,
-                ClientIP = httpContext.Connection.RemoteIpAddress,
-                RequestId = Guid.NewGuid(),
-                CorrelationId = correlationIdProvider.EnsureCorrelationIdPresent()
-            });
-        }
+            var traceId = Activity.Current?.TraceId.ToString() ?? httpContext.TraceIdentifier;
+            var correlationId = correlationIdProvider.EnsureCorrelationIdPresent();
 
-        private static string GenerateRequestStartingLogMessage(HttpContext httpContext)
-        {
-            var request = httpContext.Request;
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "Request starting {0} {1} {2}://{3}{4}{5}{6} {7} {8} {9}",
-                request.Protocol,
-                request.Method,
-                request.Scheme,
-                request.Host.Value,
-                request.PathBase.Value,
-                request.Path.Value,
-                request.QueryString.Value,
-                request.ContentType,
-                request.ContentLength, new
-                {
-                    Method = httpContext.Request.Method,
-                    RequestUrl = httpContext.Request.Path
-                });
-        }
-
-        private static string GenerateRequestFinishingLogMessage(HttpContext httpContext, double elapsed,
-            int? statusCode = null)
-        {
-            var request = httpContext.Request;
-            var response = httpContext.Response;
-
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "Request finished in {0:0.0000}ms {1} {2} {3}",
-                elapsed,
-                statusCode ?? response.StatusCode,
-                response.ContentType,
-                new
-                {
-                    Method = request.Method,
-                    RequestUrl = request.Path,
-                    StatusCode = statusCode ?? response.StatusCode,
-                    ResponseTimeMs = elapsed
-                });
+            LogContext.PushProperty("TraceId", traceId);
+            LogContext.PushProperty("CorrelationId", correlationId);
+            LogContext.PushProperty("MachineName", Environment.MachineName);
+            LogContext.PushProperty("ClientIP", httpContext.Connection.RemoteIpAddress?.ToString());
         }
 
         private static bool LogException(HttpContext httpContext, double elapsedMs, Exception ex)
         {
             var log = LogForErrorContext(httpContext);
-            var requestFinishingLog = GenerateRequestFinishingLogMessage(httpContext, elapsedMs, 500);
-            log.Error(ex, requestFinishingLog);
-
+            log.Error(ex, "Request finished in {ElapsedMs:0.0000}ms {StatusCode}", elapsedMs, 500);
             return false;
         }
 
@@ -145,7 +100,7 @@ namespace EfMicroservice.Api.Infrastructure.Logging
 
         private static double GetElapsedMilliseconds(long start, long stop)
         {
-            return (stop - start) * 1000 / (double) Stopwatch.Frequency;
+            return (stop - start) * 1000 / (double)Stopwatch.Frequency;
         }
     }
 }

@@ -37,6 +37,7 @@ namespace EfMicroservice.Persistence.Products
 
             builder.HasAuditInfo();
             builder.HasRowVersion();
+            builder.HasSoftDelete();
         }
     }
 }

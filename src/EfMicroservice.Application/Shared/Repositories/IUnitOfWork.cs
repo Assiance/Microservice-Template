@@ -14,11 +14,7 @@ namespace EfMicroservice.Application.Shared.Repositories
 
         Task SaveAsync();
 
-        void Save();
-
         Task<IDbContextTransaction> BeginTransactionAsync();
-
-        IDbContextTransaction BeginTransaction();
 
         void UpdateRowVersion(IVersionInfo versionInfo, byte[] newRowVersion);
     }

@@ -1,16 +1,31 @@
-﻿using EfMicroservice.Common;
+using EfMicroservice.Common;
 using EfMicroservice.Domain.Events;
 using EfMicroservice.Domain.Orders;
 using FluentValidation;
+using Omni.BuildingBlocks.Application.Events;
 using Omni.BuildingBlocks.Persistence;
 using System;
 using System.Collections.Generic;
 
 namespace EfMicroservice.Domain.Products
 {
-    public class Product : BaseEntity<Guid>, IVersionInfo, IAuditInfo
+    public class Product : BaseEntity<Guid>, IVersionInfo, IAuditInfo, ISoftDeletable, IHasIntegrationEvents
     {
         private static readonly ProductValidator _validator = new ProductValidator();
+        private List<IIntegrationEvent> _integrationEvents;
+
+        public IReadOnlyCollection<IIntegrationEvent> IntegrationEvents => _integrationEvents?.AsReadOnly();
+
+        public void AddIntegrationEvent(IIntegrationEvent @event)
+        {
+            _integrationEvents ??= new List<IIntegrationEvent>();
+            _integrationEvents.Add(@event);
+        }
+
+        public void ClearIntegrationEvents()
+        {
+            _integrationEvents?.Clear();
+        }
 
         private string _name;
         public string Name
@@ -48,7 +63,6 @@ namespace EfMicroservice.Domain.Products
             }
         }
 
-        //public ProductStatus Status { get; private set; }
         public ProductStatuses StatusId { get; set; }
         public ProductStatus Status { get; private set; }
 
@@ -57,6 +71,11 @@ namespace EfMicroservice.Domain.Products
         public DateTimeOffset? ModifiedDate { get; set; }
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
+
+        // ISoftDeletable
+        public DateTimeOffset? DeletedAt { get; set; }
+        public string DeletedBy { get; set; }
+        public bool IsDeleted => DeletedAt.HasValue;
 
         public IEnumerable<Order> Orders { get; set; }
 

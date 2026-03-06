@@ -1,4 +1,5 @@
-﻿using EfMicroservice.Application.Shared.Repositories;
+﻿using EfMicroservice.Application.Integration.Events;
+using EfMicroservice.Application.Shared.Repositories;
 using EfMicroservice.Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -25,6 +26,13 @@ namespace EfMicroservice.Application.DomainEventHandlers.ProductDiscontinued
             {
                 order.SetCancelledStatus();
             }
+
+            productDiscontinuedDomainEvent.Product.AddIntegrationEvent(
+                new ProductDiscontinuedIntegrationEvent
+                {
+                    ProductId = productDiscontinuedDomainEvent.Product.Id,
+                    ProductName = productDiscontinuedDomainEvent.Product.Name
+                });
 
             _logger.LogTrace("Product with Id: {ProductId} has been discontinued", productDiscontinuedDomainEvent.Product.Id);
         }

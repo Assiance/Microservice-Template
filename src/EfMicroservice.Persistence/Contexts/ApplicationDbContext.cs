@@ -1,5 +1,7 @@
-﻿using EfMicroservice.Domain.Orders;
+using EfMicroservice.Domain.Orders;
 using EfMicroservice.Domain.Products;
+using EfMicroservice.Persistence.Idempotency;
+using EfMicroservice.Persistence.Outbox;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Omni.BuildingBlocks.Persistence.Extensions;
@@ -12,6 +14,8 @@ namespace EfMicroservice.Persistence.Contexts
         public DbSet<ProductStatus> ProductStatuses { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
+        public DbSet<OutboxMessage> OutboxMessages { get; set; }
+        public DbSet<IdempotencyRecord> IdempotencyRecords { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

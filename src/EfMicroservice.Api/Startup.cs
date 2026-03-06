@@ -9,29 +9,34 @@ using EfMicroservice.Application;
 using EfMicroservice.Common;
 using EfMicroservice.Domain;
 using EfMicroservice.ExternalData;
-using EfMicroservice.ExternalData.Clients;
 using EfMicroservice.Persistence;
 using EfMicroservice.Persistence.Contexts;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Serialization;
 using Omni.BuildingBlocks;
 using Omni.BuildingBlocks.Api.Configuration.Authentication;
 using Omni.BuildingBlocks.Http.Handlers;
+using Omni.BuildingBlocks.Observability;
 using Scalar.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using EfMicroservice.Application.Integration.Consumers;
 using EfMicroservice.Application.Products.Clients;
+using MassTransit;
 
 namespace EfMicroservice.Api
 {
@@ -67,19 +72,50 @@ namespace EfMicroservice.Api
                 .UseSnakeCaseNamingConvention()
                 .UseLoggerFactory(services.BuildServiceProvider().GetService<ILoggerFactory>()));
 
+            // OpenTelemetry
+            services.AddOmniOpenTelemetry(Configuration, "EfMicroservice");
+
+            // Health Checks
+            services.AddHealthChecks()
+                .AddNpgSql(
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    name: "postgresql",
+                    failureStatus: HealthStatus.Unhealthy,
+                    tags: new[] { "ready", "db" })
+                .AddDbContextCheck<ApplicationDbContext>(
+                    name: "efcore",
+                    failureStatus: HealthStatus.Degraded,
+                    tags: new[] { "ready" });
+
+            // MassTransit + RabbitMQ
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<OrderCancellationConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    var rabbitMqConfig = Configuration.GetSection("RabbitMq");
+                    cfg.Host(rabbitMqConfig["Host"], rabbitMqConfig["VirtualHost"], h =>
+                    {
+                        h.Username(rabbitMqConfig["Username"]);
+                        h.Password(rabbitMqConfig["Password"]);
+                    });
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
+
             // Register Scoped Dependencies
             services.RegisterOmniBuildingBlockDependencies();
             services.RegisterCommonDependencies();
             services.RegisterApiDependencies();
             services.RegisterApplicationDependencies();
             services.RegisterDomainDependencies();
-            services.RegisterPersistenceDependencies();
+            services.RegisterPersistenceDependencies(Configuration);
             services.RegisterExternalDataDependencies();
 
             // Register Transient Dependencies
             services.AddTransient<AppendCorrelationIdHeaderHandler>();
             services.AddTransient<AppendAuthHeaderHandler>();
-            services.AddTransient<UnsuccessfulResponseHandler>();
             services.AddTransient<UnsuccessfulResponseHandler>();
             services.AddTransient<HttpClient>();
             services.AddTransient<LoggingMiddleware>();
@@ -101,10 +137,7 @@ namespace EfMicroservice.Api
                         .Build();
 
                     x.Filters.Add(new AuthorizeFilter(policy));
-                })
-                .AddNewtonsoftJson(options =>
-                    options.SerializerSettings.ContractResolver =
-                        new CamelCasePropertyNamesContractResolver());
+                });
 
             services.AddFluentValidationAutoValidation();
         }
@@ -139,6 +172,30 @@ namespace EfMicroservice.Api
                 {
                     o.Title = "Microservice API";
                 });
+
+                // Liveness — process is alive
+                endpoints.MapHealthChecks("/hc/live", new HealthCheckOptions
+                {
+                    Predicate = _ => false,
+                    ResponseWriter = WriteHealthResponse
+                });
+
+                // Readiness — all dependencies healthy
+                endpoints.MapHealthChecks("/hc/ready", new HealthCheckOptions
+                {
+                    Predicate = check => check.Tags.Contains("ready"),
+                    ResponseWriter = WriteHealthResponse
+                });
+
+                // Full — all checks with detail
+                endpoints.MapHealthChecks("/hc/full", new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = WriteHealthResponse
+                });
+
+                // Prometheus metrics scraping endpoint
+                endpoints.MapPrometheusScrapingEndpoint("/metrics");
             });
         }
 
@@ -149,6 +206,18 @@ namespace EfMicroservice.Api
             app.UseCors(builder => builder.WithOrigins(allowedOrigins.ToArray())
                 .AllowAnyMethod()
                 .AllowAnyHeader());
+        }
+
+        private static Task WriteHealthResponse(HttpContext context, HealthReport report)
+        {
+            context.Response.ContentType = "application/json";
+            var result = JsonSerializer.Serialize(new
+            {
+                status = report.Status.ToString(),
+                totalDurationMs = report.TotalDuration.TotalMilliseconds,
+                entries = report.Entries
+            }, new JsonSerializerOptions { WriteIndented = true });
+            return context.Response.WriteAsync(result);
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Omni.BuildingBlocks.Api.Configuration.Authentication;
 using Omni.BuildingBlocks.Authentication;
 using Polly;
@@ -9,7 +8,6 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace EfMicroservice.Api.Infrastructure.Configurations
 {
@@ -24,12 +22,8 @@ namespace EfMicroservice.Api.Infrastructure.Configurations
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = authConfig.ValidIssuer,
-                    ValidAudience = authConfig.ValidAudience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authConfig.IssuerSigningKey))
-                };
+                options.Authority = authConfig.ValidIssuer;
+                options.Audience = authConfig.ValidAudience;
             });
 
             return services;

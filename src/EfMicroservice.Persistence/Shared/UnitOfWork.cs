@@ -1,16 +1,20 @@
-﻿using EfMicroservice.Application.Orders.Repositories;
+using EfMicroservice.Application.Orders.Repositories;
 using EfMicroservice.Application.Products.Repositories;
 using EfMicroservice.Application.Shared.Repositories;
 using EfMicroservice.Persistence.Contexts;
 using EfMicroservice.Persistence.Extensions;
 using EfMicroservice.Persistence.Orders;
+using EfMicroservice.Persistence.Outbox;
 using EfMicroservice.Persistence.Products;
 using MediatR;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using Omni.BuildingBlocks.Application.Events;
 using Omni.BuildingBlocks.Persistence;
 using Omni.BuildingBlocks.Persistence.Extensions;
+using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace EfMicroservice.Persistence.Shared
@@ -49,20 +53,9 @@ namespace EfMicroservice.Persistence.Shared
             await _dbContext.SaveChangesAsync();
         }
 
-        public void Save()
-        {
-            OnBeforeSaveChangesAsync().GetAwaiter();
-            _dbContext.SaveChanges();
-        }
-
         public async Task<IDbContextTransaction> BeginTransactionAsync()
         {
             return await _dbContext.Database.BeginTransactionAsync();
-        }
-
-        public IDbContextTransaction BeginTransaction()
-        {
-            return _dbContext.Database.BeginTransaction();
         }
 
         public void UpdateRowVersion(IVersionInfo versionInfo, byte[] newRowVersion)
@@ -72,13 +65,38 @@ namespace EfMicroservice.Persistence.Shared
 
         private async Task OnBeforeSaveChangesAsync()
         {
+            // 1. Dispatch domain events (in-process MediatR) for same-BC side effects
             await _mediator.DispatchDomainEventsAsync(_dbContext);
 
+            // 2. Serialize integration events from entities that produce outbox events
+            var outboxEntities = _dbContext.ChangeTracker
+                .Entries<IHasIntegrationEvents>()
+                .Where(e => e.Entity.IntegrationEvents != null && e.Entity.IntegrationEvents.Any())
+                .ToList();
+
+            foreach (var entry in outboxEntities)
+            {
+                foreach (var integrationEvent in entry.Entity.IntegrationEvents)
+                {
+                    _dbContext.OutboxMessages.Add(new OutboxMessage
+                    {
+                        Id = Guid.NewGuid(),
+                        Type = integrationEvent.GetType().FullName,
+                        Content = JsonSerializer.Serialize(integrationEvent, integrationEvent.GetType()),
+                        OccurredAt = integrationEvent.OccurredAt
+                    });
+                }
+                entry.Entity.ClearIntegrationEvents();
+            }
+
+            // 3. Apply audit tracking
             var entries = _dbContext.ChangeTracker.Entries().ToList();
             foreach (var entry in entries)
             {
                 await _changeTrackingService.ExecuteResolversAsync(entry);
             }
+
+            // 4. SaveChangesAsync — all in one transaction
         }
     }
 }

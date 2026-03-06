@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace EfMicroservice.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
@@ -15,149 +17,232 @@ namespace EfMicroservice.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.3")
+                .HasAnnotation("ProductVersion", "10.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("EfMicroservice.Domain.Orders.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
                         .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("ProductId")
-                        .HasColumnName("product_id")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("product_id");
 
                     b.Property<int>("Quantity")
-                        .HasColumnName("quantity")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
 
                     b.Property<uint?>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnName("xmin")
-                        .HasColumnType("xid");
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int>("StatusId")
-                        .HasColumnName("status_id")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("status_id");
 
                     b.HasKey("Id")
                         .HasName("pk_orders");
 
                     b.HasIndex("ProductId")
-                        .HasName("ix_orders_product_id");
+                        .HasDatabaseName("ix_orders_product_id");
 
                     b.HasIndex("StatusId")
-                        .HasName("ix_orders_status_id");
+                        .HasDatabaseName("ix_orders_status_id");
 
-                    b.ToTable("orders");
+                    b.ToTable("orders", (string)null);
                 });
 
             modelBuilder.Entity("EfMicroservice.Domain.Orders.OrderStatus", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnName("id")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     b.Property<string>("Description")
-                        .HasColumnName("description")
+                        .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
-                        .HasMaxLength(256);
+                        .HasColumnName("description");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name")
+                        .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
-                        .HasMaxLength(256);
+                        .HasColumnName("name");
 
                     b.HasKey("Id")
                         .HasName("pk_order_statuses");
 
-                    b.ToTable("order_statuses");
+                    b.ToTable("order_statuses", (string)null);
                 });
 
             modelBuilder.Entity("EfMicroservice.Domain.Products.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnName("created_by")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
 
                     b.Property<DateTimeOffset>("CreatedDate")
-                        .HasColumnName("created_date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("deleted_by");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnName("modified_by")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("modified_by");
 
                     b.Property<DateTimeOffset?>("ModifiedDate")
-                        .HasColumnName("modified_date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified_date");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name")
+                        .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
-                        .HasMaxLength(256);
+                        .HasColumnName("name");
 
                     b.Property<decimal>("Price")
-                        .HasColumnName("price")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("price");
 
                     b.Property<int>("Quantity")
-                        .HasColumnName("quantity")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
 
                     b.Property<uint?>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnName("xmin")
-                        .HasColumnType("xid");
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<int>("StatusId")
-                        .HasColumnName("status_id")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("status_id");
 
                     b.HasKey("Id")
                         .HasName("pk_products");
 
                     b.HasIndex("StatusId")
-                        .HasName("ix_products_status_id");
+                        .HasDatabaseName("ix_products_status_id");
 
-                    b.ToTable("products");
+                    b.ToTable("products", (string)null);
                 });
 
             modelBuilder.Entity("EfMicroservice.Domain.Products.ProductStatus", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnName("id")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     b.Property<string>("Description")
-                        .HasColumnName("description")
+                        .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
-                        .HasMaxLength(256);
+                        .HasColumnName("description");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("name")
+                        .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
-                        .HasMaxLength(256);
+                        .HasColumnName("name");
 
                     b.HasKey("Id")
                         .HasName("pk_product_statuses");
 
-                    b.ToTable("product_statuses");
+                    b.ToTable("product_statuses", (string)null);
+                });
+
+            modelBuilder.Entity("EfMicroservice.Persistence.Idempotency.IdempotencyRecord", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("key");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("RequestType")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("request_type");
+
+                    b.Property<string>("Response")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("response");
+
+                    b.HasKey("Key")
+                        .HasName("pk_idempotency_records");
+
+                    b.ToTable("idempotency_records", (string)null);
+                });
+
+            modelBuilder.Entity("EfMicroservice.Persistence.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("content");
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("error");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<DateTimeOffset?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at");
+
+                    b.Property<int>("RetryCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("retry_count");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_outbox_messages");
+
+                    b.HasIndex("ProcessedAt", "OccurredAt")
+                        .HasDatabaseName("ix_outbox_messages_processed_at_occurred_at");
+
+                    b.ToTable("outbox_messages", (string)null);
                 });
 
             modelBuilder.Entity("EfMicroservice.Domain.Orders.Order", b =>
@@ -165,16 +250,20 @@ namespace EfMicroservice.Persistence.Migrations
                     b.HasOne("EfMicroservice.Domain.Products.Product", "Product")
                         .WithMany("Orders")
                         .HasForeignKey("ProductId")
-                        .HasConstraintName("fk_orders_products_product_id")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_orders_products_product_id");
 
                     b.HasOne("EfMicroservice.Domain.Orders.OrderStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
-                        .HasConstraintName("fk_orders_order_statuses_status_id")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_orders_order_statuses_status_id");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("EfMicroservice.Domain.Products.Product", b =>
@@ -182,9 +271,16 @@ namespace EfMicroservice.Persistence.Migrations
                     b.HasOne("EfMicroservice.Domain.Products.ProductStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
-                        .HasConstraintName("fk_products_product_statuses_status_id")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_products_product_statuses_status_id");
+
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("EfMicroservice.Domain.Products.Product", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

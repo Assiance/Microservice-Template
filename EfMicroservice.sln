@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.202
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11512.155 d18.3
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Api", "src\EfMicroservice.Api\EfMicroservice.Api.csproj", "{0E36DBEF-5E32-4E93-A94E-22D1BAFD3BC9}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{77EDA1BC-6A05-4498-B698-77B221CB68A7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Application.UnitTests", "tests\EfMicroservice.Application.UnitTests\EfMicroservice.Application.UnitTests.csproj", "{FA3D6643-7513-44F1-A34B-B02EF933002C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Integration.Tests", "tests\EfMicroservice.Integration.Tests\EfMicroservice.Integration.Tests.csproj", "{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Function.Api", "src\EfMicroservice.Function.Api\EfMicroservice.Function.Api.csproj", "{052CD314-B1B3-4340-B271-41DE057AD900}"
 EndProject
@@ -115,6 +117,18 @@ Global
 		{FA3D6643-7513-44F1-A34B-B02EF933002C}.Release|x64.Build.0 = Release|Any CPU
 		{FA3D6643-7513-44F1-A34B-B02EF933002C}.Release|x86.ActiveCfg = Release|Any CPU
 		{FA3D6643-7513-44F1-A34B-B02EF933002C}.Release|x86.Build.0 = Release|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Debug|x64.Build.0 = Debug|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Debug|x86.Build.0 = Debug|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Release|x64.ActiveCfg = Release|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Release|x64.Build.0 = Release|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Release|x86.ActiveCfg = Release|Any CPU
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Release|x86.Build.0 = Release|Any CPU
 		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -133,6 +147,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FA3D6643-7513-44F1-A34B-B02EF933002C} = {77EDA1BC-6A05-4498-B698-77B221CB68A7}
+		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890} = {77EDA1BC-6A05-4498-B698-77B221CB68A7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {957E1825-1D53-4DA0-A0B6-BF57D1453D48}

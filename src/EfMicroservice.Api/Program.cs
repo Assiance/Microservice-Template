@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Settings.Configuration;
 using System;
 using System.IO;
 using Omni.BuildingBlocks.Logging;
@@ -22,7 +23,8 @@ namespace EfMicroservice.Api
         public static int Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
+                .ReadFrom.Configuration(Configuration,
+                    new ConfigurationReaderOptions(ConfigurationAssemblySource.UseLoadedAssemblies))
                 .Enrich.FromLogContext()
                 .Enrich.WithMachineName()
                 .Enrich.WithThreadId()
