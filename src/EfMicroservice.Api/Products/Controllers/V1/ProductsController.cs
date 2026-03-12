@@ -111,5 +111,15 @@ namespace EfMicroservice.Api.Products.Controllers.V1
 
             return NoContent();
         }
+
+        [HttpPut("{id}/discontinue")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DiscontinueProduct(Guid id, [FromBody] DiscontinueProductCommand discontinuedProduct)
+        {
+            discontinuedProduct.ProductId = id;
+            await _mediator.Send(discontinuedProduct);
+            return NoContent();
+        }
     }
 }
