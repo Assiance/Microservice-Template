@@ -1,9 +1,9 @@
-using EfMicroservice.Application.Integration.Events;
+using EfMicroservice.Application.Products.IntegrationEvents;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace EfMicroservice.Application.Integration.Consumers
+namespace EfMicroservice.Application.Orders.Consumers
 {
     public class OrderCancellationConsumer : IConsumer<ProductDiscontinuedIntegrationEvent>
     {

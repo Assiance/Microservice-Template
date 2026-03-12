@@ -3,7 +3,6 @@ using EfMicroservice.Domain.Products;
 using FluentValidation;
 using Omni.BuildingBlocks.Persistence;
 using System;
-using EfMicroservice.Common;
 
 namespace EfMicroservice.Domain.Orders
 {

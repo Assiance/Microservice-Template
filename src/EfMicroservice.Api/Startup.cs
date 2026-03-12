@@ -6,7 +6,6 @@ using EfMicroservice.Api.Infrastructure.Extensions;
 using EfMicroservice.Api.Infrastructure.Logging;
 using EfMicroservice.Api.Infrastructure.Registrations;
 using EfMicroservice.Application;
-using EfMicroservice.Common;
 using EfMicroservice.Domain;
 using EfMicroservice.ExternalData;
 using EfMicroservice.Persistence;
@@ -34,7 +33,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using EfMicroservice.Application.Integration.Consumers;
+using EfMicroservice.Application.Orders.Consumers;
 using EfMicroservice.Application.Products.Clients;
 using MassTransit;
 
@@ -106,7 +105,6 @@ namespace EfMicroservice.Api
 
             // Register Scoped Dependencies
             services.RegisterOmniBuildingBlockDependencies();
-            services.RegisterCommonDependencies();
             services.RegisterApiDependencies();
             services.RegisterApplicationDependencies();
             services.RegisterDomainDependencies();

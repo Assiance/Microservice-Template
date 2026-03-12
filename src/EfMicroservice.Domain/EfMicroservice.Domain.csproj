@@ -4,20 +4,10 @@
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="AggregateModels\ProductAggregate\" />
-    <Folder Include="AggregateModels\OrderAggregate\" />
-    <Folder Include="Products\Exceptions\" />
-    <Folder Include="Shared\" />
-  </ItemGroup>
-
-  <ItemGroup>
+<ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Omni.BuildingBlocks" Version="3.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\EfMicroservice.Common\EfMicroservice.Common.csproj" />
-  </ItemGroup>
 
 </Project>

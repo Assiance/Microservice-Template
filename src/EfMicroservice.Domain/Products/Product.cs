@@ -1,5 +1,4 @@
-using EfMicroservice.Common;
-using EfMicroservice.Domain.Events;
+using EfMicroservice.Domain.Products.Events;
 using EfMicroservice.Domain.Orders;
 using FluentValidation;
 using Omni.BuildingBlocks.Application.Events;

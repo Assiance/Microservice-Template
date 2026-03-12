@@ -11,12 +11,7 @@
     <None Remove="wwwroot\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Infrastructure\Registrations\" />
-    <Folder Include="Shared\" />
-  </ItemGroup>
-
-  <ItemGroup>
+<ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="8.0.1" />
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.1" />
@@ -50,7 +45,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EfMicroservice.Application\EfMicroservice.Application.csproj" />
-    <ProjectReference Include="..\EfMicroservice.Common\EfMicroservice.Common.csproj" />
     <ProjectReference Include="..\EfMicroservice.ExternalData\EfMicroservice.ExternalData.csproj" />
     <ProjectReference Include="..\EfMicroservice.Persistence\EfMicroservice.Persistence.csproj" />
   </ItemGroup>

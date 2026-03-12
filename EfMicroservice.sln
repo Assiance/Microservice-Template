@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11512.155 d18.3
@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Domain", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Persistence", "src\EfMicroservice.Persistence\EfMicroservice.Persistence.csproj", "{82226691-C7A9-4654-BC0A-56290E8740B4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Common", "src\EfMicroservice.Common\EfMicroservice.Common.csproj", "{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.ExternalData", "src\EfMicroservice.ExternalData\EfMicroservice.ExternalData.csproj", "{C6F82A14-52FA-45B8-B458-DAB87396ED9D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{77EDA1BC-6A05-4498-B698-77B221CB68A7}"
@@ -20,8 +18,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Application.UnitTests", "tests\EfMicroservice.Application.UnitTests\EfMicroservice.Application.UnitTests.csproj", "{FA3D6643-7513-44F1-A34B-B02EF933002C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Integration.Tests", "tests\EfMicroservice.Integration.Tests\EfMicroservice.Integration.Tests.csproj", "{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfMicroservice.Function.Api", "src\EfMicroservice.Function.Api\EfMicroservice.Function.Api.csproj", "{052CD314-B1B3-4340-B271-41DE057AD900}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,18 +77,6 @@ Global
 		{82226691-C7A9-4654-BC0A-56290E8740B4}.Release|x64.Build.0 = Release|Any CPU
 		{82226691-C7A9-4654-BC0A-56290E8740B4}.Release|x86.ActiveCfg = Release|Any CPU
 		{82226691-C7A9-4654-BC0A-56290E8740B4}.Release|x86.Build.0 = Release|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Debug|x64.Build.0 = Debug|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Debug|x86.Build.0 = Debug|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Release|x64.ActiveCfg = Release|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Release|x64.Build.0 = Release|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Release|x86.ActiveCfg = Release|Any CPU
-		{A6954DF3-2597-4F72-AD4B-F49678AB8CF5}.Release|x86.Build.0 = Release|Any CPU
 		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6F82A14-52FA-45B8-B458-DAB87396ED9D}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -129,18 +113,6 @@ Global
 		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Release|x64.Build.0 = Release|Any CPU
 		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Release|x86.ActiveCfg = Release|Any CPU
 		{D1A2B3C4-E5F6-7890-ABCD-EF1234567890}.Release|x86.Build.0 = Release|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|x64.Build.0 = Debug|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Debug|x86.Build.0 = Debug|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|Any CPU.Build.0 = Release|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|x64.ActiveCfg = Release|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|x64.Build.0 = Release|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|x86.ActiveCfg = Release|Any CPU
-		{052CD314-B1B3-4340-B271-41DE057AD900}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

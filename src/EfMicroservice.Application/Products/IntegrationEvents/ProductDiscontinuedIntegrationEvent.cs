@@ -1,7 +1,7 @@
 using Omni.BuildingBlocks.Application.Events;
 using System;
 
-namespace EfMicroservice.Application.Integration.Events
+namespace EfMicroservice.Application.Products.IntegrationEvents
 {
     public record ProductDiscontinuedIntegrationEvent : IIntegrationEvent
     {
