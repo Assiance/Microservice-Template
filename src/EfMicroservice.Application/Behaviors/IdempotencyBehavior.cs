@@ -41,6 +41,10 @@ namespace EfMicroservice.Application.Behaviors
                     : default;
             }
 
+            _logger.LogDebug(
+                "Executing idempotent request {RequestType} with key {IdempotencyKey} for the first time",
+                typeof(TRequest).Name, key);
+
             using var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
             var response = await next();

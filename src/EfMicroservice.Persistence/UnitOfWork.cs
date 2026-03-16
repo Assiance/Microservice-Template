@@ -25,6 +25,7 @@ namespace EfMicroservice.Persistence
         private readonly IChangeTrackingService _changeTrackingService;
         private readonly IMediator _mediator;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
 
         private IProductRepository _productRepository;
         private IOrderRepository _orderRepository;
@@ -35,6 +36,7 @@ namespace EfMicroservice.Persistence
             _changeTrackingService = changeTrackingService;
             _mediator = mediator;
             _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<UnitOfWork>();
         }
 
         public IProductRepository Products
@@ -66,7 +68,16 @@ namespace EfMicroservice.Persistence
         private async Task OnBeforeSaveChangesAsync()
         {
             // 1. Dispatch domain events (in-process MediatR) for same-BC side effects
+            var domainEvents = _dbContext.ChangeTracker.Entries<Omni.BuildingBlocks.Persistence.IBaseEntity>()
+                .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
+                .SelectMany(x => x.Entity.DomainEvents)
+                .ToList();
+
+            var domainEventCount = domainEvents.Count;
             await _mediator.DispatchDomainEventsAsync(_dbContext);
+
+            if (domainEventCount > 0)
+                _logger.LogDebug("Dispatched {DomainEventCount} domain events", domainEventCount);
 
             // 2. Serialize integration events from entities that produce outbox events
             var outboxEntities = _dbContext.ChangeTracker
@@ -74,6 +85,7 @@ namespace EfMicroservice.Persistence
                 .Where(e => e.Entity.IntegrationEvents != null && e.Entity.IntegrationEvents.Any())
                 .ToList();
 
+            var outboxMessageCount = 0;
             foreach (var entry in outboxEntities)
             {
                 foreach (var integrationEvent in entry.Entity.IntegrationEvents)
@@ -85,9 +97,13 @@ namespace EfMicroservice.Persistence
                         Content = JsonSerializer.Serialize(integrationEvent, integrationEvent.GetType()),
                         OccurredAt = integrationEvent.OccurredAt
                     });
+                    outboxMessageCount++;
                 }
                 entry.Entity.ClearIntegrationEvents();
             }
+
+            if (outboxMessageCount > 0)
+                _logger.LogDebug("Queued {OutboxMessageCount} integration events to outbox", outboxMessageCount);
 
             // 3. Apply audit tracking
             var entries = _dbContext.ChangeTracker.Entries().ToList();

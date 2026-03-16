@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using System.Text.Json;
 using Omni.BuildingBlocks.ExceptionHandling.Exceptions;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -50,7 +49,7 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             catch (FluentValidation.ValidationException ex)
             {
                 var errorResult = _errorResultConverter.GetError(ex);
-                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.InternalServerError, errorResult);
+                await WriteErrorAsync(httpContext, ex, (int)HttpStatusCode.BadRequest, errorResult);
             }
             catch (HttpCallException exception)
             {
@@ -89,7 +88,7 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             ErrorResult errorResult, LogLevel logLevel = LogLevel.Error)
         {
             context.Response.StatusCode = httpStatusCode;
-            var payloadContent = JsonConvert.SerializeObject(errorResult, JsonSettings);
+            var payloadContent = JsonSerializer.Serialize(errorResult, JsonOptions);
 
             _logger.Log(logLevel, new EventId(context.Response.StatusCode), exception, payloadContent);
 
@@ -97,7 +96,9 @@ namespace EfMicroservice.Api.Infrastructure.Exceptions
             return context.Response.WriteAsync(payloadContent);
         }
 
-        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
-        { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
     }
 }

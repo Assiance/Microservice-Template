@@ -84,11 +84,13 @@ namespace EfMicroservice.Persistence.Outbox
                     }
 
                     message.ProcessedAt = DateTimeOffset.UtcNow;
+                    _logger.LogDebug("Published outbox message {MessageId} of type {Type}",
+                        message.Id, message.Type);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Failed to process outbox message {MessageId} of type {Type}",
-                        message.Id, message.Type);
+                    _logger.LogError(ex, "Failed to process outbox message {MessageId} of type {Type} (RetryCount: {RetryCount})",
+                        message.Id, message.Type, message.RetryCount);
                     message.RetryCount++;
                     message.Error = ex.Message;
                 }

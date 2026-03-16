@@ -38,9 +38,17 @@ namespace EfMicroservice.Application.Behaviors
             if (!request.IsCommand())
                 return await next();
 
+            var attempt = 0;
             return await RetryPipeline.ExecuteAsync(
                 async ct =>
                 {
+                    if (attempt > 0)
+                    {
+                        _logger.LogWarning(
+                            "Transient fault retry {AttemptNumber} for {RequestType}",
+                            attempt, typeof(TRequest).Name);
+                    }
+                    attempt++;
                     return await next();
                 },
                 cancellationToken);
