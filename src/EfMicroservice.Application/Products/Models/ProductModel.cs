@@ -1,5 +1,5 @@
 ﻿using System;
-using Omni.BuildingBlocks.Shared;
+using Omni.BuildingBlocks.Contracts;
 
 namespace EfMicroservice.Application.Products.Models
 {

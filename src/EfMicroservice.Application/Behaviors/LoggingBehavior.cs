@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Omni.BuildingBlocks.Http.CorrelationId;
+using Omni.BuildingBlocks.Identity;
 using Omni.BuildingBlocks.Observability;
-using Omni.BuildingBlocks.Shared.UserProvider;
 using OpenTelemetry.Trace;
 using Serilog.Context;
 using System;

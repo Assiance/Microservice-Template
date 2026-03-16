@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Omni.BuildingBlocks.Shared;
+using Omni.BuildingBlocks.Contracts;
 
 namespace EfMicroservice.Application.Orders.Models
 {
