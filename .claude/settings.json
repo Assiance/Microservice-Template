@@ -1,0 +1,90 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build:*)",
+      "Bash(dotnet test:*)",
+      "Bash(dotnet run:*)",
+      "Bash(dotnet ef migrations:*)",
+      "Bash(dotnet format:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm run:*)",
+      "Bash(vite:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(curl http://localhost::*)",
+      "Bash(curl -s http://localhost::*)",
+      "Bash(curl -i http://localhost::*)",
+      "Bash(curl -sS http://localhost::*)",
+      "Bash(curl http://127.0.0.1::*)",
+      "Bash(curl -s http://127.0.0.1::*)",
+      "mcp__playwright",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(./init.sh:*)",
+      "Bash(bash init.sh:*)",
+      "Bash(sh init.sh:*)",
+      "Bash(gh auth *)",
+      "Bash(claude mcp *)",
+      "Bash(python3 -c \"import yaml,sys; d=yaml.safe_load\\(open\\('.github/workflows/ci.yml'\\)\\); print\\('YAML valid. Jobs:', list\\(d['jobs'].keys\\(\\)\\)\\); print\\('Backend working-dir:', d['jobs']['backend']['defaults']['run']['working-directory']\\); print\\('Triggers:', d['on']\\)\")",
+      "Bash(python -c \"import yaml; d=yaml.safe_load\\(open\\('.github/workflows/ci.yml'\\)\\); print\\('YAML valid. Jobs:', list\\(d['jobs'].keys\\(\\)\\)\\); print\\('wd:', d['jobs']['backend']['defaults']['run']['working-directory']\\); print\\('on:', d['on']\\)\")",
+      "Bash(npx --yes js-yaml .github/workflows/ci.yml)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet test *)",
+      "Bash(docker info *)",
+      "Bash(xargs cat)",
+      "Bash(xargs grep -l \"AddAsync\")",
+      "Bash(bash -n harness/run.sh)",
+      "Bash(npm run *)",
+      "Bash(sleep 3; cat /c/Users/Bradf/AppData/Local/Temp/claude/c--dev-base-app/1814b6e3-bfb6-484c-bc73-d8a3b678de10/tasks/bvlf5zau4.output 2>/dev/null)",
+      "Read(//c/Users/Bradf/AppData/Local/Temp/claude/c--dev-base-app/1814b6e3-bfb6-484c-bc73-d8a3b678de10/tasks/**)",
+      "Bash(npm install *)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(rm -rf:*)",
+      "Bash(wget:*)",
+      "Bash(render:*)",
+      "Bash(vercel:*)",
+      "Bash(supabase:*)",
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(**/secrets/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'bash \"${CLAUDE_PROJECT_DIR:-.}/harness/hooks/kill-switch.sh\"'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'bash \"${CLAUDE_PROJECT_DIR:-.}/harness/hooks/steer.sh\"'"
+          }
+        ]
+      }
+    ]
+  },
+  "_comment": "Harness allowlist (see harness/settings.example.json for the annotated original). In headless (-p) runs, acceptEdits auto-approves file edits but NOT bash commands — without this allowlist the generator stalls on its first build or test command. One merged allowlist covers both stacks. 'cat' is deliberately absent (defeats the .env read deny); curl is pinned to localhost with the port colon. Hooks: kill-switch.sh halts ALL tool calls the moment harness/STOP exists (immediate stop, not just between rounds); steer.sh delivers a one-time operator note from harness/STEER.md to the running agent. The evaluator's evidence-gate hooks live in harness/eval-settings.json."
+}
