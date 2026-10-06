@@ -1,0 +1,75 @@
+{
+  "_comment": "Copy to .claude/settings.json in your template and tune to your stacks. In headless (-p) runs, acceptEdits auto-approves file edits but NOT bash commands — without an allowlist the generator stalls on its first build or test command. In a backend+frontend monorepo this is ONE merged allowlist covering both. Anything not allowed here is auto-denied in headless mode, so the deny list is defense-in-depth, not the only line. Notes: (1) 'cat' is deliberately ABSENT — allowing Bash(cat:*) lets an agent 'cat .env' straight past the Read(.env*) deny; agents have the Read tool. (2) curl is allowed only against localhost WITH THE PORT COLON PINNED: the rule prefix is 'curl http://localhost:' (note trailing colon), so 'localhost.evil.com' cannot prefix-match — and curl accepts flags AFTER the URL, so 'curl -s http://localhost:5173/api -X POST -d ...' works. If your Claude Code version parses these patterns differently they simply never match and curl is denied — fail closed; test one against your version and adjust. (3) Read denies cover nested .env files — a monorepo has backend/.env, not just ./.env. (4) mcp__playwright lets the GENERATOR click through its own UI for self-checks (step 7 of /implement); the evaluator gets it from harness/eval-settings.json. (5) init.sh is the committed environment bootstrap (starts both stacks + smoke test) that /conventions authors and both agents run. (6) Hooks: kill-switch.sh halts ALL tool calls the moment harness/STOP exists (immediate stop, not just between rounds); steer.sh delivers a one-time operator note from harness/STEER.md to the running agent mid-run. The evaluator's evidence-gate hooks live in harness/eval-settings.json. For fully autonomous runs, the safer alternative remains a Docker sandbox with --dangerously-skip-permissions (see README). Pushing, merging, external network fetches, and secret reads stay with the driver/human.",
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build:*)",
+      "Bash(dotnet test:*)",
+      "Bash(dotnet run:*)",
+      "Bash(dotnet ef migrations:*)",
+      "Bash(dotnet format:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm run:*)",
+      "Bash(vite:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(curl http://localhost::*)",
+      "Bash(curl -s http://localhost::*)",
+      "Bash(curl -i http://localhost::*)",
+      "Bash(curl -sS http://localhost::*)",
+      "Bash(curl http://127.0.0.1::*)",
+      "Bash(curl -s http://127.0.0.1::*)",
+      "mcp__playwright",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(./init.sh:*)",
+      "Bash(bash init.sh:*)",
+      "Bash(sh init.sh:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(rm -rf:*)",
+      "Bash(wget:*)",
+      "Bash(render:*)",
+      "Bash(vercel:*)",
+      "Bash(supabase:*)",
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(**/secrets/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'bash \"${CLAUDE_PROJECT_DIR:-.}/harness/hooks/kill-switch.sh\"'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'bash \"${CLAUDE_PROJECT_DIR:-.}/harness/hooks/steer.sh\"'"
+          }
+        ]
+      }
+    ]
+  }
+}

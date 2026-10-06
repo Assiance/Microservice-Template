@@ -1,0 +1,55 @@
+{
+  "_comment": "Evaluator-only settings, passed by run.sh via --settings on every /evaluate invocation. This mechanically enforces evaluator-system.md's boundary instead of trusting a prompt: the evaluator may write ONLY under features/ (its verdict JSON and the feature file's status frontmatter) and cannot stage, commit, checkout, or otherwise mutate the branch. It runs WITHOUT --permission-mode acceptEdits, so in headless (-p) mode any Edit/Write outside features/ is auto-denied. Settings merge with .claude/settings.json and DENY BEATS ALLOW, so the git write commands the generator needs are explicitly re-denied here. The read/search tools (Read, Grep, Glob, and Bash grep/rg/find/ls) are allowed HERE rather than relied upon from .claude/settings.local.json, because the headless harness run does not load the personal local settings file — without these the evaluator cannot search the codebase and burns its whole turn budget thrashing on denied Grep calls. cat is intentionally NOT allowed (it would defeat the .env read-deny), and the .env/secrets Read denies are re-stated here so the added search tools can't be turned into a secret read. The hooks below add the EVIDENCE GATE: track-evidence.sh logs execution events (Playwright calls, test/app runs, curl probes, screenshot reads) and verify-gate.sh denies writing the verdict file until enough of them exist — a zero-execution verdict is mechanically impossible, not just prompted against. The driver resets the evidence log before each evaluation. The **/features/** allow variants exist because on Windows the CLI matches the tool's absolute path against these rules and the bare relative form never matches — without them the evaluator cannot write its own verdict file.",
+  "permissions": {
+    "allow": [
+      "Write(features/**)",
+      "Edit(features/**)",
+      "Write(**/features/**)",
+      "Edit(**/features/**)",
+      "mcp__playwright",
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)"
+    ],
+    "deny": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git restore:*)",
+      "Bash(git stash:*)",
+      "Bash(git reset:*)",
+      "Bash(git clean:*)",
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(**/secrets/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'bash \"${CLAUDE_PROJECT_DIR:-.}/harness/hooks/verify-gate.sh\"'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Read|mcp__playwright__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'bash \"${CLAUDE_PROJECT_DIR:-.}/harness/hooks/track-evidence.sh\"'"
+          }
+        ]
+      }
+    ]
+  }
+}
